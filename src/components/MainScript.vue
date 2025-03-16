@@ -1,4 +1,5 @@
 <script>
+import * as XLSX from "xlsx"; // Usado para o suporte a arquivos do Excel
 export default {
 	data() {
 		return {
@@ -61,16 +62,28 @@ export default {
 
 			this.armazenadoMsg = "Carregando...";
 			this.armazenadoCor = "gray";
+			let acao = this.arquivosArmazenados.has(fileName) ? "sobreescrito" : "carregado";
 
 			const reader = new FileReader();
-			reader.onload = () => {
-				let acao = this.arquivosArmazenados.has(fileName) ? "sobreescrito" : "carregado";
-				this.arquivosArmazenados.set(fileName, reader.result);
-				this.armazenadoMsg = `Arquivo "${fileName}" ${acao} com sucesso!`;
-				this.armazenadoCor = "green";
-				this.salvar();
-			};
-			reader.readAsText(file);
+			if(fileExtension.toLowerCase() == "xlsx") {
+				// Salva XLSX como Base64 para evitar corrupção de dados
+				reader.onload = () => {
+					const readerResult = new Uint8Array(reader.result).reduce((data, byte) => data + String.fromCharCode(byte), "");
+					this.arquivosArmazenados.set(fileName, btoa(readerResult));
+					this.armazenadoMsg = `Arquivo "${fileName}" ${acao} com sucesso!`;
+					this.armazenadoCor = "green";
+					this.salvar();
+				}
+				reader.readAsArrayBuffer(file);
+			} else {
+				reader.onload = () => {
+					this.arquivosArmazenados.set(fileName, reader.result);
+					this.armazenadoMsg = `Arquivo "${fileName}" ${acao} com sucesso!`;
+					this.armazenadoCor = "green";
+					this.salvar();
+				}
+				reader.readAsText(file);
+			}
 		},
 
 		// Apaga arquivo selecionado depois de confirmação
@@ -144,6 +157,23 @@ export default {
 				}
 			}
 
+			// Suporte a .XLSX e .CSV
+			function visualizarPlanilha(linhas) {
+				data += "<ul>";
+				const nomeColunas = linhas[0].split(";");
+				for (let i = 1 ; i < linhas.length ; i++) {
+					let dados = linhas[i].split(";");
+					if(dados.length <= 1 && dados[0] == "") continue;
+
+					data += `<li>#${i}:<ul>`;
+					for (let j = 0 ; j < dados.length ; j++) {
+						data += `<li>${nomeColunas[j]}: ${dados[j]}</li>`;
+					}
+					data += "</ul></li>";
+				}
+				data += "</ul>";
+			}
+
 			// Carregar único arquivo ou lista
 			let primeiro = true;
 			function _carregar(content, name) {
@@ -160,6 +190,31 @@ export default {
 						let xml = new DOMParser().parseFromString(content, "text/xml");
 						recursivaXml(xml.documentElement.children);
 						data += "</ul>";
+						break;
+					}
+					case "xlsx": {
+						// Converte Planilha XLSX para uma planilha simples CSV
+						try {
+							// Converte planilha salva em Base64 de volta para ArrayBuffer
+							const binaryStr = atob(content);
+							const len = binaryStr.length;
+							const bytes = new Uint8Array(len);
+							for (let i = 0; i < len; i++) {
+								bytes[i] = binaryStr.charCodeAt(i);
+							}
+							const workbook = XLSX.read(bytes, { type: "array", cellText: true, cellDates: true });
+							const primeiraPlanilha = workbook.SheetNames[0];
+
+							const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[primeiraPlanilha], { header: 1 });
+							const csv = jsonData.map(row => row.join(";"));
+							visualizarPlanilha(csv);
+						} catch (erro) {
+							console.error("Erro ao converter XLSX para CSV:", erro);
+						}
+						break;
+					}
+					case "csv": {
+						visualizarPlanilha(content.replace('\r\n', '\n').split('\n'));
 						break;
 					}
 				}
