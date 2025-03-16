@@ -2,11 +2,11 @@
 export default {
 	data() {
 		return {
-			tiposPermitidos: [".csv", ".xlsx", ".json", ".xml"],
-			opcoes: ["CSV", "Excel", "JSON", "XML"],
+			formatos: [".csv", ".xlsx", ".json", ".xml"],
 			armazenadoMsg: null,
 			armazenadoCor: "gray",
 			lerSelecionado: false,
+			apagarSelecionado: false,
 			arquivoCarregado: null,
 			arquivosArmazenados: new Map()
 		}
@@ -17,11 +17,32 @@ export default {
 		if(arquivosSalvos) {
 			JSON.parse(arquivosSalvos).forEach(element => {
 				this.arquivosArmazenados.set(element.name, element.content);
-				console.log(`Encontrado: "${element.name}", tamanho: ${element.content.length}`);
+				//console.log(`Encontrado: "${element.name}", tamanho: ${element.content.length}`);
 			});
 		}
 	},
 	methods: {
+		// Botões
+		lerPressionado(event) {
+			this.armazenadoMsg = null;
+			this.armazenadoCor = "gray";
+			this.lerSelecionado = true;
+		},
+		apagarPressionado(event) {
+			this.armazenadoMsg = null;
+			this.armazenadoCor = "gray";
+			this.apagarSelecionado = true;
+		},
+		voltarPressionado(event) {
+			if(this.arquivoCarregado) {
+				this.arquivoCarregado = null;
+			} else {
+				this.lerSelecionado = false;
+				this.apagarSelecionado = false;
+			}
+		},
+
+		// Armazena arquivo selecionado e salva no cache
 		uploadArquivo(event) {
 			const file = event.target.files[0];
      		if (!file) {
@@ -32,8 +53,8 @@ export default {
 
 			const fileName = file.name;
 			const fileExtension = fileName.split(".").pop();
-			if(!this.tiposPermitidos.includes("." + fileExtension.toLowerCase())) {
-				this.armazenadoMsg = "Este formato de arquivo não é permitido! Use apenas: " + this.tiposPermitidos.join(", ");
+			if(!this.formatos.includes("." + fileExtension.toLowerCase())) {
+				this.armazenadoMsg = "Este formato de arquivo não é permitido! Use apenas: " + this.formatos.join(", ");
 				this.armazenadoCor = "red";
 				return;
 			}
@@ -47,35 +68,39 @@ export default {
 				this.arquivosArmazenados.set(fileName, reader.result);
 				this.armazenadoMsg = `Arquivo "${fileName}" ${acao} com sucesso!`;
 				this.armazenadoCor = "green";
-
-				// converte map para array e salva
-				const arquivos = Array.from(this.arquivosArmazenados, ([name, content]) => ({ name, content }));
-				localStorage.setItem("arquivosArmazenados", JSON.stringify(arquivos));
+				this.salvar();
 			};
 			reader.readAsText(file);
 		},
-		lerPressionado(event) {
-			this.armazenadoMsg = null;
-			this.armazenadoCor = "gray";
-			this.lerSelecionado = true;
+
+		// Apaga arquivo selecionado depois de confirmação
+		apagarArquivo(event) {
+			this.arquivosArmazenados.delete(this.arquivoCarregado);
+			this.arquivoCarregado = null;
+			this.salvar();
 		},
-		voltarPressionado(event) {
-			if(this.arquivoCarregado)
-				this.arquivoCarregado = null;
-			else
-				this.lerSelecionado = false;
-		},
-		criarLinhas(event) {
+
+		// Faz parse do(s) arquivo(s) selecionado(s) e o(s) representa em forma de <li> e <ul>
+		visualizarArquivo(event) {
 			let data = "";
-			function recursivaJson(subdata)
-			{
+			// Suporte a JSON
+			let jsonNum = 1;
+			function recursivaJson(subdata) {
 				if (Array.isArray(subdata)) {
 					data += "<ul>";
 					subdata.forEach((element) => {
-						data += `<li>${element}</li>`;
+						if(typeof element === "object") {
+							data += `<li>#${jsonNum}:`;
+							recursivaJson(element);
+							data += "</li>";
+							jsonNum++;
+						}
+						else {
+							recursivaJson(element);
+						}
 					});
 					data += "</ul>";
-				} else if (typeof subdata === "object" && subdata !== null) {
+				} else if (typeof subdata === "object") {
 					Object.entries(subdata).forEach(([key, value]) => {
 						data += "<ul><li>";
 						if(Array.isArray(value) || typeof value === "object")
@@ -86,17 +111,57 @@ export default {
 						else data += `${key}: ${value}`;
 						data += "</li></ul>";
 					});
+				} else {
+					data += `<li>${subdata}</li>`;
 				}
 			}
 
+			// Suporte a XML
+			function recursivaXml(subdata) {
+				if(subdata instanceof Element) {
+					for (child of subdata.children) {
+						recursivaXml(subdata.children);
+					}
+				} else if(subdata instanceof HTMLCollection) {
+					for (const element of subdata) {
+						let atributos = [];
+						let elementName = element.tagName;
+						for (const attr of element.attributes) {
+							atributos.push(`${attr.name}: ${attr.value}`);
+						}
+						if(atributos.length > 0) elementName += ` (${atributos.join(", ")})`;
+						
+						data += "<li>" + elementName;
+						if(element.children.length > 0) {
+							data += "<ul>";
+							recursivaXml(element.children);
+							data += "</ul>";
+						} else {
+							data += `: ${element.textContent}`;
+						}
+						data += "</li>";
+					}
+				}
+			}
+
+			// Carregar único arquivo ou lista
 			let primeiro = true;
 			function _carregar(content, name) {
 				if(!primeiro) data += "<br>";
 				data += `<li><strong>${name}</strong>`;
 				switch(name.split('.').pop().toLowerCase()) {
-					case "json":
+					case "json": {
 						recursivaJson(JSON.parse(content));
+						jsonNum = 1;
 						break;
+					}
+					case "xml": {
+						data += "<ul>";
+						let xml = new DOMParser().parseFromString(content, "text/xml");
+						recursivaXml(xml.documentElement.children);
+						data += "</ul>";
+						break;
+					}
 				}
 				data += "</li>";
 				primeiro = false;
@@ -107,42 +172,62 @@ export default {
 			else
 				_carregar(this.arquivosArmazenados.get(this.arquivoCarregado), this.arquivoCarregado);
 			return data
+		},
+
+		// Salva arquivos armazenados no cache
+		salvar() {
+			// converte map para array e salva
+			const arquivos = Array.from(this.arquivosArmazenados, ([name, content]) => ({ name, content }));
+			localStorage.setItem("arquivosArmazenados", JSON.stringify(arquivos));
 		}
 	}
 }
 </script>
 
 <template>
-	<div v-if="!lerSelecionado">
+	<!-- Tela inicial -->
+	<div v-if="!lerSelecionado && !apagarSelecionado">
 		<h1>Escolha uma ação:</h1>
 		<hr>
-		<input type="file" ref="file" :accept="tiposPermitidos.join(',')" style="display: none" @change="uploadArquivo"/>
+		<input type="file" ref="file" :accept="formatos.join(',')" style="display: none" @change="uploadArquivo"/>
 		<button @click="$refs.file.click()">Armazenar Arquivo</button>
-		<br>
+		<button @click="apagarPressionado">Apagar Arquivo</button>
+		<br><br>
 		<button @click="lerPressionado">Ler Arquivo</button>
 		<br>
 		<p v-if="armazenadoMsg != null" :style="{ color: armazenadoCor } ">{{ armazenadoMsg }}</p>
 	</div>
 
-	<div v-else-if="lerSelecionado && arquivoCarregado == null">
+	<!-- Tela de seleção de arquivo -->
+	<div v-else-if="(lerSelecionado || apagarSelecionado) && arquivoCarregado == null">
 		<h3>Arquivos salvos: {{ arquivosArmazenados.size }} </h3>
 		<hr>
-		<h3>Qual arquivo deseja abrir?</h3>
+		<h3 v-if="lerSelecionado">Qual arquivo deseja abrir?</h3>
+		<h3 v-else="apagarSelecionado">Qual arquivo quer apagar?</h3>
 		<div v-for="[key, value] in arquivosArmazenados" :key="key">
 			<button @click="arquivoCarregado = key">{{ key }}</button>
 			<br>
 		</div>
 		<br>
-		<button @click="arquivoCarregado = '*'" id="botaoListaTodos">Mostrar Todos</button>
-		<hr>
+		<button v-if="lerSelecionado" @click="arquivoCarregado = '*'" id="botaoListaTodos">Mostrar Todos</button>
 		<button @click="voltarPressionado">Voltar</button>
 	</div>
 
+	<!-- Tela de confirmação para apagar arquivo -->
+	<div v-else-if="apagarSelecionado">
+		<h3>Deseja apagar: "{{ arquivoCarregado }}"?</h3>
+		<hr>
+		<button @click="apagarArquivo">Sim</button>
+		<br>
+		<button @click="voltarPressionado">Não</button>
+	</div>
+
+	<!-- Tela de visualização de arquivo -->
 	<div v-else>
 		<h3 v-if="arquivoCarregado != '*'">Visualizando: {{ arquivoCarregado }}</h3>
 		<h3 v-else>Visualizando: Todos</h3>
 		<hr>
-		<ol v-html="criarLinhas()"></ol>
+		<ol v-html="visualizarArquivo()"></ol>
 		<hr>
 		<button @click="voltarPressionado">Voltar</button>
 	</div>
