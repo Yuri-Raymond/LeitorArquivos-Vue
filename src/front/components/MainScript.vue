@@ -234,7 +234,36 @@ export default {
 			// converte map para array e salva
 			const arquivos = Array.from(this.arquivosArmazenados, ([name, content]) => ({ name, content }));
 			localStorage.setItem("arquivosArmazenados", JSON.stringify(arquivos));
+		},
+
+	
+		//Corrijir Erros
+		selecionarArquivo(event) {
+			this.arquivoSelecionado = event.target.files[0];
+		},
+		async enviarArquivo() {
+			if (!this.arquivoSelecionado) {
+				this.mensagem = "Nenhum arquivo selecionado.";
+				return;
+			}
+
+			const formData = new FormData();
+			formData.append("arquivo", this.arquivoSelecionado);
+
+			try {
+				const response = await axios.post("urlApi", formData, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+				});
+				this.mensagem = `Upload realizado com sucesso: ${response.data.url}`;
+			} catch (error) {
+				console.error("Erro ao enviar o arquivo:", error);
+				this.mensagem = "Erro ao enviar o arquivo. Tente novamente.";
+			}
 		}
+	
+		
 	}
 }
 </script>
@@ -277,6 +306,17 @@ export default {
 		<button @click="voltarPressionado">Não</button>
 	</div>
 
+	<!--Tela de envio de arquivo, Modificar se necessário-->
+	<div v-else-if="enviarSelecionado">
+		<h1>Upload de Arquivo</h1>
+		<input type="file" @change="selecionarArquivo" />
+		<button :disabled="!arquivoCarregado" @click="enviarArquivo">Enviar Arquivo</button>
+
+		<div v-if="mensagem">
+			<p>{{ mensagem }}</p>
+		</div>
+  	</div>
+	
 	<!-- Tela de visualização de arquivo -->
 	<div v-else>
 		<h3 v-if="arquivoCarregado != '*'">Visualizando: {{ arquivoCarregado }}</h3>
@@ -286,4 +326,5 @@ export default {
 		<hr>
 		<button @click="voltarPressionado">Voltar</button>
 	</div>
+
 </template>
