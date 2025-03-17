@@ -42,6 +42,10 @@ export default {
 				this.apagarSelecionado = false;
 			}
 		},
+		//Preencher
+		enviarBDPressionado(event){
+
+		},
 
 		// Armazena arquivo selecionado e salva no cache
 		uploadArquivo(event) {
@@ -237,6 +241,7 @@ export default {
 		},
 
 	
+		//Enviar arquivo para API
 		//Corrijir Erros
 		selecionarArquivo(event) {
 			this.arquivoSelecionado = event.target.files[0];
@@ -251,7 +256,7 @@ export default {
 			formData.append("arquivo", this.arquivoSelecionado);
 
 			try {
-				const response = await axios.post("urlApi", formData, {
+				const response = await axios.post("http://localhost:3000/api/upload", formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",
 				},
@@ -310,7 +315,7 @@ export default {
 	<div v-else-if="enviarSelecionado">
 		<h1>Upload de Arquivo</h1>
 		<input type="file" @change="selecionarArquivo" />
-		<button :disabled="!arquivoCarregado" @click="enviarArquivo">Enviar Arquivo</button>
+		<button :disabled="!arquivoCarregado" @click="enviarBDPressionado">Enviar Arquivo</button>
 
 		<div v-if="mensagem">
 			<p>{{ mensagem }}</p>
