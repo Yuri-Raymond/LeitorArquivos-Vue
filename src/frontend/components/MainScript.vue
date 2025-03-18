@@ -42,9 +42,25 @@ export default {
 				this.apagarSelecionado = false;
 			}
 		},
-		//Preencher
+		//Modificar
 		enviarBDPressionado(event){
+			this.armazenadoMsg = "Enviando para o banco de dados...";
+			this.armazenadoCor = "blue"; 
+			this.enviarBDSelecionado = true; 
 
+			if (this.dadosParaEnviar) {
+				try {
+					this.enviarDadosParaBD(this.dadosParaEnviar);
+					this.armazenadoMsg = "Dados enviados com sucesso!";
+					this.armazenadoCor = "green"; 
+				} catch (error) {
+					this.armazenadoMsg = "Erro ao enviar dados.";
+					this.armazenadoCor = "red"; 
+				}
+			} else {
+				this.armazenadoMsg = "Nenhum dado para enviar.";
+				this.armazenadoCor = "orange";
+			}
 		},
 
 		// Armazena arquivo selecionado e salva no cache
@@ -314,13 +330,27 @@ export default {
 	<!--Tela de envio de arquivo, Modificar se necessário-->
 	<div v-else-if="enviarSelecionado">
 		<h1>Upload de Arquivo</h1>
-		<input type="file" @change="selecionarArquivo" />
-		<button :disabled="!arquivoCarregado" @click="enviarBDPressionado">Enviar Arquivo</button>
-
+		<hr>
+		<!-- Input para seleção de arquivo -->
+		<label for="fileInput">Escolha um arquivo para enviar:</label>
+		<input id="fileInput" type="file" @change="selecionarArquivo" />
+		<br><br>
+		
+		<!-- Botão para enviar o arquivo -->
+		<button :disabled="!arquivoCarregado" @click="enviarBDPressionado">
+			Enviar Arquivo
+		</button>
+		
+		<!-- Botão para cancelar -->
+		<button @click="voltarPressionado">
+			Cancelar
+		</button>
+		
+		<!-- Feedback do status -->
 		<div v-if="mensagem">
-			<p>{{ mensagem }}</p>
+			<p :style="{ color: mensagemCor }">{{ mensagem }}</p>
 		</div>
-  	</div>
+	</div>
 	
 	<!-- Tela de visualização de arquivo -->
 	<div v-else>
