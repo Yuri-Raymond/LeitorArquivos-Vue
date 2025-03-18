@@ -1,19 +1,16 @@
 const express = require("express");
-const cors = require("cors");
-const path = require("path");
-const uploadRoutes = require("./rotas/uploadRoutes");
-
 const app = express();
+const cors = require("cors");
 
-// Middleware global
+// Habilitar CORS para requisições de origens diferentes
 app.use(cors());
+
+// Middleware para aceitar requisições do tipo JSON
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Servir arquivos estáticos da pasta 'uploads'
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-// Conectar rotas
-app.use("/api/upload", uploadRoutes);
+// Definir as rotas do upload
+const uploadRoutes = require("./routes/uploadRoutes");
+app.use("/api", uploadRoutes); // Definir que as rotas de upload começam com "/api"
 
 module.exports = app;

@@ -6,7 +6,6 @@ module.exports = {
       return res.status(400).json({ mensagem: "Nenhum arquivo enviado." });
     }
 
-    // Dados do arquivo
     const fileData = {
       originalName: req.file.originalname,
       savedName: req.file.filename,

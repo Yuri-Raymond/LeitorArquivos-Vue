@@ -1,4 +1,5 @@
 <script>
+import axios from 'axios';
 import * as XLSX from "xlsx"; // Usado para o suporte a arquivos do Excel
 export default {
 	data() {
@@ -11,6 +12,8 @@ export default {
 			enviarSelecionado: false,
 			arquivoCarregado: null,
 			arquivoSelecionado: null,
+			mensagem: null,
+			mensagemCor: "gray",
 			arquivosArmazenados: new Map()
 		}
 	},
@@ -53,14 +56,25 @@ export default {
 			}
 		},
 		//Modificar
+		arquivoEnviado(event) {
+			const file = event.target.files[0];
+     		if (!file) return;
+
+			const fileExtension = file.name.split(".").pop();
+			if(this.formatos.includes("." + fileExtension.toLowerCase())) {
+				this.arquivoSelecionado = file;
+			}
+		},
 		enviarBDPressionado(event){
+			console.log("Botão pressionado");
 			this.armazenadoMsg = "Enviando para o banco de dados...";
 			this.armazenadoCor = "blue"; 
 			this.enviarBDSelecionado = true; 
 
-			if (this.dadosParaEnviar) {
+			if (this.arquivoSelecionado) {
+				console.log("Condição Verificada");
 				try {
-					this.enviarDadosParaBD(this.dadosParaEnviar);
+					this.enviarDadosParaBD(this.arquivoSelecionado);
 					this.armazenadoMsg = "Dados enviados com sucesso!";
 					this.armazenadoCor = "green"; 
 				} catch (error) {
@@ -267,48 +281,56 @@ export default {
 		},
 
 	
-		//Enviar arquivo para API
-		//Corrijir Erros
-		selecionarArquivo(event) {
-			const file = event.target.files[0];
-     		if (!file) {
-				this.mensagem = "Operação cancelada.";
-				return;
-			}
+		// Função para validar e enviar arquivo para a API
+enviarDadosParaBD(file) {			
+    if (!file) {
+        this.mensagem = "Operação cancelada.";
+        return;
+    }
 
-			const fileName = file.name;
-			const fileExtension = fileName.split(".").pop();
-			if(!this.formatos.includes("." + fileExtension.toLowerCase())) {
-				this.mensagem = "Este formato de arquivo não é permitido! Use apenas: " + this.formatos.join(", ");
-				return;
-			}
-			this.arquivoSelecionado = event.target.files[0];
-		},
-		async enviarArquivo() {
-			if (!this.arquivoSelecionado) {
-				this.mensagem = "Nenhum arquivo selecionado.";
-				return;
-			}
+    const fileName = file.name;
+    const fileExtension = fileName.split(".").pop().toLowerCase();
+    if (!this.formatos.includes("." + fileExtension)) {
+        this.mensagem = "Este formato de arquivo não é permitido! Use apenas: " + this.formatos.join(", ");
+        return;
+    }
 
-			const formData = new FormData();
-			formData.append("arquivo", this.arquivoSelecionado);
+    this.arquivoSelecionado = file; // Usa diretamente a variável `file`
+    this.enviarArquivo();  // Descomente se for chamar a função logo após a validação
+},
 
-			try {
-				const response = await axios.post("http://localhost:3000/api/upload", formData, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-				});
-				this.mensagem = `Upload realizado com sucesso: ${response.data.url}`;
-			} catch (error) {
-				console.error("Erro ao enviar o arquivo:", error);
-				this.mensagem = "Erro ao enviar o arquivo. Tente novamente.";
-			}
+async enviarArquivo() {
+    if (!this.arquivoSelecionado) {
+        this.mensagem = "Nenhum arquivo selecionado.";
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("arquivo", this.arquivoSelecionado);
+
+    try {
+        const response = await axios.post("http://localhost:3000/api/upload", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+
+        // Verificar a resposta
+        console.log(response); // Para debug
+        this.mensagem = `Upload realizado com sucesso: ${response.data.url}`;
+
+    } catch (error) {
+        console.error("Erro ao enviar o arquivo:", error);
+        this.mensagem = "Erro ao enviar o arquivo. Tente novamente.";
+    }
+}
+
 		}
+
 	
 		
 	}
-}
+
 </script>
 
 <template>
@@ -359,11 +381,11 @@ export default {
 		<!-- Input para seleção de arquivo -->
 		<label for="fileInput">Escolha um arquivo para enviar:</label>
 		<br>
-		<input id="fileInput" type="file" @change="selecionarArquivo" />
+		<input id="fileInput" type="file" @change="arquivoEnviado"/>
 		<br><br>
 		
 		<!-- Botão para enviar o arquivo -->
-		<button :disabled="arquivoSelecionado == null" @click="enviarPressionado">
+		<button @click="enviarBDPressionado">
 			Enviar Arquivo
 		</button>
 		
