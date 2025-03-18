@@ -8,7 +8,9 @@ export default {
 			armazenadoCor: "gray",
 			lerSelecionado: false,
 			apagarSelecionado: false,
+			enviarSelecionado: false,
 			arquivoCarregado: null,
+			arquivoSelecionado: null,
 			arquivosArmazenados: new Map()
 		}
 	},
@@ -34,12 +36,20 @@ export default {
 			this.armazenadoCor = "gray";
 			this.apagarSelecionado = true;
 		},
+		enviarPressionado(event) {
+			this.armazenadoMsg = null;
+			this.armazenadoCor = "gray";
+			this.arquivoSelecionado = null;
+			this.enviarSelecionado = true;
+		},
 		voltarPressionado(event) {
 			if(this.arquivoCarregado) {
 				this.arquivoCarregado = null;
 			} else {
+				this.mensagem = null;
 				this.lerSelecionado = false;
 				this.apagarSelecionado = false;
+				this.enviarSelecionado = false;
 			}
 		},
 		//Modificar
@@ -260,6 +270,18 @@ export default {
 		//Enviar arquivo para API
 		//Corrijir Erros
 		selecionarArquivo(event) {
+			const file = event.target.files[0];
+     		if (!file) {
+				this.mensagem = "Operação cancelada.";
+				return;
+			}
+
+			const fileName = file.name;
+			const fileExtension = fileName.split(".").pop();
+			if(!this.formatos.includes("." + fileExtension.toLowerCase())) {
+				this.mensagem = "Este formato de arquivo não é permitido! Use apenas: " + this.formatos.join(", ");
+				return;
+			}
 			this.arquivoSelecionado = event.target.files[0];
 		},
 		async enviarArquivo() {
@@ -291,11 +313,14 @@ export default {
 
 <template>
 	<!-- Tela inicial -->
-	<div v-if="!lerSelecionado && !apagarSelecionado">
+	<div v-if="!lerSelecionado && !apagarSelecionado && !enviarSelecionado">
 		<h1>Escolha uma ação:</h1>
 		<hr>
 		<input type="file" ref="file" :accept="formatos.join(',')" style="display: none" @change="uploadArquivo"/>
 		<button @click="$refs.file.click()">Armazenar Arquivo</button>
+		<br>
+		<button @click="enviarPressionado">Enviar ao Banco de Dados</button>
+		<br>
 		<button @click="apagarPressionado">Apagar Arquivo</button>
 		<br><br>
 		<button @click="lerPressionado">Ler Arquivo</button>
@@ -329,15 +354,16 @@ export default {
 
 	<!--Tela de envio de arquivo, Modificar se necessário-->
 	<div v-else-if="enviarSelecionado">
-		<h1>Upload de Arquivo</h1>
+		<h3>Enviar Arquivo ao Banco de Dados</h3>
 		<hr>
 		<!-- Input para seleção de arquivo -->
 		<label for="fileInput">Escolha um arquivo para enviar:</label>
+		<br>
 		<input id="fileInput" type="file" @change="selecionarArquivo" />
 		<br><br>
 		
 		<!-- Botão para enviar o arquivo -->
-		<button :disabled="!arquivoCarregado" @click="enviarBDPressionado">
+		<button :disabled="arquivoSelecionado == null" @click="enviarPressionado">
 			Enviar Arquivo
 		</button>
 		
@@ -347,7 +373,7 @@ export default {
 		</button>
 		
 		<!-- Feedback do status -->
-		<div v-if="mensagem">
+		<div v-if="mensagem != null">
 			<p :style="{ color: mensagemCor }">{{ mensagem }}</p>
 		</div>
 	</div>
