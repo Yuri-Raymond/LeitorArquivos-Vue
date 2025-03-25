@@ -300,34 +300,38 @@ enviarDadosParaBD(file) {
 },
 
 async enviarArquivo() {
+    // Verifica se o arquivo foi selecionado
     if (!this.arquivoSelecionado) {
         this.mensagem = "Nenhum arquivo selecionado.";
         return;
     }
 
     const formData = new FormData();
-    formData.append("arquivo", this.arquivoSelecionado);
+    formData.append("file", this.arquivoSelecionado); // Use a variável 'arquivoSelecionado' aqui
 
     try {
-    const formData = new FormData();
-    formData.append("file", this.fileInput.files[0]); // Garantir que o campo "file" seja enviado
+        const response = await axios.post("http://localhost:8080/api/files/upload", formData, {
+            
+			headers: {
+                "Content-Type": "multipart/form-data",
+            }
+			
+        });
 
-    const response = await axios.post("http://localhost:8080/api/files/upload", formData, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
-    });
+        // Verificar a resposta
+        console.log(response); // Para debug
+        this.mensagem = `Upload realizado com sucesso: ${response.data}`; // Ajuste conforme a resposta esperada
 
-    // Verificar a resposta
-    console.log(response); // Para debug
-    this.mensagem = `Upload realizado com sucesso: ${response.data}`; // Ajuste conforme a resposta esperada
+    } catch (error) {
+    console.error("Erro no upload 1 :", error);
 
-} catch (error) {
-    console.error("Erro ao enviar o arquivo:", error);
-    this.mensagem = "Erro ao enviar o arquivo. Tente novamente.";
+    // Trate o erro
+    this.mensagem = error.response
+        ? `Erro no upload 2: ${error.response.data.message || "Erro desconhecido"}`
+        : "Erro na conexão com o servidor.";
+}
 }
 
-}
 
 		}
 
