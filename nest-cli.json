@@ -3,9 +3,10 @@
   "sourceRoot": "src/backend",
   "entryFile": "main",
   "compilerOptions": {
+    "tsConfigPath": "tsconfig.build.json",
     "assets": [],
-    "watchAssets": true
+    "watchAssets": true,
+    "outDir": "dist/backend"
   },
-  "compiler": "tsc",
-  "outputPath": "dist/backend"
+  "compiler": "tsc"
 }

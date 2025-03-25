@@ -1,7 +1,9 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';  // Importa o plugin para Vue
+import path from 'path';
 
 export default defineConfig({
+  root: path.resolve(__dirname, 'src/frontend'),
   plugins: [vue()],  // Adiciona o plugin Vue
   server: {
     port: 3000,  // Define a porta que o frontend (Vue) irá rodar
@@ -15,16 +17,17 @@ export default defineConfig({
     
   },
   resolve: {
+    extensions: ['.js', '.ts', '.vue', '.html'],
     alias: {
-      '@': '/src/frontend',  // Ajuste para apontar para o diretório de frontend
-    },
+      '@': path.resolve(__dirname, 'src/frontend'),  // Ajustado para o diretório de frontend
+    }    
     
   },
-  root: 'src/frontend',
   build: {
-    outDir: 'dist/frontend',
+    outDir: path.resolve(__dirname, 'dist/frontend'),
+    emptyOutDir: true,  // Adiciona essa linha para limpar o diretório de saída 
     rollupOptions: {
-      input: './main.js' // Caminho do arquivo de entrada.
+      input: path.resolve(__dirname, 'src/frontend/main.js')  // Verifique se o caminho está correto
     }  
-  },
+  }
 });

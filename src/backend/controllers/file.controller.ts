@@ -8,16 +8,14 @@ export class FileController {
   constructor(private readonly fileService: FileService) {}
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file')) // Intercepta o upload de arquivos
+  @UseInterceptors(FileInterceptor('file')) // Aplica o interceptor para o upload
   async uploadFile(@UploadedFile() file: Express.Multer.File): Promise<string> {
     try {
-      // Salvar ou processar o arquivo aqui
       const fileName = file.originalname;
       const fileSize = file.size;
 
       await this.fileService.save(file);
 
-      // Exemplo: apenas exibir informações do arquivo
       return `Arquivo recebido: ${fileName} (${fileSize} bytes)`;
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -32,6 +30,5 @@ export class FileController {
         );
       }
     }
-    
   }
 }

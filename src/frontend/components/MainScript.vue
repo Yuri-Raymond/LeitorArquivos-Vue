@@ -309,20 +309,24 @@ async enviarArquivo() {
     formData.append("arquivo", this.arquivoSelecionado);
 
     try {
-        const response = await axios.post("http://localhost:8080/api/files/upload", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        });
+    const formData = new FormData();
+    formData.append("file", this.fileInput.files[0]); // Garantir que o campo "file" seja enviado
 
-        // Verificar a resposta
-        console.log(response); // Para debug
-        this.mensagem = `Upload realizado com sucesso: ${response.data.url}`;
+    const response = await axios.post("http://localhost:8080/api/files/upload", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
 
-    } catch (error) {
-        console.error("Erro ao enviar o arquivo:", error);
-        this.mensagem = "Erro ao enviar o arquivo. Tente novamente.";
-    }
+    // Verificar a resposta
+    console.log(response); // Para debug
+    this.mensagem = `Upload realizado com sucesso: ${response.data}`; // Ajuste conforme a resposta esperada
+
+} catch (error) {
+    console.error("Erro ao enviar o arquivo:", error);
+    this.mensagem = "Erro ao enviar o arquivo. Tente novamente.";
+}
+
 }
 
 		}

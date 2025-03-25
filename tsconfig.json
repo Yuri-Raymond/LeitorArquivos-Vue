@@ -1,25 +1,24 @@
 {
-    "compilerOptions": {
-      "module": "commonjs",                       // Compatível com Node.js
-      "target": "es6",                            // Transpila para ES6 (ECMAScript 2015)
-      "strict": true,                             // Ativa verificações rigorosas de tipo
-      "baseUrl": "./",                            // Define a base do caminho relativo
-      "rootDir": "./src",                         // Define o diretório raiz do código-fonte
-      "outDir": "./dist",                         // Define a saída para os arquivos compilados
-      "experimentalDecorators": true,            // Habilita suporte a decoradores
-      "emitDecoratorMetadata": true,             // Emite metadados de tipos para decoradores
-      "esModuleInterop": true,                   // Habilita compatibilidade com módulos ES
-      "skipLibCheck": true,                      // Ignora checagem de tipos em arquivos de declaração
-      "forceConsistentCasingInFileNames": true,  // Garante consistência nos nomes de arquivos
-      "strictPropertyInitialization": false,     // Desativa verificação rigorosa de inicialização de propriedades
-      "paths": {                                 // Mapeamento para importar arquivos diretamente
-        "@config/*": ["src/backend/config/*"],
-        "@controllers/*": ["src/backend/controllers/*"],
-        "@models/*": ["src/backend/models/*"],
-        "@services/*": ["src/backend/services/*"]
-      }
-    },
-    "include": ["src/**/*"],                      // Inclui todos os arquivos na pasta src
-    "exclude": ["node_modules", "dist"]          // Exclui node_modules e dist do compilador
-  }
-  
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES2020",
+    "strict": true,
+    "baseUrl": "./",
+    "rootDir": "./src",
+    "outDir": "./dist/backend",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "strictPropertyInitialization": false,
+    "paths": {
+      "@config/*": ["src/backend/config/*"],
+      "@controllers/*": ["src/backend/controllers/*"],
+      "@models/*": ["src/backend/models/*"],
+      "@services/*": ["src/backend/services/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "src/**/*.spec.ts"]
+}
