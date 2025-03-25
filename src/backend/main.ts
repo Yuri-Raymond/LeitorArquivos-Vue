@@ -1,22 +1,19 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
+import { AppConfig } from './config/app.config'; // Importa o AppConfig
 
 async function bootstrap() {
   // Cria a aplicação NestJS usando o módulo principal (AppModule)
   const app = await NestFactory.create(AppModule);
 
-  // Ativa o CORS para permitir que o frontend (Vue.js) acesse o backend (NestJS)
-  app.enableCors({
-    origin: 'http://localhost:63342',  // Altere para o domínio do seu frontend
-    methods: 'GET,POST,PUT,DELETE',
-    allowedHeaders: '*',
-    credentials: true,
-  });
+  // Instancia o AppConfig e aplica as configurações de CORS
+  const appConfig = new AppConfig();
+  app.enableCors(appConfig.getCorsConfig());
 
   // Inicializa o servidor e define a porta
-  await app.listen(3000);
-  Logger.log('Servidor iniciado na porta 3000');
+  await app.listen(8080);
+  Logger.log('Servidor iniciado na porta 8080');
 }
 
 bootstrap();

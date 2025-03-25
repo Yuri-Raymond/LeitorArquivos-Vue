@@ -19,11 +19,19 @@ export class FileController {
 
       // Exemplo: apenas exibir informações do arquivo
       return `Arquivo recebido: ${fileName} (${fileSize} bytes)`;
-    } catch (error) {
-      throw new HttpException(
-        `Erro ao processar o arquivo: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          `Erro ao processar o arquivo: ${error.message}`,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      } else {
+        throw new HttpException(
+          'Erro desconhecido ao processar o arquivo.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     }
+    
   }
 }

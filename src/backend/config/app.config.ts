@@ -6,7 +6,7 @@ export class AppConfig {
   // Configurações globais de CORS
   public getCorsConfig(): CorsOptions {
     return {
-      origin: 'http://localhost:63342', // Permite esta origem específica
+      origin: 'http://localhost:8080', // Permite esta origem específica
       methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
       allowedHeaders: '*', // Cabeçalhos permitidos
       credentials: true, // Permite cookies e credenciais (opcional)

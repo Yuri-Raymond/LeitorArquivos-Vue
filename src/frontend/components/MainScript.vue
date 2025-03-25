@@ -309,7 +309,7 @@ async enviarArquivo() {
     formData.append("arquivo", this.arquivoSelecionado);
 
     try {
-        const response = await axios.post("http://localhost:3000/api/upload", formData, {
+        const response = await axios.post("http://localhost:8080/api/files/upload", formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },

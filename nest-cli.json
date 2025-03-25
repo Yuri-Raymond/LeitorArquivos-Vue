@@ -1,0 +1,11 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src/backend",
+  "entryFile": "main",
+  "compilerOptions": {
+    "assets": [],
+    "watchAssets": true
+  },
+  "compiler": "tsc",
+  "outputPath": "dist/backend"
+}
