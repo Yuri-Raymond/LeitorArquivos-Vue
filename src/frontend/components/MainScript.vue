@@ -1,6 +1,8 @@
 <script>
 import axios from 'axios';
 import * as XLSX from "xlsx"; // Usado para o suporte a arquivos do Excel
+import "./styles.css";  // Importação do CSS externo
+
 export default {
 	data() {
 		return {
@@ -58,7 +60,7 @@ export default {
 		//Modificar
 		arquivoEnviado(event) {
 			const file = event.target.files[0];
-     		if (!file) return;
+			if (!file) return;
 
 			const fileExtension = file.name.split(".").pop();
 			if(this.formatos.includes("." + fileExtension.toLowerCase())) {
@@ -67,30 +69,30 @@ export default {
 		},
 		enviarBDPressionado(event){
 			console.log("Botão pressionado");
-			this.armazenadoMsg = "Enviando para o banco de dados...";
-			this.armazenadoCor = "blue"; 
+			this.mensagem = "Enviando para o banco de dados...";
+			this.mensagemCor = "blue"; 
 			this.enviarBDSelecionado = true; 
 
 			if (this.arquivoSelecionado) {
 				console.log("Condição Verificada");
 				try {
 					this.enviarDadosParaBD(this.arquivoSelecionado);
-					this.armazenadoMsg = "Dados enviados com sucesso!";
-					this.armazenadoCor = "green"; 
+					this.mensagem = "Dados enviados com sucesso!";
+					this.mensagemCor = "green"; 
 				} catch (error) {
-					this.armazenadoMsg = "Erro ao enviar dados.";
-					this.armazenadoCor = "red"; 
+					this.mensagem = "Erro ao enviar dados.";
+					this.mensagemCor = "red"; 
 				}
 			} else {
-				this.armazenadoMsg = "Nenhum dado para enviar.";
-				this.armazenadoCor = "orange";
+				this.mensagem = "Nenhum dado para enviar.";
+				this.mensagemCor = "orange";
 			}
 		},
 
 		// Armazena arquivo selecionado e salva no cache
 		uploadArquivo(event) {
 			const file = event.target.files[0];
-     		if (!file) {
+			if (!file) {
 				this.armazenadoMsg = "Operação cancelada.";
 				this.armazenadoCor = "gray";
 				return;
@@ -282,140 +284,143 @@ export default {
 
 	
 		// Função para validar e enviar arquivo para a API
-enviarDadosParaBD(file) {			
-    if (!file) {
-        this.mensagem = "Operação cancelada.";
-        return;
-    }
+		enviarDadosParaBD(file) {			
+			if (!file) {
+				this.mensagem = "Operação cancelada.";
+				return;
+			}
 
-    const fileName = file.name;
-    const fileExtension = fileName.split(".").pop().toLowerCase();
-    if (!this.formatos.includes("." + fileExtension)) {
-        this.mensagem = "Este formato de arquivo não é permitido! Use apenas: " + this.formatos.join(", ");
-        return;
-    }
+			const fileName = file.name;
+			const fileExtension = fileName.split(".").pop().toLowerCase();
+			if (!this.formatos.includes("." + fileExtension)) {
+				this.mensagem = "Este formato de arquivo não é permitido! Use apenas: " + this.formatos.join(", ");
+				return;
+			}
 
-    this.arquivoSelecionado = file; // Usa diretamente a variável `file`
-    this.enviarArquivo();  // Descomente se for chamar a função logo após a validação
-},
+			this.arquivoSelecionado = file; // Usa diretamente a variável `file`
+			this.enviarArquivo();  // Descomente se for chamar a função logo após a validação
+		},
 
-async enviarArquivo() {
-    // Verifica se o arquivo foi selecionado
-    if (!this.arquivoSelecionado) {
-        this.mensagem = "Nenhum arquivo selecionado.";
-        return;
-    }
+		async enviarArquivo() {
+			if (!this.arquivoSelecionado) {
+				this.mensagem = "Nenhum arquivo selecionado.";
+				return;
+			}
 
-    const formData = new FormData();
-    formData.append("file", this.arquivoSelecionado); // Use a variável 'arquivoSelecionado' aqui
+			const formData = new FormData();
+			formData.append("file", this.arquivoSelecionado);
 
-    try {
-        const response = await axios.post("http://localhost:8080/api/files/upload", formData, {
-            
-			headers: {
-                "Content-Type": "multipart/form-data",
-            }
-			
-        });
+			try {
+				const response = await axios.post("http://localhost:8080/api/files/upload", formData, {
+					
+					headers: {
+						"Content-Type": "multipart/form-data",
+					}
+					
+				});
 
-        // Verificar a resposta
-        console.log(response); // Para debug
-        this.mensagem = `Upload realizado com sucesso: ${response.data}`; // Ajuste conforme a resposta esperada
+				// Verificar a resposta
+				console.log(response); // Para debug
+				this.mensagem = `Upload realizado com sucesso! ${response.data}`; // Ajuste conforme a resposta esperada
 
-    } catch (error) {
-    console.error("Erro no upload 1 :", error);
+			} catch (error) {
+			console.error("Erro no upload 1 :", error);
 
-    // Trate o erro
-    this.mensagem = error.response
-        ? `Erro no upload 2: ${error.response.data.message || "Erro desconhecido"}`
-        : "Erro na conexão com o servidor.";
-}
-}
-
-
+			// Trate o erro
+			this.mensagem = error.response
+				? `Erro no upload 2: ${error.response.data.message || "Erro desconhecido"}`
+				: "Erro na conexão com o servidor.";
+			}
 		}
-
-	
-		
 	}
-
+}
 </script>
 
 <template>
 	<!-- Tela inicial -->
 	<div v-if="!lerSelecionado && !apagarSelecionado && !enviarSelecionado">
-		<h1>Escolha uma ação:</h1>
-		<hr>
-		<input type="file" ref="file" :accept="formatos.join(',')" style="display: none" @change="uploadArquivo"/>
-		<button @click="$refs.file.click()">Armazenar Arquivo</button>
-		<br>
-		<button @click="enviarPressionado">Enviar ao Banco de Dados</button>
-		<br>
-		<button @click="apagarPressionado">Apagar Arquivo</button>
-		<br><br>
-		<button @click="lerPressionado">Ler Arquivo</button>
-		<br>
-		<p v-if="armazenadoMsg != null" :style="{ color: armazenadoCor } ">{{ armazenadoMsg }}</p>
+		<div class="destaqueTopo" style="height: 90px;">
+			<h1>Escolha uma ação:</h1>
+			<hr>
+		</div>
+		<div class="centralizado moverParaBaixo">
+			<input type="file" ref="file" :accept="formatos.join(',')" style="display: none" @change="uploadArquivo"/>
+			<button @click="$refs.file.click()">Armazenar Arquivo</button>
+			<button @click="enviarPressionado">Enviar ao Banco de Dados</button>
+			<button @click="apagarPressionado" class="botaoVermelho">Apagar Arquivo</button>
+			<br>
+			<button @click="lerPressionado">Ler Arquivo</button>
+			<p v-if="armazenadoMsg != null" :style="{ color: armazenadoCor } ">{{ armazenadoMsg }}</p>
+			<p v-else style="opacity: 0;">Nada.</p>
+		</div>
 	</div>
 
 	<!-- Tela de seleção de arquivo -->
 	<div v-else-if="(lerSelecionado || apagarSelecionado) && arquivoCarregado == null">
-		<h3>Arquivos salvos: {{ arquivosArmazenados.size }} </h3>
-		<hr>
-		<h3 v-if="lerSelecionado">Qual arquivo deseja abrir?</h3>
-		<h3 v-else="apagarSelecionado">Qual arquivo quer apagar?</h3>
-		<div v-for="[key, value] in arquivosArmazenados" :key="key">
-			<button @click="arquivoCarregado = key">{{ key }}</button>
-			<br>
+		<div class="destaqueTopo">
+			<h3>Arquivos salvos: {{ arquivosArmazenados.size }} </h3>
+			<hr>
 		</div>
-		<br>
-		<button v-if="lerSelecionado" @click="arquivoCarregado = '*'" id="botaoListaTodos">Mostrar Todos</button>
-		<button @click="voltarPressionado">Voltar</button>
+
+		<div class="centralizado">
+			<h3 v-if="lerSelecionado">Qual arquivo deseja abrir?</h3>
+			<h3 v-else="apagarSelecionado">Qual arquivo quer apagar?</h3>
+			<div v-for="[key, value] in arquivosArmazenados" :key="key">
+				<button @click="arquivoCarregado = key">{{ key }}</button>
+				<br>
+			</div>
+			<br>
+			<div style="flex-direction: row;">
+				<button v-if="lerSelecionado" @click="arquivoCarregado = '*'" id="botaoListaTodos">Mostrar Todos</button>
+				<button @click="voltarPressionado">Voltar</button>
+			</div>
+		</div>
 	</div>
 
 	<!-- Tela de confirmação para apagar arquivo -->
-	<div v-else-if="apagarSelecionado">
+	<div v-else-if="apagarSelecionado" class="confirmarApagar">
 		<h3>Deseja apagar: "{{ arquivoCarregado }}"?</h3>
-		<hr>
-		<button @click="apagarArquivo">Sim</button>
-		<br>
-		<button @click="voltarPressionado">Não</button>
+		<div style="flex-direction: row;">
+			<button @click="apagarArquivo" class="botaoVermelho">Sim</button>
+			<button @click="voltarPressionado">Não</button>
+		</div>
 	</div>
 
 	<!--Tela de envio de arquivo, Modificar se necessário-->
 	<div v-else-if="enviarSelecionado">
-		<h3>Enviar Arquivo ao Banco de Dados</h3>
-		<hr>
-		<!-- Input para seleção de arquivo -->
-		<label for="fileInput">Escolha um arquivo para enviar:</label>
-		<br>
-		<input id="fileInput" type="file" @change="arquivoEnviado"/>
-		<br><br>
+		<div class="destaqueTopo">
+			<h3>Enviar Arquivo ao Banco de Dados</h3>
+			<hr>
+		</div>
 		
-		<!-- Botão para enviar o arquivo -->
-		<button @click="enviarBDPressionado">
-			Enviar Arquivo
-		</button>
-		
-		<!-- Botão para cancelar -->
-		<button @click="voltarPressionado">
-			Cancelar
-		</button>
-		
-		<!-- Feedback do status -->
-		<div v-if="mensagem != null">
-			<p :style="{ color: mensagemCor }">{{ mensagem }}</p>
+		<div class="centralizado moverParaBaixo">
+			<label for="fileInput">Escolha um arquivo para enviar:</label>
+			<br>
+			<input id="fileInput" type="file" :accept="formatos.join(',')" @change="arquivoEnviado"/>
+			<br>
+			
+			<div style="flex-direction: row;">
+				<button @click="enviarBDPressionado" class="botaoVerde" :disabled="!arquivoSelecionado">Enviar Arquivo</button>
+				<button @click="voltarPressionado">Cancelar</button>
+			</div>
+			
+			<p v-if="mensagem != null" :style="{ color: mensagemCor }">{{ mensagem }}</p>
+			<p v-else style="opacity: 0;">Nada.</p>
 		</div>
 	</div>
 	
 	<!-- Tela de visualização de arquivo -->
 	<div v-else>
-		<h3 v-if="arquivoCarregado != '*'">Visualizando: {{ arquivoCarregado }}</h3>
-		<h3 v-else>Visualizando: Todos</h3>
-		<hr>
-		<ol v-html="visualizarArquivo()"></ol>
-		<hr>
-		<button @click="voltarPressionado">Voltar</button>
+		<div class="destaqueTopo">
+			<h3 v-if="arquivoCarregado != '*'">Visualizando: {{ arquivoCarregado }}</h3>
+			<h3 v-else>Visualizando: Todos</h3>
+			<hr>
+		</div>
+		<ol v-html="visualizarArquivo()" class="margensPagina" style="margin-left: 40px; margin-right: 40px;"></ol>
+		<div class="destaqueFundo">
+			<hr>
+			<button @click="voltarPressionado">Voltar</button>
+		</div>
 	</div>
 
 </template>
