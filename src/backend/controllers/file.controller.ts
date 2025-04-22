@@ -60,29 +60,7 @@ export class FileController {
     }
   }
 
-  @Post(':folderName/upload')
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(
-    @Param('folderName') folderName: string,
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<string> {
-    try {
-      await this.folderService.saveFile(folderName, file);
-      return `Arquivo "${file.originalname}" salvo com sucesso na pasta "${folderName}".`;
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new HttpException(
-          `Erro ao salvar o arquivo: ${error.message}`,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      } else {
-        throw new HttpException(
-          'Erro desconhecido ao salvar o arquivo.',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
-  }
+  
 
   @Put('rename')
   async renameFolder(@Body('oldName') oldName: string, @Body('newName') newName: string): Promise<string> {

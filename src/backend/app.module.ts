@@ -4,7 +4,7 @@ import { FileController } from './controllers/file.controller';
 import { FileService } from './services/file.service';
 import { User } from './models/user-entity'; // Substitua pelo caminho correto para suas entidades
 import { MongooseModule } from '@nestjs/mongoose';
-import { Folder, FolderSchema } from './schemas/folder.schema';
+import { Folder, FolderSchema } from '../schemas/folder.schema';
 
 @Module({
   imports: [
