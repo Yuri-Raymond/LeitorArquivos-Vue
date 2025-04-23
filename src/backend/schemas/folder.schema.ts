@@ -1,10 +1,12 @@
 // Importando os módulos necessários
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 
 // Schema para a tabela "academic_classes"
+export type AcademicClassDocument = HydratedDocument<AcademicClass>;
 @Schema({ timestamps: true })
-export class AcademicClass extends Document {
+export class AcademicClass {
   @Prop({ type: Number, required: true })
   id: number;
 
@@ -56,6 +58,7 @@ export class AcademicClass extends Document {
 export const AcademicClassSchema = SchemaFactory.createForClass(AcademicClass);
 
 // Schema para a tabela "disciplines"
+export type DisciplineDocument = HydratedDocument<Discipline>;
 @Schema({ timestamps: true })
 export class Discipline extends Document {
   @Prop({ type: Number, required: true })
@@ -97,6 +100,7 @@ export class Discipline extends Document {
 export const DisciplineSchema = SchemaFactory.createForClass(Discipline);
 
 // Schema para a tabela "discipline_users"
+export type DisciplineUserDocument = HydratedDocument<DisciplineUser>;
 @Schema({ timestamps: true })
 export class DisciplineUser extends Document {
   @Prop({ type: Number, required: true })
@@ -129,6 +133,7 @@ export class DisciplineUser extends Document {
 export const DisciplineUserSchema = SchemaFactory.createForClass(DisciplineUser);
 
 // Schema para a tabela "school_periods"
+export type SchoolPeriodDocument = HydratedDocument<SchoolPeriod>;
 @Schema({ timestamps: true })
 export class SchoolPeriod extends Document {
   @Prop({ type: Number, required: true })
@@ -158,6 +163,7 @@ export class SchoolPeriod extends Document {
 export const SchoolPeriodSchema = SchemaFactory.createForClass(SchoolPeriod);
 
 // Schema para a tabela "users"
+export type UserDocument = HydratedDocument<User>;
 @Schema({ timestamps: true })
 export class User extends Document {
   @Prop({ type: Number, required: true })

@@ -1,85 +1,51 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Readable } from 'stream';
-const csvParser = require('csv-parser');
 import { Model } from 'mongoose';
-import { AcademicClass } from '../schemas/folder.schema';
-import { Discipline } from '../schemas/folder.schema';
-import { DisciplineUser } from '../schemas/folder.schema';
-import { SchoolPeriod } from '../schemas/folder.schema';
-import { User } from '../schemas/folder.schema';
 
-@Injectable()
-export class FileService {
-  constructor(
-    @InjectModel(AcademicClass.name) private academicClassModel: Model<AcademicClass>,
-    @InjectModel(Discipline.name) private disciplineModel: Model<Discipline>,
-    @InjectModel(DisciplineUser.name) private disciplineUserModel: Model<DisciplineUser>,
-    @InjectModel(SchoolPeriod.name) private schoolPeriodModel: Model<SchoolPeriod>,
-    @InjectModel(User.name) private userModel: Model<User>,
-  ) {}
+export function GenericService(
+  modelMap: Record<string, Model<any>>
+): any {
+  @Injectable()
+  class GenericService {
+    private readonly modelMap = modelMap;
 
-  async save(file: Express.Multer.File, schemaName: string): Promise<void> {
-    try {
-      console.log('Arquivo recebido:', file);
-
-      // Lê o buffer do arquivo diretamente como um stream
-      const fileStream = Readable.from(file.buffer);
-
-      // Processar os dados e enviá-los ao MongoDB
-      await this.processFile(fileStream, schemaName);
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error('Erro ao salvar o arquivo:', error.message, error.stack);
-      } else {
-        console.error('Erro desconhecido ao salvar o arquivo:', error);
-      }
-      throw new Error('Erro ao salvar o arquivo.');
-    }
-  }
-
-  private async processFile(fileStream: Readable, schemaName: string): Promise<void> {
-    try {
-      const records: Record<string, any>[] = [];
-      const modelMap: Record<string, Model<any>> = {
-        AcademicClass: this.academicClassModel,
-        Discipline: this.disciplineModel,
-        DisciplineUser: this.disciplineUserModel,
-        SchoolPeriod: this.schoolPeriodModel,
-        User: this.userModel,
-      };
-
-      const model = modelMap[schemaName];
+    private getModel(schemaKey: string): Model<any> {
+      const model = this.modelMap[schemaKey];
       if (!model) {
-        throw new Error(`Schema ${schemaName} não encontrado.`);
+        throw new NotFoundException(`Model not found for schema: ${schemaKey}`);
       }
+      return model;
+    }
 
-      // Processar o arquivo CSV
-      await new Promise<void>((resolve, reject) => {
-        fileStream
-          .pipe(csvParser())
-          .on('data', (row: Record<string, any>) => {
-            records.push(row);
-          })
-          .on('end', async () => {
-            console.log(`Arquivo processado, inserindo no MongoDB com o schema ${schemaName}...`);
+    async create(schemaKey: string, data: Partial<any>): Promise<any> {
+      const model = this.getModel(schemaKey);
+      const newItem = new model(data);
+      return newItem.save();
+    }
 
-            // Inserir os dados no MongoDB usando o schema selecionado
-            for (const record of records) {
-              await model.create(record);
-            }
+    async findAll(schemaKey: string): Promise<any[]> {
+      const model = this.getModel(schemaKey);
+      return model.find().exec();
+    }
 
-            console.log('Dados inseridos com sucesso no MongoDB.');
-            resolve();
-          })
-          .on('error', (error: Error) => {
-            console.error('Erro ao processar o arquivo:', error);
-            reject(error);
-          });
-      });
-    } catch (error) {
-      console.error('Erro ao processar o arquivo:', error);
-      throw new Error('Erro ao processar o arquivo.');
+    async findById(schemaKey: string, id: string): Promise<any> {
+      const model = this.getModel(schemaKey);
+      const item = await model.findById(id).exec();
+      if (!item) {
+        throw new NotFoundException(`Item not found in schema: ${schemaKey}`);
+      }
+      return item;
+    }
+
+    async delete(schemaKey: string, id: string): Promise<any> {
+      const model = this.getModel(schemaKey);
+      const deletedItem = await model.findByIdAndDelete(id).exec();
+      if (!deletedItem) {
+        throw new NotFoundException(`Item not found in schema: ${schemaKey}`);
+      }
+      return deletedItem;
     }
   }
+
+  return GenericService;
 }

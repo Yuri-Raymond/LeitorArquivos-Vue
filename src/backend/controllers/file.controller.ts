@@ -1,104 +1,26 @@
-import {
-  Controller,
-  Post,
-  UploadedFile,
-  UseInterceptors,
-  HttpException,
-  HttpStatus,
-  Get,
-  Delete,
-  Put,
-  Param,
-  Body,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { FolderService } from '../services/folder.service';
-import { Express } from 'express';
-import { ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 
-@ApiTags('folders')
-@Controller('api/folders')
-export class FileController {
-  constructor(private readonly folderService: FolderService) {}
+@Controller('generic')
+export class GenericController {
+  constructor(private readonly service: any) {} // Injeta o serviço genérico
 
-  @Post('create')
-  async createFolder(@Body('folderName') folderName: string): Promise<string> {
-    try {
-      await this.folderService.createFolder(folderName);
-      return `Pasta "${folderName}" criada com sucesso.`;
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new HttpException(
-          `Erro ao criar a pasta: ${error.message}`,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      } else {
-        throw new HttpException(
-          'Erro desconhecido ao criar a pasta.',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
+  @Post(':schemaKey')
+  async create(@Param('schemaKey') schemaKey: string, @Body() data: Partial<any>): Promise<any> {
+    return this.service.create(schemaKey, data);
   }
 
-  @Get(':folderName')
-  async listFolderContents(@Param('folderName') folderName: string): Promise<string[]> {
-    try {
-      return await this.folderService.listFolderContents(folderName);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new HttpException(
-          `Erro ao listar conteúdos da pasta: ${error.message}`,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      } else {
-        throw new HttpException(
-          'Erro desconhecido ao listar os conteúdos da pasta.',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
+  @Get(':schemaKey')
+  async findAll(@Param('schemaKey') schemaKey: string): Promise<any[]> {
+    return this.service.findAll(schemaKey);
   }
 
-  
-
-  @Put('rename')
-  async renameFolder(@Body('oldName') oldName: string, @Body('newName') newName: string): Promise<string> {
-    try {
-      await this.folderService.renameFolder(oldName, newName);
-      return `Pasta renomeada de "${oldName}" para "${newName}".`;
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new HttpException(
-          `Erro ao renomear a pasta: ${error.message}`,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      } else {
-        throw new HttpException(
-          'Erro desconhecido ao renomear a pasta.',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
+  @Get(':schemaKey/:id')
+  async findById(@Param('schemaKey') schemaKey: string, @Param('id') id: string): Promise<any> {
+    return this.service.findById(schemaKey, id);
   }
 
-  @Delete(':folderName')
-  async deleteFolder(@Param('folderName') folderName: string): Promise<string> {
-    try {
-      await this.folderService.deleteFolder(folderName);
-      return `Pasta "${folderName}" excluída com sucesso.`;
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new HttpException(
-          `Erro ao excluir a pasta: ${error.message}`,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      } else {
-        throw new HttpException(
-          'Erro desconhecido ao excluir a pasta.',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
+  @Delete(':schemaKey/:id')
+  async delete(@Param('schemaKey') schemaKey: string, @Param('id') id: string): Promise<any> {
+    return this.service.delete(schemaKey, id);
   }
 }
