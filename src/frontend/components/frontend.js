@@ -6,17 +6,13 @@ import "./styles.css";  // Importação do CSS externo
 export default {
 	data() {
 		return {
-			formatos: [".csv", ".xlsx", ".json", ".xml"],
-			armazenadoMsg: null,
-			armazenadoCor: "gray",
-			lerSelecionado: false,
-			apagarSelecionado: false,
-			enviarSelecionado: false,
+			formatos: [".csv", ".xlsx", ".json"],
 			arquivoCarregado: null,
 			arquivoSelecionado: null,
 			mensagem: null,
 			mensagemCor: "gray",
-			arquivosArmazenados: new Map()
+			arquivosArmazenados: new Map(),
+			tela: "inicio"
 		}
 	},
 	mounted() {
@@ -31,31 +27,15 @@ export default {
 	},
 	methods: {
 		// Botões
-		lerPressionado(event) {
-			this.armazenadoMsg = null;
-			this.armazenadoCor = "gray";
-			this.lerSelecionado = true;
-		},
-		apagarPressionado(event) {
-			this.armazenadoMsg = null;
-			this.armazenadoCor = "gray";
-			this.apagarSelecionado = true;
-		},
-		enviarPressionado(event) {
-			this.armazenadoMsg = null;
-			this.armazenadoCor = "gray";
+		mudarTela(tela) {
+			this.mensagem = null;
+			this.mensagemCor = "gray";
 			this.arquivoSelecionado = null;
-			this.enviarSelecionado = true;
+			this.tela = tela;
 		},
 		voltarPressionado(event) {
-			if(this.arquivoCarregado) {
-				this.arquivoCarregado = null;
-			} else {
-				this.mensagem = null;
-				this.lerSelecionado = false;
-				this.apagarSelecionado = false;
-				this.enviarSelecionado = false;
-			}
+			this.arquivoCarregado = null;
+			this.mensagem = null;
 		},
 		//Modificar
 		arquivoEnviado(event) {
@@ -93,21 +73,21 @@ export default {
 		uploadArquivo(event) {
 			const file = event.target.files[0];
 			if (!file) {
-				this.armazenadoMsg = "Operação cancelada.";
-				this.armazenadoCor = "gray";
+				this.mensagem = "Operação cancelada.";
+				this.mensagemCor = "gray";
 				return;
 			}
 
 			const fileName = file.name;
 			const fileExtension = fileName.split(".").pop();
 			if(!this.formatos.includes("." + fileExtension.toLowerCase())) {
-				this.armazenadoMsg = "Este formato de arquivo não é permitido! Use apenas: " + this.formatos.join(", ");
-				this.armazenadoCor = "red";
+				this.mensagem = "Este formato de arquivo não é permitido! Use apenas: " + this.formatos.join(", ");
+				this.mensagemCor = "red";
 				return;
 			}
 
-			this.armazenadoMsg = "Carregando...";
-			this.armazenadoCor = "gray";
+			this.mensagem = "Carregando...";
+			this.mensagemCor = "gray";
 			let acao = this.arquivosArmazenados.has(fileName) ? "sobreescrito" : "carregado";
 
 			const reader = new FileReader();
@@ -116,16 +96,16 @@ export default {
 				reader.onload = () => {
 					const readerResult = new Uint8Array(reader.result).reduce((data, byte) => data + String.fromCharCode(byte), "");
 					this.arquivosArmazenados.set(fileName, btoa(readerResult));
-					this.armazenadoMsg = `Arquivo "${fileName}" ${acao} com sucesso!`;
-					this.armazenadoCor = "green";
+					this.mensagem = `Arquivo "${fileName}" ${acao} com sucesso!`;
+					this.mensagemCor = "green";
 					this.salvar();
 				}
 				reader.readAsArrayBuffer(file);
 			} else {
 				reader.onload = () => {
 					this.arquivosArmazenados.set(fileName, reader.result);
-					this.armazenadoMsg = `Arquivo "${fileName}" ${acao} com sucesso!`;
-					this.armazenadoCor = "green";
+					this.mensagem = `Arquivo "${fileName}" ${acao} com sucesso!`;
+					this.mensagemCor = "green";
 					this.salvar();
 				}
 				reader.readAsText(file);
@@ -175,34 +155,6 @@ export default {
 				}
 			}
 
-			// Suporte a XML
-			function recursivaXml(subdata) {
-				if(subdata instanceof Element) {
-					for (child of subdata.children) {
-						recursivaXml(subdata.children);
-					}
-				} else if(subdata instanceof HTMLCollection) {
-					for (const element of subdata) {
-						let atributos = [];
-						let elementName = element.tagName;
-						for (const attr of element.attributes) {
-							atributos.push(`${attr.name}: ${attr.value}`);
-						}
-						if(atributos.length > 0) elementName += ` (${atributos.join(", ")})`;
-						
-						data += "<li>" + elementName;
-						if(element.children.length > 0) {
-							data += "<ul>";
-							recursivaXml(element.children);
-							data += "</ul>";
-						} else {
-							data += `: ${element.textContent}`;
-						}
-						data += "</li>";
-					}
-				}
-			}
-
 			// Suporte a .XLSX e .CSV
 			function visualizarPlanilha(linhas) {
 				data += "<ul>";
@@ -229,13 +181,6 @@ export default {
 					case "json": {
 						recursivaJson(JSON.parse(content));
 						jsonNum = 1;
-						break;
-					}
-					case "xml": {
-						data += "<ul>";
-						let xml = new DOMParser().parseFromString(content, "text/xml");
-						recursivaXml(xml.documentElement.children);
-						data += "</ul>";
 						break;
 					}
 					case "xlsx": {
