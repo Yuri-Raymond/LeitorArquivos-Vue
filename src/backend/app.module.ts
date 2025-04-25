@@ -2,24 +2,18 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GenericController } from './controllers/file.controller';
 import { GenericService } from './services/file.service';
-import {
-  AcademicClass,
-  AcademicClassSchema,
-  Discipline,
-  DisciplineSchema,
-  DisciplineUser,
-  DisciplineUserSchema,
-  SchoolPeriod,
-  SchoolPeriodSchema,
-  User,
-  UserSchema
-} from './schemas/folder.schema'; // Importe as classes e schemas
+import {AcademicClass, AcademicClassSchema} from './schemas/AcademicClass.schema';
+import{Discipline,DisciplineSchema}from './schemas/Discipline.schema';
+import{ DisciplineUser, DisciplineUserSchema}from './schemas/DisciplineUser.schema';
+import{ SchoolPeriod, SchoolPeriodSchema}from './schemas/SchoolPeriod.schema';
+import {User, UserSchema}from './schemas/User.schema';
+import{Process,ProcessSchema} from './schemas/Process.schema'; // Importe as classes e schemas
 import { Model } from 'mongoose';
 
 @Module({
   imports: [
     // Configuração de conexão com MongoDB (Mongoose)
-    MongooseModule.forRoot('mongodb+srv://caiohchagas92:5CPhcHUgyIUCIAvr@squad07-bonsae.hk6xluv.mongodb.net/squad07-Bonsae?retryWrites=true&w=majority', {
+    MongooseModule.forRoot('mongodb+srv://<caioh>:<caderno2>@squad07-bonsae.hk6xluv.mongodb.net/?retryWrites=true&w=majority&appName=squad07-Bonsae', {
       dbName: 'squad07-Bonsae',
     }),
 
@@ -29,7 +23,8 @@ import { Model } from 'mongoose';
       { name: Discipline.name, schema: DisciplineSchema },
       { name: DisciplineUser.name, schema: DisciplineUserSchema },
       { name: SchoolPeriod.name, schema: SchoolPeriodSchema },
-      { name: User.name, schema: UserSchema }
+      { name: User.name, schema: UserSchema },
+      { name: Process.name, schema: ProcessSchema }
     ]),
   ],
   controllers: [GenericController],
@@ -41,7 +36,8 @@ import { Model } from 'mongoose';
         disciplineModel: Model<any>,
         disciplineUserModel: Model<any>,
         schoolPeriodModel: Model<any>,
-        userModel: Model<any>
+        userModel: Model<any>,
+        processModel: Model<any>
       ) => {
         const modelMap = {
           AcademicClass: academicClassModel,
@@ -49,6 +45,7 @@ import { Model } from 'mongoose';
           DisciplineUser: disciplineUserModel,
           SchoolPeriod: schoolPeriodModel,
           User: userModel,
+          Process: processModel
         };
         return new (GenericService(modelMap))();
       },
@@ -58,6 +55,7 @@ import { Model } from 'mongoose';
         `${DisciplineUser.name}Model`,
         `${SchoolPeriod.name}Model`,
         `${User.name}Model`,
+        `${Process.name}Model`
       ],
     },
   ],
