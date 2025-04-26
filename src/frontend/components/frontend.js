@@ -12,7 +12,33 @@ export default {
 			mensagem: null,
 			mensagemCor: "gray",
 			arquivosArmazenados: new Map(),
-			tela: "inicio"
+			tela: "inicio",
+			_historicoTelas: [], //Usado para o botão de voltar
+
+			// Informações de um processo já carregados
+			processos: [
+				{
+					id: "arquivo-3.csv",
+					periodo: "2025/1",
+					inicio: "8/24/2025 - 16:59",
+					fim: "15/6/2025 - 22:30",
+					status: "Em andamento"
+				},
+				{
+					id: "arquivo-2.csv",
+					periodo: "2025/1",
+					inicio: "17/8/2024 - 19:09",
+					fim: "7/12/2024 - 22:30",
+					status: "Concluído"
+				},
+				{
+					id: "arquivo-1.csv",
+					periodo: "2024/2",
+					inicio: "9/2/2024 - 16:59",
+					fim: "11/6/2024 - 22:30",
+					status: "Concluído"
+				}
+			]
 		}
 	},
 	mounted() {
@@ -26,17 +52,61 @@ export default {
 		}
 	},
 	methods: {
-		// Botões
-		mudarTela(tela) {
+		// Telas
+		mudarTela(tela, historico = true) {
+			if(historico) {
+				this._historicoTelas.push(this.tela);
+			}
 			this.mensagem = null;
 			this.mensagemCor = "gray";
 			this.arquivoSelecionado = null;
 			this.tela = tela;
+
+			let tituloDaPagina = "Página sem nome";
+			switch(this.tela) {
+				case "inicio":
+					tituloDaPagina = "Página Inicial";
+					break;
+				case "controleDados":
+					tituloDaPagina = "Controle de Importações";
+					break;
+				case "importarDados":
+					tituloDaPagina = "Novo Processo";
+					break;
+			}
+			document.title = "Sistema Bonsae - " + tituloDaPagina;
 		},
-		voltarPressionado(event) {
+		voltarTela() {
+			// Botão voltar não deve adicionar a tela ao histórico para evitar loop de telas
+			this.mudarTela(this._historicoTelas.pop(), false);
+		},
+
+		nomeDaTela() {
+			switch(this.tela) {
+				case "controleDados":
+					return "Controle de Importação";
+				case "importarDados":
+					return "Importação de Dados";
+				default:
+					return "Tela sem nome";
+			}
+		},
+
+		descricaoDaTela() {
+			switch(this.tela) {
+				case "controleDados":
+					return "Gerenciar arquivos enviados.";
+				case "importarDados":
+					return "Enviar arquivos ao banco de dados.";
+				default:
+					return "Tela sem descrição.";
+			}
+		},
+
+		/*voltarPressionado(event) {
 			this.arquivoCarregado = null;
 			this.mensagem = null;
-		},
+		},*/
 		//Modificar
 		arquivoEnviado(event) {
 			const file = event.target.files[0];
