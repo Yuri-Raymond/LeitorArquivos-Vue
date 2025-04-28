@@ -5,7 +5,7 @@ import { HydratedDocument } from 'mongoose';
 
 export type ProcessDocument = HydratedDocument<Process>;
 @Schema({ timestamps: true })
-export class Process {
+export class Process extends Document{
   @Prop({ type: Number})
   id: number;
 
@@ -23,5 +23,21 @@ export class Process {
 
   @Prop({ type: Number})
   idUser: number;
+
+  constructor(id: number, idAcademicClass: number, idDiscipline: number, idDisciplineUser: number, idSchoolPeriod: number, idUser: number){
+    super();
+
+    this.id= id;
+
+    this.idAcademicClass= idAcademicClass;
+
+    this.idDiscipline= idDiscipline;
+
+    this.idDisciplineUser= idDisciplineUser;
+
+    this.idSchoolPeriod= idSchoolPeriod;
+
+    this.idUser= idUser;
+  }
 }
 export const ProcessSchema = SchemaFactory.createForClass(Process);

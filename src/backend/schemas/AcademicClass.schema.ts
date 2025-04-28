@@ -6,7 +6,7 @@ import { HydratedDocument } from 'mongoose';
 // Schema para a tabela "academic_classes"
 export type AcademicClassDocument = HydratedDocument<AcademicClass>;
 @Schema({ timestamps: true })
-export class AcademicClass {
+export class AcademicClass extends Document{
   @Prop({ type: Number})
   id: number;
 
@@ -54,5 +54,41 @@ export class AcademicClass {
 
   @Prop({type:Date})
   deleted_at: Date;
+
+  constructor(id: number, school_period_id: number, name: string, code: string, start_date: Date, end_date: Date, category: string, course: string, active: boolean, is_exceptional: boolean, period: string, campus_id: number, integration: string, created_at: Date, updated_at: Date, deleted_at: Date){
+    super();
+
+    this.id= id;
+
+    this.school_period_id= school_period_id;
+
+    this.name= name;
+
+    this.code= code;
+
+    this.start_date= start_date;
+
+    this.end_date= end_date;
+
+    this.category= category;
+
+    this.course= course;
+
+    this.active= active;
+
+    this.is_exceptional= is_exceptional;
+
+    this.period= period;
+
+    this.campus_id= campus_id;
+
+    this.integration= integration;
+
+    this.created_at= created_at;
+
+    this.updated_at= updated_at;
+
+    this.deleted_at= deleted_at;
+  }
 }
 export const AcademicClassSchema = SchemaFactory.createForClass(AcademicClass);
