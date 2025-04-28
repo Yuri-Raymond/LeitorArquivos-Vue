@@ -233,3 +233,120 @@ button:active {
 .botaoCinza:active {
 	background-color: rgb(120, 120, 120);
 }
+
+/* Importação de Dados */
+.importacao-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding-top: 100px;
+	min-height: 80vh;
+}
+
+.etapas {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 60px;
+	gap: 50px;
+}
+
+.etapa {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	color: #B0B0B0;
+	font-size: 18px; /* Aumentei */
+	font-weight: 600;
+	position: relative;
+}
+
+.etapa .numero {
+	width: 45px; /* Aumentei */
+	height: 45px; /* Aumentei */
+	border-radius: 50%;
+	background-color: #D9D9D9;
+	color: #000;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-weight: bold;
+	font-size: 20px; /* Aumentei */
+	margin-bottom: 8px;
+}
+
+.etapa.ativa .numero {
+	background-color: var(--azul-bonsae);
+	color: white;
+	box-shadow: 0px 0px 8px var(--azul-bonsae);
+}
+
+.etapa.ativa {
+	color: var(--azul-bonsae);
+}
+
+.etapa::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 100%;
+	transform: translateY(-50%);
+	width: 50px;
+	height: 3px;
+	background-color: #D9D9D9;
+}
+
+.etapa:last-child::after {
+	display: none;
+}
+
+.inputs-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 60px; /* Espaço maior entre inputs */
+	margin-bottom: 50px;
+	width: 100%;
+}
+
+.input-grupo {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.input-grupo label {
+	font-weight: bold;
+	font-size: 22px; /* Aumentei */
+	margin-bottom: 12px;
+}
+
+.input-grupo input {
+	font-size: 24px; /* Aumentei */
+	padding: 12px;
+	width: 150px;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	text-align: center;
+}
+
+.botao-avancar {
+	width: 300px; /* Maior largura */
+	height: 60px; /* Maior altura */
+	font-size: 22px; /* Fonte maior */
+	background-color: var(--azul-bonsae);
+	color: white;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+.botao-avancar:hover {
+	background-color: var(--azul-bonsae-hover);
+}
+
+.botao-avancar:active {
+	background-color: var(--azul-bonsae-click);
+}

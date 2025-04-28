@@ -68,8 +68,44 @@
 			</div>
 
 			<!-- Importação de Dados -->
-			<div v-else-if="tela == 'importarDados'">
+			<div v-else-if="tela == 'importarDados'" class="importacao-container">
 				<p>TELA DE IMPORTAÇÃO DE DADOS</p>
+				<div class="etapas">
+					<div class="etapa ativa">
+						<div class="numero">1</div>
+						<div>Período Letivo</div>
+					</div>
+					<div class="etapa">
+						<div class="numero">2</div>
+						<div>Disciplinas</div>
+					</div>
+					<div class="etapa">
+						<div class="numero">3</div>
+						<div>Turmas</div>
+					</div>
+					<div class="etapa">
+						<div class="numero">4</div>
+						<div>Usuários</div>
+					</div>
+					<div class="etapa">
+						<div class="numero">5</div>
+						<div>Vínculos</div>
+					</div>
+					</div>
+
+					<div class="inputs-container">
+					<div class="input-grupo">
+						<label for="anoLetivo">Ano Letivo</label>
+						<input type="number" id="anoLetivo" v-model="anoLetivo" min="2020" max="2030" />
+					</div>
+
+					<div class="input-grupo">
+						<label for="periodo">Período</label>
+						<input type="number" id="periodo" v-model="periodo" min="1" max="2" />
+					</div>
+					</div>
+
+					<button class="botao-avancar" @click="avancarEtapa">Avançar</button>
 			</div>
 		</div>
 	</div>
