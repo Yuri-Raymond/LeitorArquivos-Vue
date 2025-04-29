@@ -69,8 +69,8 @@
 
 			<!-- Importação de Dados -->
 			<div v-else-if="tela == 'importarDados'" class="importacao-container">
-				<p>TELA DE IMPORTAÇÃO DE DADOS</p>
-				<div class="etapas">
+
+				<div class="etapas"> <!-- Os circulos das etapas -->
 					<div class="etapa ativa">
 						<div class="numero">1</div>
 						<div>Período Letivo</div>
@@ -96,16 +96,96 @@
 					<div class="inputs-container">
 					<div class="input-grupo">
 						<label for="anoLetivo">Ano Letivo</label>
-						<input type="number" id="anoLetivo" v-model="anoLetivo" min="2020" max="2030" />
+						<input type="number" id="anoLetivo" v-model="anoLetivo" min="2000" max="3000" /> <!-- Limites do Ano seletivo -->
 					</div>
 
 					<div class="input-grupo">
 						<label for="periodo">Período</label>
-						<input type="number" id="periodo" v-model="periodo" min="1" max="2" />
+						<input type="number" id="periodo" v-model="periodo" min="1" max="99" /> <!-- Limites do Perido -->
 					</div>
 					</div>
 
-					<button class="botao-avancar" @click="avancarEtapa">Avançar</button>
+					<button class="botao-avancar" @click="mudarTela('importarDisciplinas')">Avançar</button>
+			</div>
+
+			<div v-else-if="tela == 'importarDisciplinas'" class="importacao-container">
+
+				<div class="etapas"> <!-- Os circulos das etapas -->
+					<div class="etapa ativa">
+						<div class="numero">1</div>
+						<div>Período Letivo</div>
+					</div>
+					<div class="etapa ativa">
+						<div class="numero">2</div>
+						<div>Disciplinas</div>
+					</div>
+					<div class="etapa">
+						<div class="numero">3</div>
+						<div>Turmas</div>
+					</div>
+					<div class="etapa">
+						<div class="numero">4</div>
+						<div>Usuários</div>
+					</div>
+					<div class="etapa">
+						<div class="numero">5</div>
+						<div>Vínculos</div>
+					</div>
+				</div>
+
+				<div class="upload-box"> <!-- Caixa De Upload de Arquivo -->
+					
+					<div class="icone-upload-circulo">
+					<img src="./images/upload.png" class="upload-icone">
+					</div>
+					<div><strong>Arquivo carregado:</strong> {{ nomeArquivo }}</div>
+					</div>
+
+					
+					<table class="tabela-disciplinas"> <!-- Tabela de Disciplinas -->
+					<thead>
+						<tr>
+						<th>Período Letivo</th>
+						<th>Disciplina</th>
+						<th>Código</th>
+						<th>Data de Início</th>
+						<th>Data de Término</th>
+						<th>Categoria</th>
+						<th>Período Curricular</th>
+						<th>Estado</th>
+						<th>Campus</th>
+						<th>Status</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(disciplina, index) in disciplinas" :key="index">
+						<td>{{ disciplina.periodo }}</td>
+						<td>{{ disciplina.nome }}</td>
+						<td>{{ disciplina.codigo }}</td>
+						<td>{{ disciplina.inicio }}</td>
+						<td>{{ disciplina.termino }}</td>
+						<td>{{ disciplina.categoria }}</td>
+						<td>{{ disciplina.curricular }}</td>
+						<td>{{ disciplina.estado }}</td>
+						<td>{{ disciplina.campus }}</td>
+						<td>
+							<span class="status" :class="disciplina.status.toLowerCase()">{{ disciplina.status }}</span>
+						</td>
+						</tr>
+					</tbody>
+					</table>
+
+					
+					<div class="paginacao"> <!-- Paginação -->
+					<span class="pagina">&laquo;</span>
+					<span v-for="n in totalPaginas" :key="n" class="pagina" :class="{ ativo: n === paginaAtual }">{{ n }}</span>
+					<span class="pagina">&raquo;</span>
+					</div>
+
+					
+					<div class="botao-direita"> <!-- Botão Avançar -->
+					<button class="botao-avancar" @click="mudarTela('importarDisciplinas')">Avançar</button>
+					</div>
 			</div>
 		</div>
 	</div>

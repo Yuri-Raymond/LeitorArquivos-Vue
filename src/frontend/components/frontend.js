@@ -87,6 +87,8 @@ export default {
 					return "Controle de Importação";
 				case "importarDados":
 					return "Importação de Dados";
+				case "importarDisciplinas":
+					return "Importação de Dados";
 				default:
 					return "Tela sem nome";
 			}
@@ -97,6 +99,8 @@ export default {
 				case "controleDados":
 					return "Gerenciar arquivos enviados.";
 				case "importarDados":
+					return "Enviar arquivos ao banco de dados.";
+				case "importarDisciplinas":
 					return "Enviar arquivos ao banco de dados.";
 				default:
 					return "Tela sem descrição.";
