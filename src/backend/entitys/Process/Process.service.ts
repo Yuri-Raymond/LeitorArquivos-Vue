@@ -3,13 +3,13 @@ import { Model } from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class GenericService {
+export class ProcessService {
   private readonly modelMap: Record<string, Model<any>>;
   private readonly configService: ConfigService;
 
   constructor({
     configService,
-    modelMap,
+    modelMap
   }: {
     configService: ConfigService;
     modelMap: Record<string, Model<any>>;

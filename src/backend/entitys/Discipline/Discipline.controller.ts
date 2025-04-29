@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Body, Param, Delete, BadRequestException } from '@nestjs/common';
-import { GenericService } from '../services/file.service'; // Importa o serviço corretamente
+import { DisciplineService } from './Discipline.service'; // Importa o serviço corretamente
 
 @Controller('generic') // Prefixo base da URL
-export class GenericController {
-  constructor(private readonly service: GenericService) {} // Injeta o serviço genérico
+export class DisciplineController {
+  constructor(private readonly service: DisciplineService) {} // Injeta o serviço genérico
 
   // Criar item (POST)
   @Post(':schemaKey')
