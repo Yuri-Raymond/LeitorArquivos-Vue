@@ -2,18 +2,14 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import createCustomLogger from './logger';
 
 async function bootstrap() {
   try {
     // Cria a aplicação NestJS usando o módulo principal (AppModule)
     Logger.log('Inicializando a aplicação...');
-    const app = await NestFactory.create(AppModule,{
-      logger: createCustomLogger(),
-    });
+    const app = await NestFactory.create(AppModule);
 
-    //imporar config
-    const configService = app.get(ConfigService);
+   
 
     /*
     const port = process.env.BACKEND_PORT || 8080;
@@ -56,14 +52,19 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
 
-    // Save the swagger.json file in dist folder if the environment is set to local
-  if (configService.get<string>('NODE_ENV') === 'local') {
+  // Cria o documento Swagger e configura o endpoint
+  SwaggerModule.setup('api', app, document);
+  Logger.log('Swagger configurado com sucesso');
+  // Save the swagger.json file in dist folder if the environment is set to local
+  /*
+    if (configService.get<string>('NODE_ENV') === 'local') {
     try {
-      fs.writeFileSync('./dist/swagger.json', JSON.stringify(document)); //alterar caminho
+      fs.writeFileSync('./dist/swagger.json', JSON.stringify(document));
     } catch (err) {
       new Logger().error('Error while generating the swagger.json file', err.stack, 'App bootstrap');
     }
   }
+    */
 
     // Inicializa o servidor e define a porta
     const port = process.env.PORT || 8080;

@@ -1,73 +1,77 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { Model } from 'mongoose';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class GenericService {
   private readonly modelMap: Record<string, Model<any>>;
+  private readonly configService: ConfigService;
 
-  constructor(modelMap: Record<string, Model<any>>) {
+  constructor({
+    configService,
+    modelMap,
+  }: {
+    configService: ConfigService;
+    modelMap: Record<string, Model<any>>;
+  }) {
+    this.configService = configService;
     this.modelMap = modelMap;
   }
 
+  getDatabaseUrl(): string {
+    // Solução para o erro 1: Garantir que o retorno seja do tipo string
+    return this.configService.get<string>('DATABASE_URL') ?? 'defaultDatabaseUrl';
+  }
+
   private validateSchemaKey(schemaKey: string): void {
-    const allowedSchemas = Object.keys(this.modelMap); // Obtém todas as chaves válidas
+    const allowedSchemas = Object.keys(this.modelMap);
     if (!allowedSchemas.includes(schemaKey)) {
-      throw new BadRequestException(`SchemaKey "${schemaKey}" não é permitido. Permitidos: ${allowedSchemas.join(', ')}`);
+      throw new BadRequestException(
+        `SchemaKey "${schemaKey}" não é permitido. Permitidos: ${allowedSchemas.join(', ')}`
+      );
     }
   }
 
-  private getModel(schemaKey: string): Model<any> {
+  private getModel<T>(schemaKey: string): Model<T> {
     this.validateSchemaKey(schemaKey);
-    const model = this.modelMap[schemaKey];
+    const model = this.modelMap[schemaKey] as Model<T>;
     if (!model) {
       throw new NotFoundException(`Model não encontrado para o schema: ${schemaKey}`);
     }
     return model;
   }
 
-  async create(schemaKey: string, data: Partial<any>): Promise<any> {
+  async create<T>(schemaKey: string, data: Partial<T>): Promise<T> {
     try {
       const model = this.getModel(schemaKey);
       const newItem = new model(data);
-      return await newItem.save();
+      const savedItem = await newItem.save();
+      return savedItem as T; // Cast explícito para T
     } catch (error) {
-      if (error instanceof Error) {
-        console.error(`Erro ao criar item no schema "${schemaKey}":`, error.message);
-        throw new Error(`Erro ao salvar no banco: ${error.message}`);
-      } else {
-        console.error(`Erro ao criar item no schema "${schemaKey}":`, error);
-        throw new Error('Erro desconhecido');
-      }
+      console.error(`Erro ao criar item no schema "${schemaKey}":`, error);
+      throw new Error('Erro ao salvar no banco');
     }
   }
+  
 
-  //Nova inserção - ehenon/nestjs-mongodb-api-boilerplate
-  /*
-  async create(createInstrumentDTO: CreateInstrumentDTO): Promise<InstrumentDocument> {
-    const newInstrument = new this.InstrumentModel(createInstrumentDTO);
-    newInstrument.identifier = uuidv1();
-    return newInstrument.save();
-  }
-  */
-
-  async findAll(schemaKey: string): Promise<any[]> {
+  async findAll<T>(schemaKey: string): Promise<T[]> {
     try {
-      const model = this.getModel(schemaKey);
+      const model = this.getModel<T>(schemaKey);
       return await model.find().exec();
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Erro ao criar item no schema "${schemaKey}":`, error.message);
         throw new Error(`Erro ao salvar no banco: ${error.message}`);
       } else {
-        console.error(`Erro ao criar item no schema "${schemaKey}":`, error);
+        console.error(`Erro desconhecido ao criar item no schema "${schemaKey}":`, error);
         throw new Error('Erro desconhecido');
       }
     }
   }
 
-  async findById(schemaKey: string, id: string): Promise<any> {
+  async findById<T>(schemaKey: string, id: string): Promise<T> {
     try {
-      const model = this.getModel(schemaKey);
+      const model = this.getModel<T>(schemaKey);
       const item = await model.findById(id).exec();
       if (!item) {
         throw new NotFoundException(`Item não encontrado no schema "${schemaKey}" com o ID "${id}"`);
@@ -78,15 +82,15 @@ export class GenericService {
         console.error(`Erro ao criar item no schema "${schemaKey}":`, error.message);
         throw new Error(`Erro ao salvar no banco: ${error.message}`);
       } else {
-        console.error(`Erro ao criar item no schema "${schemaKey}":`, error);
+        console.error(`Erro desconhecido ao criar item no schema "${schemaKey}":`, error);
         throw new Error('Erro desconhecido');
       }
     }
   }
 
-  async delete(schemaKey: string, id: string): Promise<any> {
+  async delete<T>(schemaKey: string, id: string): Promise<T> {
     try {
-      const model = this.getModel(schemaKey);
+      const model = this.getModel<T>(schemaKey);
       const deletedItem = await model.findByIdAndDelete(id).exec();
       if (!deletedItem) {
         throw new NotFoundException(`Item não encontrado no schema "${schemaKey}" com o ID "${id}"`);
@@ -97,7 +101,7 @@ export class GenericService {
         console.error(`Erro ao criar item no schema "${schemaKey}":`, error.message);
         throw new Error(`Erro ao salvar no banco: ${error.message}`);
       } else {
-        console.error(`Erro ao criar item no schema "${schemaKey}":`, error);
+        console.error(`Erro desconhecido ao criar item no schema "${schemaKey}":`, error);
         throw new Error('Erro desconhecido');
       }
     }

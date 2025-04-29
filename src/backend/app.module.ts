@@ -9,6 +9,7 @@ import { DisciplineUser, DisciplineUserSchema } from './schemas/DisciplineUser.s
 import { SchoolPeriod, SchoolPeriodSchema } from './schemas/SchoolPeriod.schema';
 import { User, UserSchema } from './schemas/User.schema';
 import { Process, ProcessSchema } from './schemas/Process.schema';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { Process, ProcessSchema } from './schemas/Process.schema';
     {
       provide: 'GenericService',
       useFactory: (
+        configService: ConfigService,
         academicClassModel,
         disciplineModel,
         disciplineUserModel,
@@ -56,9 +58,10 @@ import { Process, ProcessSchema } from './schemas/Process.schema';
           User: userModel,
           Process: processModel,
         };
-        return new GenericService(modelMap);
+        return new GenericService({configService, modelMap});
       },
       inject: [
+        ConfigService,
         'AcademicClassModel',
         'DisciplineModel',
         'DisciplineUserModel',
