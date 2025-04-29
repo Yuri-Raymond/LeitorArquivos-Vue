@@ -15,7 +15,7 @@
     "paths": {
       "@config/*": ["src/backend/config/*"],
       "@controllers/*": ["src/backend/controllers/*"],
-      "@models/*": ["src/backend/models/*"],
+      "@schemas/*": ["src/backend/schemas/*"],
       "@services/*": ["src/backend/services/*"]
     }
   },

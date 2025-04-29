@@ -9,7 +9,7 @@ export class AppConfig {
       origin: 'http://localhost:8080', // Permite esta origem específica
       methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
       allowedHeaders: '*', // Cabeçalhos permitidos
-      credentials: true, // Permite cookies e credenciais (opcional)
+      //credentials: true, // Permite cookies e credenciais (opcional)
     };
   }
 }
