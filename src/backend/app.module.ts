@@ -17,6 +17,15 @@ import { Process, ProcessSchema } from './schemas/Process.schema';
     }),
     MongooseModule.forRoot(process.env.MONGO_URI|| '', {
       dbName: process.env.DB_NAME || 'squad07-Bonsae',
+      
+      //Nova inserção - ehenon/nestjs-mongodb-api-boilerplate
+      /*
+        imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGODB_URI'),
+      }),
+      inject: [ConfigService],
+      */
     }),    
     MongooseModule.forFeature([
       { name: AcademicClass.name, schema: AcademicClassSchema },
@@ -61,3 +70,13 @@ import { Process, ProcessSchema } from './schemas/Process.schema';
   ],
 })
 export class AppModule {}
+
+//Nova exportação - ehenon/nestjs-mongodb-api-boilerplate
+/*
+  export class AppModule implements NestModule {
+    configure(middlewareConsumer: MiddlewareConsumer) {
+      // For every route of the app, use the HTTP Logger middleware
+      middlewareConsumer.apply(HttpLoggerMiddleware).forRoutes('*');
+    }
+  }
+*/

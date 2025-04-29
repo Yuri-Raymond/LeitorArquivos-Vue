@@ -2,16 +2,18 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import createCustomLogger from './logger';
 
 async function bootstrap() {
   try {
     // Cria a aplicação NestJS usando o módulo principal (AppModule)
     Logger.log('Inicializando a aplicação...');
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule,{
+      logger: createCustomLogger(),
+    });
 
-     // Defina o prefixo global, se necessário
-    const globalPrefix = 'api';
-    app.setGlobalPrefix(globalPrefix);
+    //imporar config
+    const configService = app.get(ConfigService);
 
     /*
     const port = process.env.BACKEND_PORT || 8080;
@@ -28,7 +30,8 @@ async function bootstrap() {
     });
     Logger.log('Aplicação inicializada, configurando o Swagger...');
 
-   // Log dos endpoints
+  // Log dos endpoints
+  /*
   const server = app.getHttpServer();
   const router = server._events.request._router;
  
@@ -43,19 +46,24 @@ async function bootstrap() {
   routes.forEach((route: { path: string; methods: string }) => {
     Logger.log(`${route.methods}: ${route.path}`);
   });
+  */
 
     // Configurações do Swagger
     const config = new DocumentBuilder()
-      .setTitle('API Example')
-      .setDescription('Descrição da API')
-      .setVersion('1.0')
-      .addTag('example')
-      .build();
+    .setTitle('Instruments API OpenAPI specification')
+    .setDescription('API used to [...]')
+    .setVersion('0.0.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
 
-    // Cria o documento Swagger e configura o endpoint
-    const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api', app, document);
-    Logger.log('Swagger configurado com sucesso');
+    // Save the swagger.json file in dist folder if the environment is set to local
+  if (configService.get<string>('NODE_ENV') === 'local') {
+    try {
+      fs.writeFileSync('./dist/swagger.json', JSON.stringify(document)); //alterar caminho
+    } catch (err) {
+      new Logger().error('Error while generating the swagger.json file', err.stack, 'App bootstrap');
+    }
+  }
 
     // Inicializa o servidor e define a porta
     const port = process.env.PORT || 8080;
