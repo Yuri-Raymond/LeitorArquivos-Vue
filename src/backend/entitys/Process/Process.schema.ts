@@ -4,7 +4,9 @@ import { Document } from 'mongoose';
 import { HydratedDocument } from 'mongoose';
 
 export type ProcessDocument = HydratedDocument<Process>;
-@Schema({ timestamps: true })
+
+
+@Schema({ collection: 'Process' })
 export class Process extends Document{
   @Prop({ type: Number})
   id: number;

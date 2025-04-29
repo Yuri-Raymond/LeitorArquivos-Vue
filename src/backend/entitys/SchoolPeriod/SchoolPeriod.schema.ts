@@ -5,7 +5,9 @@ import { HydratedDocument } from 'mongoose';
 
 // Schema para a tabela "school_periods"
 export type SchoolPeriodDocument = HydratedDocument<SchoolPeriod>;
-@Schema({ timestamps: true })
+
+
+@Schema({ collection: 'SchoolPeriod' })
 export class SchoolPeriod extends Document{
   @Prop({ type: Number})
   id: number;

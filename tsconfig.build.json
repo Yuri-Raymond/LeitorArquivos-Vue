@@ -10,7 +10,8 @@
       "skipLibCheck": true,
       "forceConsistentCasingInFileNames": true,
       "experimentalDecorators": true,
-      "emitDecoratorMetadata": true
+      "emitDecoratorMetadata": true,
+      "strictNullChecks": true 
     },
     "include": ["src/**/*.ts"],
     "exclude": ["node_modules", "dist", "src/**/*.spec.ts"]

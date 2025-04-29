@@ -1,9 +1,18 @@
-import { Controller, Get, Post, Body, Param, Delete, BadRequestException } from '@nestjs/common';
-import { DisciplineUserService } from './DisciplineUser.service'; // Importa o serviço corretamente
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+  BadRequestException,
+} from '@nestjs/common';
+import { DisciplineUserService } from './DisciplineUser.service';
 
-@Controller('generic') // Prefixo base da URL
+@Controller('api') // Prefixo base da URL
 export class DisciplineUserController {
-  constructor(private readonly service: DisciplineUserService) {} // Injeta o serviço genérico
+  constructor(private readonly service: DisciplineUserService) {}
 
   // Criar item (POST)
   @Post(':schemaKey')
@@ -15,27 +24,33 @@ export class DisciplineUserController {
       const result = await this.service.create(schemaKey, data);
       return { message: 'Item criado com sucesso!', result };
     } catch (error) {
-      const err = error as Error; // Conversão explícita para o tipo Error
-      console.error('Erro ao fazer upload:', err.message);
-      throw new BadRequestException(err.message || 'Erro desconhecido');
+      if (error instanceof Error) {
+        console.error('Erro ao criar item:', error.message);
+        throw new BadRequestException(error.message || 'Erro desconhecido');
+      } else {
+        console.error('Erro não identificado:', error);
+        throw new BadRequestException('Erro desconhecido');
+      }
     }
-    
   }
 
   // Obter todos os itens (GET)
-  @Get(':schemaKey/list')
+  @Get(':schemaKey')
   async findAll(@Param('schemaKey') schemaKey: string): Promise<any[]> {
     try {
       return await this.service.findAll(schemaKey);
     } catch (error) {
-      const err = error as Error; // Conversão explícita para o tipo Error
-      console.error('Erro ao fazer upload:', err.message);
-      throw new BadRequestException(err.message || 'Erro desconhecido');
+      if (error instanceof Error) {
+        console.error('Erro ao criar item:', error.message);
+        throw new BadRequestException(error.message || 'Erro desconhecido');
+      } else {
+        console.error('Erro não identificado:', error);
+        throw new BadRequestException('Erro desconhecido');
+      }
     }
-    
   }
 
-  // Obter item específico por ID (GET)
+  // Obter item por ID (GET)
   @Get(':schemaKey/:id')
   async findById(
     @Param('schemaKey') schemaKey: string,
@@ -44,14 +59,38 @@ export class DisciplineUserController {
     try {
       return await this.service.findById(schemaKey, id);
     } catch (error) {
-      const err = error as Error; // Conversão explícita para o tipo Error
-      console.error('Erro ao fazer upload:', err.message);
-      throw new BadRequestException(err.message || 'Erro desconhecido');
+      if (error instanceof Error) {
+        console.error('Erro ao criar item:', error.message);
+        throw new BadRequestException(error.message || 'Erro desconhecido');
+      } else {
+        console.error('Erro não identificado:', error);
+        throw new BadRequestException('Erro desconhecido');
+      }
     }
-    
   }
 
-  // Deletar item específico (DELETE)
+  // Atualizar item por ID (PUT)
+  @Put(':schemaKey/:id')
+  async update(
+    @Param('schemaKey') schemaKey: string,
+    @Param('id') id: string,
+    @Body() data: Record<string, any>
+  ) {
+    try {
+      const updatedItem = await this.service.update(schemaKey, id, data);
+      return { message: 'Item atualizado com sucesso!', updatedItem };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error('Erro ao criar item:', error.message);
+        throw new BadRequestException(error.message || 'Erro desconhecido');
+      } else {
+        console.error('Erro não identificado:', error);
+        throw new BadRequestException('Erro desconhecido');
+      }
+    }
+  }
+
+  // Deletar item por ID (DELETE)
   @Delete(':schemaKey/:id')
   async delete(
     @Param('schemaKey') schemaKey: string,
@@ -61,9 +100,13 @@ export class DisciplineUserController {
       const deletedItem = await this.service.delete(schemaKey, id);
       return { message: 'Item deletado com sucesso!', deletedItem };
     } catch (error) {
-      const err = error as Error; // Conversão explícita para o tipo Error
-      console.error('Erro ao fazer upload:', err.message);
-      throw new BadRequestException(err.message || 'Erro desconhecido');
-    }    
+      if (error instanceof Error) {
+        console.error('Erro ao criar item:', error.message);
+        throw new BadRequestException(error.message || 'Erro desconhecido');
+      } else {
+        console.error('Erro não identificado:', error);
+        throw new BadRequestException('Erro desconhecido');
+      }
+    }
   }
 }
