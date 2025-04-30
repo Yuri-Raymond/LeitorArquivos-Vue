@@ -91,6 +91,7 @@ body {
 	margin-right: clamp(37.5px, 6.25vw, 50px);
 	width: clamp(37.5px, 6.25vw, 50px);
 	height: clamp(37.5px, 6.25vw, 50px);
+	user-select: none;
 }
 
 .header img:hover {
@@ -260,6 +261,8 @@ button:active {
 	font-size: 18px; /* Aumentei */
 	font-weight: 600;
 	position: relative;
+	width: 100px;
+	height: 100px;
 }
 
 .etapa .numero {
@@ -276,24 +279,34 @@ button:active {
 	margin-bottom: 8px;
 }
 
-.etapa.ativa .numero {
+.etapaAtiva .numero {
 	background-color: var(--azul-bonsae);
 	color: white;
+}
+
+.etapaBrilho .numero {
 	box-shadow: 0px 0px 8px var(--azul-bonsae);
 }
 
-.etapa.ativa {
+.etapaAtiva {
 	color: var(--azul-bonsae);
 }
 
 .etapa::after {
 	content: '';
 	position: absolute;
-	top: 50%;
-	left: 100%;
-	transform: translateY(-50%);
-	width: 50px;
+	top: calc(50% - 28px);
+	left: calc(100% - 10px);
+	width: 70px;
 	height: 3px;
+	background-color: #D9D9D9;
+}
+
+.etapaAtiva:after {
+	background-color: var(--azul-bonsae);
+}
+
+.etapaBrilho:after {
 	background-color: #D9D9D9;
 }
 
@@ -378,13 +391,13 @@ button:active {
 	margin: 0 auto 10px auto;
 }
 
-.tabela-disciplinas {
+.importacao-container table {
 	width: 90%;
 	border-collapse: collapse;
 	background-color: white;
 }
 
-.tabela-disciplinas th {
+.importacao-container th {
 	background-color: #f5f5f5;
 	padding: 12px;
 	text-align: left;
@@ -392,7 +405,7 @@ button:active {
 	font-size: 14px;
 }
 
-.tabela-disciplinas td {
+.importacao-container td {
 	padding: 10px;
 	border-bottom: 1px solid #eee;
 	font-size: 14px;
@@ -407,21 +420,47 @@ button:active {
 	text-align: center;
 }
 
-.status.pendente {
+.status .pendente {
 	background-color: #FFE8A3;
 	color: #805200;
 }
 
-.status.finalizado {
+.status .finalizado {
 	background-color: #C7F8C3;
 	color: #135200;
 }
 
+/* Paginação */
 .paginacao {
-	text-align: center;
-	font-size: 16px;
-	margin-top: 20px;
+	background-color:rgba(0, 0, 0, 0);
+	color: var(--azul-bonsae);
+	font-weight: bold;
 }
+.paginacao:hover {
+	background-color:rgba(0, 0, 0, 0);
+	color: var(--azul-bonsae-hover);
+}
+.paginacao:active {
+	background-color:rgba(0, 0, 0, 0);
+	color: var(--azul-bonsae-click);
+}
+
+.paginacaoAtual {
+	background-color:rgba(0, 0, 0, 0);
+	color: white;
+	font-weight: bold;
+	text-shadow: -1px -1px 0 var(--azul-bonsae), 1px -1px 0 var(--azul-bonsae), -1px  1px 0 var(--azul-bonsae), 1px  1px 0 var(--azul-bonsae), -2px -2px 0 var(--azul-bonsae), 2px -2px 0 var(--azul-bonsae), -2px  2px 0 var(--azul-bonsae), 2px  2px 0 var(--azul-bonsae);
+}
+.paginacaoAtual:hover {
+	background-color:rgba(0, 0, 0, 0);
+	color: rgb(225, 225, 225);
+}
+.paginacaoAtual:active {
+	background-color:rgba(0, 0, 0, 0);
+	color: var(--azul-bonsae-click);
+	color: rgb(200, 200, 200);
+}
+
 
 .pagina {
 	display: inline-block;
@@ -432,7 +471,7 @@ button:active {
 	color: var(--azul-bonsae);
 }
 
-.pagina.ativo {
+.pagina .ativo {
 	background-color: var(--azul-bonsae);
 	color: white;
 	font-weight: bold;

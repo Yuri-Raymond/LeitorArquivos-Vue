@@ -8,20 +8,20 @@
 			<div class="bg"></div>
 			<br>
 			<button @click="mudarTela('controleDados')">Controle de Importações</button>
-			<button @click="mudarTela('importarDados')">Importação de Dados</button>
+			<button @click="mudarTela('importarPeriodo')">Importação de Dados</button>
 		</div>
 	</div>
 
 	<div v-else>
 		<!-- Header -->
 		<div class="header">
-			<img src="./images/back.png" @click="voltarTela()">
+			<img src="./images/back.png" draggable="false" @click="voltarTela()">
 			<div style="display: flex; flex-direction: column; align-items: flex-start;">
 				<p class="nomeDaTela" v-html="nomeDaTela()"></p>
 				<p class="descricaoDaTela" v-html="descricaoDaTela()"></p>
 			</div>
 
-			<button v-if="tela == 'controleDados'" @click="mudarTela('importarDados')">+ Novo Processo</button>
+			<button v-if="tela == 'controleDados'" @click="mudarTela('importarPeriodo')">+ Novo Processo</button>
 			</div>
 
 		<div style="margin-top: 50px;">
@@ -44,7 +44,7 @@
 							<td v-html="processo.id"></td>
 							<td v-html="processo.periodo"></td>
 							<td v-html="processo.inicio"></td>
-							<td v-html="processo.fim"></td>
+							<td v-html="processo.termino"></td>
 							<td style="padding: 0;">
 								<p v-html="processo.status" class="processoStatus" :class="{statusAndamento: processo.status.toLowerCase() == 'em andamento', statusConcluido: processo.status.toLowerCase() == 'concluído'}"></p>
 							</td>
@@ -68,124 +68,186 @@
 			</div>
 
 			<!-- Importação de Dados -->
-			<div v-else-if="tela == 'importarDados'" class="importacao-container">
-
+			<div v-else-if="telaEtapas.includes(tela)" class="importacao-container">
 				<div class="etapas"> <!-- Os circulos das etapas -->
-					<div class="etapa ativa">
-						<div class="numero">1</div>
-						<div>Período Letivo</div>
-					</div>
-					<div class="etapa">
-						<div class="numero">2</div>
-						<div>Disciplinas</div>
-					</div>
-					<div class="etapa">
-						<div class="numero">3</div>
-						<div>Turmas</div>
-					</div>
-					<div class="etapa">
-						<div class="numero">4</div>
-						<div>Usuários</div>
-					</div>
-					<div class="etapa">
-						<div class="numero">5</div>
-						<div>Vínculos</div>
-					</div>
-					</div>
-
-					<div class="inputs-container">
-					<div class="input-grupo">
-						<label for="anoLetivo">Ano Letivo</label>
-						<input type="number" id="anoLetivo" v-model="anoLetivo" min="2000" max="3000" /> <!-- Limites do Ano seletivo -->
-					</div>
-
-					<div class="input-grupo">
-						<label for="periodo">Período</label>
-						<input type="number" id="periodo" v-model="periodo" min="1" max="99" /> <!-- Limites do Perido -->
-					</div>
-					</div>
-
-					<button class="botao-avancar" @click="mudarTela('importarDisciplinas')">Avançar</button>
-			</div>
-
-			<div v-else-if="tela == 'importarDisciplinas'" class="importacao-container">
-
-				<div class="etapas"> <!-- Os circulos das etapas -->
-					<div class="etapa ativa">
-						<div class="numero">1</div>
-						<div>Período Letivo</div>
-					</div>
-					<div class="etapa ativa">
-						<div class="numero">2</div>
-						<div>Disciplinas</div>
-					</div>
-					<div class="etapa">
-						<div class="numero">3</div>
-						<div>Turmas</div>
-					</div>
-					<div class="etapa">
-						<div class="numero">4</div>
-						<div>Usuários</div>
-					</div>
-					<div class="etapa">
-						<div class="numero">5</div>
-						<div>Vínculos</div>
+					<div v-for="(etapa, index) in nomeEtapas" :key="index" :class="{etapa, etapaAtiva: index <= etapaAtual, etapaBrilho: index == etapaAtual}">
+						<div class="numero" v-html="index+1"></div>
+						<div v-html="nomeEtapas[index]"></div>
 					</div>
 				</div>
 
-				<div class="upload-box"> <!-- Caixa De Upload de Arquivo -->
-					
+				<div v-if="tela != 'importarPeriodo'" class="upload-box"> <!-- Caixa De Upload de Arquivo -->
 					<div class="icone-upload-circulo">
-					<img src="./images/upload.png" class="upload-icone">
+						<img src="./images/upload.png" class="upload-icone">
 					</div>
-					<div><strong>Arquivo carregado:</strong> {{ nomeArquivo }}</div>
+					<div>
+						<strong>Arquivo carregado:</strong> {{ nomeArquivo }}
 					</div>
+				</div>
 
+				<!-- Etapa 1 - Período Letivo -->
+				<div v-if="tela == 'importarPeriodo'">
+					<div class="inputs-container">
+						<div class="input-grupo">
+							<label for="anoLetivo">Ano Letivo</label>
+							<input type="number" id="anoLetivo" v-model="anoLetivo" min="2000" max="3000" /> <!-- Limites do Ano seletivo -->
+						</div>
+
+						<div class="input-grupo">
+							<label for="periodo">Período</label>
+							<input type="number" id="periodo" v-model="periodo" min="1" max="99" /> <!-- Limites do Perido -->
+						</div>
+					</div>
+					<button class="botao-avancar" @click="proximaEtapa()">Avançar</button>
+				</div>
+				
+				<!-- Etapa 2 a 5 -->
+				<div v-else class="">
+					<!-- Etapa 2 - Disciplinas -->
+					<table v-if="tela == 'importarDisciplinas'">
+						<thead>
+							<tr>
+								<th>Período Letivo</th>
+								<th>Disciplina</th>
+								<th>Código</th>
+								<th>Data de Início</th>
+								<th>Data de Término</th>
+								<th>Categoria</th>
+								<th>Período Curricular</th>
+								<th>Estado</th>
+								<th>Campus</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							<tr v-for="(disciplina, index) in limiteDePagina(listaDisciplinas)" :key="index">
+								<td>{{ disciplina.periodo }}</td>
+								<td>{{ disciplina.disciplina }}</td>
+								<td>{{ disciplina.codigo }}</td>
+								<td>{{ disciplina.inicio }}</td>
+								<td>{{ disciplina.termino }}</td>
+								<td>{{ disciplina.categoria }}</td>
+								<td>{{ disciplina.periodoCurricular }}</td>
+								<td>{{ disciplina.estado }}</td>
+								<td>{{ disciplina.campus }}</td>
+								<td><span class="status" :class="disciplina.status.toLowerCase()">{{ disciplina.status }}</span></td>
+							</tr>
+						</tbody>
+					</table>
 					
-					<table class="tabela-disciplinas"> <!-- Tabela de Disciplinas -->
-					<thead>
-						<tr>
-						<th>Período Letivo</th>
-						<th>Disciplina</th>
-						<th>Código</th>
-						<th>Data de Início</th>
-						<th>Data de Término</th>
-						<th>Categoria</th>
-						<th>Período Curricular</th>
-						<th>Estado</th>
-						<th>Campus</th>
-						<th>Status</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="(disciplina, index) in disciplinas" :key="index">
-						<td>{{ disciplina.periodo }}</td>
-						<td>{{ disciplina.nome }}</td>
-						<td>{{ disciplina.codigo }}</td>
-						<td>{{ disciplina.inicio }}</td>
-						<td>{{ disciplina.termino }}</td>
-						<td>{{ disciplina.categoria }}</td>
-						<td>{{ disciplina.curricular }}</td>
-						<td>{{ disciplina.estado }}</td>
-						<td>{{ disciplina.campus }}</td>
-						<td>
-							<span class="status" :class="disciplina.status.toLowerCase()">{{ disciplina.status }}</span>
-						</td>
-						</tr>
-					</tbody>
+					<!-- Etapa 3 - Turmas -->
+					<table v-else-if="tela == 'importarTurmas'">
+						<thead>
+							<tr>
+								<th>Nome da Turma</th>
+								<th>Código</th>
+								<th>Disciplina Associada</th>
+								<th>Turno</th>
+								<th>Capacidade</th>
+								<th>Início das Aulas</th>
+								<th>Término das Aulas</th>
+								<th>Professor Responsável</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							<tr v-for="(turma, index) in limiteDePagina(listaTurmas)" :key="index">
+								<td>{{ turma.turma }}</td>
+								<td>{{ turma.codigo }}</td>
+								<td>{{ turma.disciplina }}</td>
+								<td>{{ turma.turno }}</td>
+								<td>{{ turma.capacidade }}</td>
+								<td>{{ turma.inicio }}</td>
+								<td>{{ turma.termino }}</td>
+								<td>{{ turma.professor }}</td>
+								<td><span class="status" :class="turma.status.toLowerCase()">{{ turma.status }}</span></td>
+							</tr>
+						</tbody>
+					</table>
+					
+					<!-- Etapa 4 - Usuários -->
+					<table v-else-if="tela == 'importarUsuarios'">
+						<thead>
+							<tr>
+								<th>Nome Completo</th>
+								<th>Matrícula</th>
+								<th>E-mail</th>
+								<th>Tipo</th>
+								<th>Curso</th>
+								<th>Data de Nascimento</th>
+								<th>Data de Cadastro</th>
+								<th>Contato</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							<tr v-for="(turma, index) in limiteDePagina(listaUsuarios)" :key="index">
+								<td>{{ turma.nome }}</td>
+								<td>{{ turma.matricula }}</td>
+								<td>{{ turma.email }}</td>
+								<td>{{ turma.tipo }}</td>
+								<td>{{ turma.curso }}</td>
+								<td>{{ turma.nascimento }}</td>
+								<td>{{ turma.cadastro }}</td>
+								<td>{{ turma.contato }}</td>
+								<td><span class="status" :class="turma.status.toLowerCase()">{{ turma.status }}</span></td>
+							</tr>
+						</tbody>
+					</table>
+					
+					<!-- Etapa 5 - Vínculos -->
+					<table v-else-if="tela == 'importarVinculos'">
+						<thead>
+							<tr>
+								<th>Nome de Usuário</th>
+								<th>Matrícula</th>
+								<th>Turma</th>
+								<th>Disciplina</th>
+								<th>Papel</th>
+								<th>Data de Início</th>
+								<th>Data de Término</th>
+								<th>Observações</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							<tr v-for="(turma, index) in limiteDePagina(listaVinculos)" :key="index">
+								<td>{{ turma.nome }}</td>
+								<td>{{ turma.matricula }}</td>
+								<td>{{ turma.turma }}</td>
+								<td>{{ turma.disciplina }}</td>
+								<td>{{ turma.papel }}</td>
+								<td>{{ turma.inicio }}</td>
+								<td>{{ turma.termino }}</td>
+								<td>{{ turma.obs }}</td>
+								<td><span class="status" :class="turma.status.toLowerCase()">{{ turma.status }}</span></td>
+							</tr>
+						</tbody>
 					</table>
 
-					
-					<div class="paginacao"> <!-- Paginação -->
-					<span class="pagina">&laquo;</span>
-					<span v-for="n in totalPaginas" :key="n" class="pagina" :class="{ ativo: n === paginaAtual }">{{ n }}</span>
-					<span class="pagina">&raquo;</span>
-					</div>
+					<!-- Paginação -->
+					<div class="paginacao">
+						<!-- Botões da esquerda -->
+						<button class="paginacao" @click="mudarPagina(0)">«</button>
+						<button class="paginacao" @click="mudarPagina(Math.max(0, paginaAtual - 1))">‹</button>
 
-					
-					<div class="botao-direita"> <!-- Botão Avançar -->
-					<button class="botao-avancar" @click="mudarTela('importarDisciplinas')">Avançar</button>
+						<!-- Botões de páginas -->
+						<button v-for="n in Math.ceil(listaAtual.length / 5)" :key="n" @click="mudarPagina(n-1)" :class="{paginacao: paginaAtual != n-1, paginacaoAtual: paginaAtual == n-1 }"> {{ n }} </button>
+
+						<!-- Botões da direita -->
+						<button class="paginacao" @click="mudarPagina(Math.min(Math.ceil(listaAtual.length / 5) - 1, paginaAtual + 1))">›</button>
+						<button class="paginacao" @click="mudarPagina(Math.ceil(listaAtual.length / 5) - 1)">»</button>
 					</div>
+					
+					<!-- Botão Avançar -->
+					<div class="botao-direita">
+						<button class="botao-avancar" @click="proximaEtapa()">Avançar</button>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

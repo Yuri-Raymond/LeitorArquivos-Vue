@@ -15,30 +15,433 @@ export default {
 			tela: "inicio",
 			_historicoTelas: [], //Usado para o botão de voltar
 
-			// Informações de um processo já carregados
+			// Informações de processos já carregados para o Controle de Importações
 			processos: [
 				{
 					id: "arquivo-3.csv",
 					periodo: "2025/1",
 					inicio: "8/24/2025 - 16:59",
-					fim: "15/6/2025 - 22:30",
+					termino: "15/6/2025 - 22:30",
 					status: "Em andamento"
 				},
 				{
 					id: "arquivo-2.csv",
 					periodo: "2025/1",
 					inicio: "17/8/2024 - 19:09",
-					fim: "7/12/2024 - 22:30",
+					termino: "7/12/2024 - 22:30",
 					status: "Concluído"
 				},
 				{
 					id: "arquivo-1.csv",
 					periodo: "2024/2",
 					inicio: "9/2/2024 - 16:59",
-					fim: "11/6/2024 - 22:30",
+					termino: "11/6/2024 - 22:30",
 					status: "Concluído"
 				}
+			],
+
+			// Para a importação de dados:
+			telaEtapas: ["importarPeriodo", "importarDisciplinas", "importarTurmas", "importarUsuarios", "importarVinculos"],
+			nomeEtapas: ["Período Letivo", "Disciplinas", "Turmas", "Usuários", "Vínculos"],
+			etapaAtual: 0,
+			listaAtual: null,
+			
+			paginaAtual: 0, //Para a paginação
+
+			// Etapa 2 - Disciplinas
+			listaDisciplinas: [
+				{
+					periodo: "2025/1",
+					disciplina: "Banco de Dados",
+					codigo: 3,
+					inicio: "2025-02-10",
+					termino: "2025-06-30",
+					categoria: "Obrigatória",
+					periodoCurricular: 3,
+					estado: "Ativa",
+					campus: "Campus Central",
+					status: "Pendente"
+				},
+				{
+					periodo: "2025/1",
+					disciplina: "Estrutura de Dados",
+					codigo: 4,
+					inicio: "2025-02-10",
+					termino: "2025-06-30",
+					categoria: "Obrigatória",
+					periodoCurricular: 2,
+					estado: "Ativa",
+					campus: "Campus Leste",
+					status: "Pendente"
+				},
+				{
+					periodo: "2025/1",
+					disciplina: "Redes de Computadores",
+					codigo: 5,
+					inicio: "2025-02-10",
+					termino: "2025-06-30",
+					categoria: "Obrigatória",
+					periodoCurricular: 4,
+					estado: "Ativa",
+					campus: "Campus Central",
+					status: "Pendente"
+				},
+				{
+					periodo: "2025/1",
+					disciplina: "Inteligência Artificial",
+					codigo: 6,
+					inicio: "2025-02-17",
+					termino: "2025-06-25",
+					categoria: "Optativa",
+					periodoCurricular: 6,
+					estado: "Ativa",
+					campus: "Campus Oeste",
+					status: "Pendente"
+				},
+				{
+					periodo: "2025/1",
+					disciplina: "Desenvolvimento Web",
+					codigo: 7,
+					inicio: "2025-02-12",
+					termino: "2025-06-28",
+					categoria: "Obrigatória",
+					periodoCurricular: 3,
+					estado: "Ativa",
+					campus: "Campus Sul",
+					status: "Pendente"
+				},
+				{
+					periodo: "2025/1",
+					disciplina: "Empreendedorismo em TI",
+					codigo: 8,
+					inicio: "2025-02-15",
+					termino: "2025-06-30",
+					categoria: "Optativa",
+					periodoCurricular: 5,
+					estado: "Ativa",
+					campus: "Campus Norte",
+					status: "Pendente"
+				},
+				{
+					periodo: "2025/1",
+					disciplina: "Segurança da Informação",
+					codigo: 9,
+					inicio: "2025-02-11",
+					termino: "2025-06-29",
+					categoria: "Obrigatória",
+					periodoCurricular: 5,
+					estado: "Ativa",
+					campus: "Campus Central",
+					status: "Pendente"
+				}
+			],
+
+			// Etapa 3 - Turmas
+			listaTurmas: [
+				{
+					turma: "Turma A",
+					codigo: "T001",
+					disciplina: "Cálculo 1",
+					turno: "Manhã",
+					capacidade: 40,
+					inicio: "04/03/2025",
+					termino: "28/06/2025",
+					professor: "Prof. Ricardo Luiz",
+					status: "Pendente"
+				},
+				{
+					turma: "Turma A",
+					codigo: "T001",
+					disciplina: "Cálculo 1",
+					turno: "Manhã",
+					capacidade: 40,
+					inicio: "04/03/2025",
+					termino: "28/06/2025",
+					professor: "Prof. Ricardo Luiz",
+					status: "Pendente"
+				  },
+				  {
+					turma: "Turma E",
+					codigo: "T002",
+					disciplina: "Física 1",
+					turno: "Tarde",
+					capacidade: 35,
+					inicio: "04/03/2025",
+					termino: "28/06/2025",
+					professor: "Prof. Ana Paula",
+					status: "Confirmado"
+				  },
+				  {
+					turma: "Turma C",
+					codigo: "T003",
+					disciplina: "Química Geral",
+					turno: "Noite",
+					capacidade: 30,
+					inicio: "04/03/2025",
+					termino: "28/06/2025",
+					professor: "Prof. João Carlos",
+					status: "Pendente"
+				  },
+				  {
+					turma: "Turma D",
+					codigo: "T004",
+					disciplina: "Álgebra Linear",
+					turno: "Manhã",
+					capacidade: 40,
+					inicio: "04/03/2025",
+					termino: "28/06/2025",
+					professor: "Prof. Fernanda Lima",
+					status: "Cancelado"
+				  },
+				  {
+					turma: "Turma A",
+					codigo: "T005",
+					disciplina: "História da Arte",
+					turno: "Tarde",
+					capacidade: 25,
+					inicio: "04/03/2025",
+					termino: "28/06/2025",
+					professor: "Prof. Marcos Vieira",
+					status: "Confirmado"
+				  },
+				  {
+					turma: "Turma B",
+					codigo: "T006",
+					disciplina: "Geometria Analítica",
+					turno: "Noite",
+					capacidade: 35,
+					inicio: "04/03/2025",
+					termino: "28/06/2025",
+					professor: "Prof. Juliana Reis",
+					status: "Pendente"
+				  },
+				  {
+					turma: "Turma B",
+					codigo: "T007",
+					disciplina: "Literatura Brasileira",
+					turno: "Manhã",
+					capacidade: 45,
+					inicio: "04/03/2025",
+					termino: "28/06/2025",
+					professor: "Prof. Carlos Mendes",
+					status: "Confirmado"
+				  },
+				  {
+					turma: "Turma E",
+					codigo: "T008",
+					disciplina: "Programação I",
+					turno: "Tarde",
+					capacidade: 40,
+					inicio: "04/03/2025",
+					termino: "28/06/2025",
+					professor: "Prof. Bianca Souza",
+					status: "Pendente"
+				  },
+				  {
+					turma: "Turma D",
+					codigo: "T009",
+					disciplina: "Introdução à Economia",
+					turno: "Noite",
+					capacidade: 30,
+					inicio: "04/03/2025",
+					termino: "28/06/2025",
+					professor: "Prof. Daniel Costa",
+					status: "Confirmado"
+				  },
+				  {
+					turma: "Turma C",
+					codigo: "T010",
+					disciplina: "Sociologia",
+					turno: "Manhã",
+					capacidade: 50,
+					inicio: "04/03/2025",
+					termino: "28/06/2025",
+					professor: "Prof. Helena Braga",
+					status: "Pendente"
+				  },
+				  {
+					turma: "Turma A",
+					codigo: "T011",
+					disciplina: "Estatística I",
+					turno: "Tarde",
+					capacidade: 38,
+					inicio: "04/03/2025",
+					termino: "28/06/2025",
+					professor: "Prof. Roberto Teixeira",
+					status: "Confirmado"
+				  },
+				  {
+					turma: "Turma B",
+					codigo: "T012",
+					disciplina: "Biologia Celular",
+					turno: "Noite",
+					capacidade: 32,
+					inicio: "04/03/2025",
+					termino: "28/06/2025",
+					professor: "Prof. Letícia Barros",
+					status: "Cancelado"
+				  }
+			],
+
+			// Etapa 4 - Usuarios
+			listaUsuarios: [
+				{
+					nome: "Lucas Santos",
+					matricula: "20251234",
+					email: "lucas.santos@email.com",
+					curso: "Arquitetura de Computadores",
+					tipo: "Aluno",
+					nascimento: "04/03/2025",
+					cadastro: "28/06/2025",
+					contato: "(11) 91234-5678",
+					status: "Pendente"
+				},
+				{
+					nome: "Rafael Lima",
+					matricula: "20251234",
+					email: "rafalima@email.com",
+					curso: "Lógica de Programação",
+					tipo: "Aluno",
+					nascimento: "04/03/2025",
+					cadastro: "28/06/2025",
+					contato: "(21) 99876-5432",
+					status: "Finalizado"
+				},
+				{
+					nome: "Júlia Silva",
+					matricula: "20249876",
+					email: "ju.silva@email.com",
+					curso: "Arquitetura de Computadores",
+					tipo: "Aluno",
+					nascimento: "04/03/2025",
+					cadastro: "28/06/2025",
+					contato: "(31) 98765-4321",
+					status: "Finalizado"
+				},
+				{
+					nome: "Emanoele Silveira",
+					matricula: "20254985",
+					email: "ju.silva@email.com",
+					tipo: "Professor",
+					curso: "Sistemas Operacionais",
+					nascimento: "04/03/2025",
+					cadastro: "28/06/2025",
+					contato: "(41) 91234-0000",
+					status: "Pendente"
+				},
+				{
+					nome: "Kaique Souza",
+					matricula: "25236254",
+					email: "kaique.souza@email.com",
+					curso: "Redes de Computadores",
+					tipo: "Aluno",
+					nascimento: "04/03/2025",
+					cadastro: "28/06/2025",
+					contato: "(85) 99888-1122",
+					status: "Pendente"
+				},
+				{
+					nome: "Herbert Menezes",
+					matricula: "20242565",
+					email: "herbert.menezes@email.com",
+					curso: "Segurança da Informação",
+					tipo: "Professor",
+					nascimento: "04/03/2025",
+					cadastro: "28/06/2025",
+					contato: "(61) 93456-7890",
+					status: "Pendente"
+				}
+			],
+
+			// Etapa 5 - Vínculos
+			listaVinculos: [
+				{
+					nome: "Lucas Santos",
+					matricula: "20251234",
+					turma: "Turma C",
+					disciplina: "Arquitetura de Computadores",
+					papel: "Mentor",
+					inicio: "04/03/2025",
+					termino: "28/06/2025",
+					obs: 1,
+					status: "Pendente"
+				},
+				{
+					nome: "Rafael Lima",
+					matricula: "20251234",
+					turma: "Turma C",
+					disciplina: "Lógica de Programação",
+					papel: "Mentor",
+					inicio: "04/03/2025",
+					termino: "28/06/2025",
+					obs: 3,
+					status: "Finalizado"
+				},
+				{
+					nome: "Júlia Silva",
+					matricula: "20249876",
+					turma: "Turma C",
+					disciplina: "Arquitetura de Computadores",
+					papel: "Mentor",
+					inicio: "04/03/2025",
+					termino: "28/06/2025",
+					obs: 2,
+					status: "Finalizado"
+				},
+				{
+					nome: "Emanoele Silveira",
+					matricula: "20254985",
+					turma: "Turma B",
+					disciplina: "Sistemas Operacionais",
+					papel: "Estagiário",
+					inicio: "04/03/2025",
+					termino: "28/06/2025",
+					obs: 1,
+					status: "Pendente"
+				},
+				{
+					nome: "Kaique Souza",
+					matricula: "25236254",
+					turma: "Turma B",
+					disciplina: "Redes de Computadores",
+					papel: "Estagiário",
+					inicio: "04/03/2025",
+					termino: "28/06/2025",
+					obs: 2,
+					status: "Pendente"
+				},
+				{
+					nome: "Herbert Menezes",
+					matricula: "20242565",
+					turma: "Turma B",
+					disciplina: "Segurança da Informação",
+					papel: "Estagiário",
+					inicio: "04/03/2025",
+					termino: "28/06/2025",
+					obs: 0,
+					status: "Pendente"
+				}
 			]
+		}
+	},
+	watch: {
+		tela(value)	{
+			switch(value) {
+				case "importarDisciplinas":
+					this.listaAtual = this.listaDisciplinas;
+					break;
+				case "importarTurmas":
+					this.listaAtual = this.listaTurmas;
+					break;
+				case "importarUsuarios":
+					this.listaAtual = this.listaUsuarios;
+					break;
+				case "importarVinculos":
+					this.listaAtual = this.listaVinculos;
+					break;
+				default:
+					this.listaAtual = null;
+			}
 		}
 	},
 	mounted() {
@@ -61,6 +464,8 @@ export default {
 			this.mensagemCor = "gray";
 			this.arquivoSelecionado = null;
 			this.tela = tela;
+			this.paginaAtual = 0;
+			this.etapaAtual = this.telaEtapas.indexOf(tela);
 
 			let tituloDaPagina = "Página sem nome";
 			switch(this.tela) {
@@ -70,7 +475,11 @@ export default {
 				case "controleDados":
 					tituloDaPagina = "Controle de Importações";
 					break;
-				case "importarDados":
+				case "importarPeriodo":
+				case "importarDisciplinas":
+				case "importarTurmas":
+				case "importarUsuarios":
+				case "importarVinculos":
 					tituloDaPagina = "Novo Processo";
 					break;
 			}
@@ -81,13 +490,19 @@ export default {
 			this.mudarTela(this._historicoTelas.pop(), false);
 		},
 
+		proximaEtapa() {
+			this.mudarTela(this.telaEtapas[this.etapaAtual+1]);
+		},
+
 		nomeDaTela() {
 			switch(this.tela) {
 				case "controleDados":
 					return "Controle de Importação";
-				case "importarDados":
-					return "Importação de Dados";
+				case "importarPeriodo":
 				case "importarDisciplinas":
+				case "importarTurmas":
+				case "importarUsuarios":
+				case "importarVinculos":
 					return "Importação de Dados";
 				default:
 					return "Tela sem nome";
@@ -98,19 +513,26 @@ export default {
 			switch(this.tela) {
 				case "controleDados":
 					return "Gerenciar arquivos enviados.";
-				case "importarDados":
-					return "Enviar arquivos ao banco de dados.";
+				case "importarPeriodo":
 				case "importarDisciplinas":
+				case "importarTurmas":
+				case "importarUsuarios":
+				case "importarVinculos":
 					return "Enviar arquivos ao banco de dados.";
 				default:
 					return "Tela sem descrição.";
 			}
 		},
 
-		/*voltarPressionado(event) {
-			this.arquivoCarregado = null;
-			this.mensagem = null;
-		},*/
+		// Paginação
+		mudarPagina(num) {
+			this.paginaAtual = num;
+		},
+		limiteDePagina(lista) {
+			let min = Math.floor(this.paginaAtual * 5);
+			return lista.slice(min, min + 5);
+		},
+
 		//Modificar
 		arquivoEnviado(event) {
 			const file = event.target.files[0];
