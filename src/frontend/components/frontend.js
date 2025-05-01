@@ -567,24 +567,31 @@ export default {
 
 		// Armazena arquivo selecionado e salva no cache
 		uploadArquivo(event) {
-			const file = event.target.files[0];
+			const input = event.target;
+			const file = input.files[0];
+		
 			if (!file) {
-				this.mensagem = "Operação cancelada.";
+				this.mensagem = "Nenhum arquivo selecionado.";
 				this.mensagemCor = "gray";
 				return;
 			}
-
+		
 			const fileName = file.name;
-			const fileExtension = fileName.split(".").pop();
-			if(!this.formatos.includes("." + fileExtension.toLowerCase())) {
-				this.mensagem = "Este formato de arquivo não é permitido! Use apenas: " + this.formatos.join(", ");
+			const fileExtension = "." + fileName.split(".").pop().toLowerCase();
+		
+			if (!this.formatos.includes(fileExtension)) {
+				this.mensagem = `Formato inválido! Permitidos: ${this.formatos.join(", ")}`;
 				this.mensagemCor = "red";
+				this.arquivoSelecionado = null;
+				input.value = "";
 				return;
 			}
-
-			this.mensagem = "Carregando...";
-			this.mensagemCor = "gray";
-			let acao = this.arquivosArmazenados.has(fileName) ? "sobreescrito" : "carregado";
+		
+			this.arquivoSelecionado = file;
+			this.mensagem = `Arquivo "${fileName}" selecionado com sucesso.`;
+			this.mensagemCor = "green";
+		
+			input.value = "";
 
 			const reader = new FileReader();
 			if(fileExtension.toLowerCase() == "xlsx") {
@@ -723,6 +730,17 @@ export default {
 			localStorage.setItem("arquivosArmazenados", JSON.stringify(arquivos));
 		},
 
+		truncarNome(nome) {
+			const limite = 30;
+			if (nome.length <= limite) return nome;
+		
+			const partes = nome.split(".");
+			const extensao = partes.length > 1 ? "." + partes.pop() : "";
+			const base = partes.join(".");
+			const truncado = base.slice(0, limite - extensao.length - 5); // "....ext"
+			return `${truncado}....${extensao}`;
+		},
+		
 	
 		// Função para validar e enviar arquivo para a API
 		enviarDadosParaBD(file) {			
@@ -773,5 +791,6 @@ export default {
 				: "Erro na conexão com o servidor.";
 			}
 		}
+		
 	}
 }

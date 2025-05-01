@@ -76,14 +76,27 @@
 					</div>
 				</div>
 
-				<div v-if="tela != 'importarPeriodo'" class="upload-box"> <!-- Caixa De Upload de Arquivo -->
+				<!-- Caixa de Upload com clique em toda a área -->
+				<label v-if="tela !== 'importarPeriodo'" class="upload-box" for="fileInput">
 					<div class="icone-upload-circulo">
-						<img src="./images/upload.png" class="upload-icone">
+						<img src="./images/upload.png" class="upload-icone" />
 					</div>
 					<div>
-						<strong>Arquivo carregado:</strong> {{ nomeArquivo }}
+						<strong>Arquivo carregado:</strong>
+						<span>{{ arquivoSelecionado ? truncarNome(arquivoSelecionado.name) : 'Nenhum arquivo selecionado' }}</span>
 					</div>
-				</div>
+					<div v-if="mensagem" :style="{ color: mensagemCor }">
+						{{ mensagem }}
+					</div>
+					<!-- Input de arquivo escondido -->
+					<input
+						id="fileInput"
+						type="file"
+						style="display: none"
+						@change="uploadArquivo"
+					/>
+				</label>
+
 
 				<!-- Etapa 1 - Período Letivo -->
 				<div v-if="tela == 'importarPeriodo'">

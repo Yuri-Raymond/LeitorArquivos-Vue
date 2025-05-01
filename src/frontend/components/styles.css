@@ -372,6 +372,12 @@ button:active {
 	text-align: center;
 	width: 60%;
 	background-color: #fff;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.upload-box:hover {
+	background-color: #f0f0f0;
 }
 
 .upload-icone {
