@@ -743,7 +743,7 @@ export default {
 		
 	
 		// Função para validar e enviar arquivo para a API
-		enviarDadosParaBD(file, schemaKey) {			
+		enviarDadosParaBD(file) {			
 			if (!file) {
 				this.mensagem = "Operação cancelada.";
 				return;
@@ -757,17 +757,12 @@ export default {
 			}
 
 			this.arquivoSelecionado = file; // Usa diretamente a variável `file`
-			this.enviarArquivo(schemaKey);  // Descomente se for chamar a função logo após a validação
+			this.enviarArquivo();  // Descomente se for chamar a função logo após a validação
 		},
 
-		async enviarArquivo(schemaKey) {
+		async enviarArquivo() {
 			if (!this.arquivoSelecionado) {
 				this.mensagem = "Nenhum arquivo selecionado.";
-				return;
-			}
-
-			if (!schemaKey) {
-				this.mensagem = "Nenhuma schemaKey fornecida.";
 				return;
 			}
 
@@ -775,9 +770,8 @@ export default {
 			formData.append("file", this.arquivoSelecionado);
 
 			try {
-				// Substitui ':schemaKey' na URL pelo valor real do schemaKey
-				const url = `http://localhost:8080/api/generic/${schemaKey}`;
-				const response = await axios.post(url, formData, {
+				const response = await axios.post("http://localhost:8080/api/files/upload", formData, {
+					
 					headers: {
 						"Content-Type": "multipart/form-data",
 					}
@@ -789,10 +783,12 @@ export default {
 				this.mensagem = `Upload realizado com sucesso! ${response.data}`; // Ajuste conforme a resposta esperada
 
 			} catch (error) {
-				console.error("Erro no upload:", error);
+			console.error("Erro no upload 1 :", error);
 
-				// Trate o erro
-				this.mensagem = error.response ? `Erro no upload: ${error.response.data.message || "Erro desconhecido"}` : "Erro na conexão com o servidor.";
+			// Trate o erro
+			this.mensagem = error.response
+				? `Erro no upload 2: ${error.response.data.message || "Erro desconhecido"}`
+				: "Erro na conexão com o servidor.";
 			}
 		}
 		
