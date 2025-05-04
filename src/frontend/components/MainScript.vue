@@ -83,10 +83,8 @@
 					</div>
 					<div>
 						<strong>Arquivo carregado:</strong>
-						<span>{{ arquivoSelecionado ? truncarNome(arquivoSelecionado.name) : 'Nenhum arquivo selecionado' }}</span>
-					</div>
-					<div v-if="mensagem" :style="{ color: mensagemCor }">
-						{{ mensagem }}
+						<br>
+						<span class="upload-texto">{{ arquivoSelecionado ? truncarNome(arquivoSelecionado.name) : 'Nenhum arquivo selecionado' }}</span>
 					</div>
 					<!-- Input de arquivo escondido -->
 					<input
@@ -102,20 +100,21 @@
 				<div v-if="tela == 'importarPeriodo'">
 					<div class="inputs-container">
 						<div class="input-grupo">
-							<label for="anoLetivo">Ano Letivo</label>
-							<input type="number" id="anoLetivo" v-model="anoLetivo" min="2000" max="3000" /> <!-- Limites do Ano seletivo -->
+							<label for="anoLetivoInicio">Ano Letivo</label>
+							<input type="number" id="anoLetivoInicio" v-model="anoLetivoInicio" min="2000" max="3000" /> <!-- Limites do Ano seletivo -->
 						</div>
 
 						<div class="input-grupo">
-							<label for="periodo">Período</label>
-							<input type="number" id="periodo" v-model="periodo" min="1" max="99" /> <!-- Limites do Perido -->
+							<label for="periodoInicio">Período</label>
+							<input type="number" id="periodoInicio" v-model="periodoInicio" min="1" max="99" /> <!-- Limites do Perido -->
 						</div>
 					</div>
+					
 					<button class="botao-avancar" @click="proximaEtapa()">Avançar</button>
 				</div>
 				
 				<!-- Etapa 2 a 5 -->
-				<div v-else class="">
+				<div v-else class="tabelaLista">
 					<!-- Etapa 2 - Disciplinas -->
 					<table v-if="tela == 'importarDisciplinas'">
 						<thead>
@@ -258,7 +257,8 @@
 					
 					<!-- Botão Avançar -->
 					<div class="botao-direita">
-						<button class="botao-avancar" @click="proximaEtapa()">Avançar</button>
+						<button class="botao-avancar" @click="proximaEtapa()" v-if="etapaAtual < telaEtapas.length - 1">Avançar</button>
+						<button class="botao-avancar" @click="finalizarProcesso()" :disabled="!arquivoSelecionado" v-else>Finalizar Processo</button>
 					</div>
 				</div>
 			</div>

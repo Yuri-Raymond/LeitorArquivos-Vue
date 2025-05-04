@@ -82,6 +82,7 @@ body {
 	background-color: white;
 	top: 0;
 	align-items: center;
+	z-index: 999;
 }
 
 .header img {
@@ -215,6 +216,14 @@ button:active {
 	color:#DFDFDF;
 }
 
+button:disabled:hover,
+button:disabled:active,
+button:disabled {
+	cursor: default;
+	background-color: lightgray;
+	color: gray;
+}
+
 .botaoVermelho {
 	background-color: red;
 }
@@ -249,7 +258,7 @@ button:active {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin-bottom: 60px;
+	margin-bottom: 40px;
 	gap: 50px;
 }
 
@@ -366,6 +375,7 @@ button:active {
 
 /* Importação de Disciplinas */
 .upload-box {
+	margin-bottom: 40px;
 	border: 1px dashed #ccc;
 	padding: 50px;
 	border-radius: 10px;
@@ -378,6 +388,10 @@ button:active {
 
 .upload-box:hover {
 	background-color: #f0f0f0;
+}
+
+.upload-texto {
+	color: var(--azul-bonsae);
 }
 
 .upload-icone {
@@ -397,24 +411,34 @@ button:active {
 	margin: 0 auto 10px auto;
 }
 
-.importacao-container table {
+.tabelaLista {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 50px;
+}
+
+.tabelaLista table {
 	width: 90%;
 	border-collapse: collapse;
 	background-color: white;
 }
 
-.importacao-container th {
+.tabelaLista th {
 	background-color: #f5f5f5;
 	padding: 12px;
-	text-align: left;
 	border-bottom: 2px solid #ddd;
 	font-size: 14px;
+	align-items: center;
+	justify-content: center;
+	padding: 10px;
 }
 
-.importacao-container td {
-	padding: 10px;
+.tabelaLista td {
 	border-bottom: 1px solid #eee;
 	font-size: 14px;
+	padding: 10px;
 }
 
 .status {
