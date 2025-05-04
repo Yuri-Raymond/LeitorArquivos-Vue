@@ -1,80 +1,44 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { Discipline } from './Discipline.schema'; // Substitua com o seu esquema real
 
 @Injectable()
 export class DisciplineService {
-  private readonly modelMap: Record<string, Model<any>>;
+  constructor(@InjectModel(Discipline.name) private readonly DisciplineModel: Model<Discipline>) {}
 
-  constructor(modelMap: Record<string, Model<any>>) {
-    this.modelMap = modelMap;
+  async create(data: Partial<Discipline>): Promise<Discipline> {
+    const newDiscipline = new this.DisciplineModel(data);
+    return await newDiscipline.save();
   }
 
-  private validateSchemaKey(schemaKey: string): void {
-    if (!this.modelMap[schemaKey]) {
-      throw new BadRequestException(
-        `SchemaKey "${schemaKey}" não é válido. Coleções disponíveis: ${Object.keys(
-          this.modelMap
-        ).join(', ')}`
-      );
+  async findAll(): Promise<Discipline[]> {
+    return await this.DisciplineModel.find().exec();
+  }
+
+  async findById(id: string): Promise<Discipline> {
+    const Discipline = await this.DisciplineModel.findById(id).exec();
+    if (!Discipline) {
+      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
     }
+    return Discipline;
   }
 
-  private getModel(schemaKey: string): Model<any> {
-    this.validateSchemaKey(schemaKey);
-    return this.modelMap[schemaKey];
-  }
-
-  async create(schemaKey: string, data: Record<string, any>): Promise<any> {
-    const model = this.getModel(schemaKey);
-    const newItem = new model(data);
-    return await newItem.save();
-  }
-
-  async findAll(schemaKey: string): Promise<any[]> {
-    const model = this.getModel(schemaKey);
-    return await model.find().exec();
-  }
-
-  async findById(schemaKey: string, id: string): Promise<any> {
-    const model = this.getModel(schemaKey);
-    const item = await model.findById(id).exec();
-    if (!item) {
-      throw new NotFoundException(
-        `Item não encontrado no schema "${schemaKey}" com o ID "${id}"`
-      );
-    }
-    return item;
-  }
-
-  async update(
-    schemaKey: string,
-    id: string,
-    data: Record<string, any>
-  ): Promise<any> {
-    const model = this.getModel(schemaKey);
-    const updatedItem = await model
+  async update(id: string, data: Partial<Discipline>): Promise<Discipline> {
+    const updatedDiscipline = await this.DisciplineModel
       .findByIdAndUpdate(id, data, { new: true })
       .exec();
-    if (!updatedItem) {
-      throw new NotFoundException(
-        `Item não encontrado no schema "${schemaKey}" com o ID "${id}"`
-      );
+    if (!updatedDiscipline) {
+      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
     }
-    return updatedItem;
+    return updatedDiscipline;
   }
 
-  async delete(schemaKey: string, id: string): Promise<any> {
-    const model = this.getModel(schemaKey);
-    const deletedItem = await model.findByIdAndDelete(id).exec();
-    if (!deletedItem) {
-      throw new NotFoundException(
-        `Item não encontrado no schema "${schemaKey}" com o ID "${id}"`
-      );
+  async delete(id: string): Promise<Discipline> {
+    const deletedDiscipline = await this.DisciplineModel.findByIdAndDelete(id).exec();
+    if (!deletedDiscipline) {
+      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
     }
-    return deletedItem;
+    return deletedDiscipline;
   }
 }

@@ -1,112 +1,36 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-  Put,
-  BadRequestException,
-} from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Put, Delete } from '@nestjs/common';
 import { SchoolPeriodService } from './SchoolPeriod.service';
+import { SchoolPeriod } from './SchoolPeriod.schema'; // Substitua com o seu esquema real
 
-@Controller('api') // Prefixo base da URL
+@Controller('SchoolPeriod')
 export class SchoolPeriodController {
-  constructor(private readonly service: SchoolPeriodService) {}
+  constructor(private readonly SchoolPeriodService: SchoolPeriodService) {}
 
-  // Criar item (POST)
-  @Post(':schemaKey')
-  async create(
-    @Param('schemaKey') schemaKey: string,
-    @Body() data: Record<string, any>
-  ) {
-    try {
-      const result = await this.service.create(schemaKey, data);
-      return { message: 'Item criado com sucesso!', result };
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error('Erro ao criar item:', error.message);
-        throw new BadRequestException(error.message || 'Erro desconhecido');
-      } else {
-        console.error('Erro não identificado:', error);
-        throw new BadRequestException('Erro desconhecido');
-      }
-    }
+  @Post('Post')
+  async create(@Body() data: Partial<SchoolPeriod>): Promise<SchoolPeriod> {
+    return this.SchoolPeriodService.create(data);
   }
 
-  // Obter todos os itens (GET)
-  @Get(':schemaKey')
-  async findAll(@Param('schemaKey') schemaKey: string): Promise<any[]> {
-    try {
-      return await this.service.findAll(schemaKey);
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error('Erro ao criar item:', error.message);
-        throw new BadRequestException(error.message || 'Erro desconhecido');
-      } else {
-        console.error('Erro não identificado:', error);
-        throw new BadRequestException('Erro desconhecido');
-      }
-    }
+  @Get('Get')
+  async findAll(): Promise<SchoolPeriod[]> {
+    return this.SchoolPeriodService.findAll();
   }
 
-  // Obter item por ID (GET)
-  @Get(':schemaKey/:id')
-  async findById(
-    @Param('schemaKey') schemaKey: string,
-    @Param('id') id: string
-  ): Promise<any> {
-    try {
-      return await this.service.findById(schemaKey, id);
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error('Erro ao criar item:', error.message);
-        throw new BadRequestException(error.message || 'Erro desconhecido');
-      } else {
-        console.error('Erro não identificado:', error);
-        throw new BadRequestException('Erro desconhecido');
-      }
-    }
+  @Get('Get/:id')
+  async findById(@Param('id') id: string): Promise<SchoolPeriod> {
+    return this.SchoolPeriodService.findById(id);
   }
 
-  // Atualizar item por ID (PUT)
-  @Put(':schemaKey/:id')
+  @Put('Put/:id')
   async update(
-    @Param('schemaKey') schemaKey: string,
     @Param('id') id: string,
-    @Body() data: Record<string, any>
-  ) {
-    try {
-      const updatedItem = await this.service.update(schemaKey, id, data);
-      return { message: 'Item atualizado com sucesso!', updatedItem };
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error('Erro ao criar item:', error.message);
-        throw new BadRequestException(error.message || 'Erro desconhecido');
-      } else {
-        console.error('Erro não identificado:', error);
-        throw new BadRequestException('Erro desconhecido');
-      }
-    }
+    @Body() data: Partial<SchoolPeriod>
+  ): Promise<SchoolPeriod> {
+    return this.SchoolPeriodService.update(id, data);
   }
 
-  // Deletar item por ID (DELETE)
-  @Delete(':schemaKey/:id')
-  async delete(
-    @Param('schemaKey') schemaKey: string,
-    @Param('id') id: string
-  ): Promise<any> {
-    try {
-      const deletedItem = await this.service.delete(schemaKey, id);
-      return { message: 'Item deletado com sucesso!', deletedItem };
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error('Erro ao criar item:', error.message);
-        throw new BadRequestException(error.message || 'Erro desconhecido');
-      } else {
-        console.error('Erro não identificado:', error);
-        throw new BadRequestException('Erro desconhecido');
-      }
-    }
+  @Delete('Delete/:id')
+  async delete(@Param('id') id: string): Promise<SchoolPeriod> {
+    return this.SchoolPeriodService.delete(id);
   }
 }
