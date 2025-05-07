@@ -1,54 +1,46 @@
 import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsNumber, IsDefined} from 'class-validator';
 
 export abstract class DisciplineDto {
-    id: number;
+    periodo: String;
 
-    school_period_id: number;
+    disciplina: String;
 
-    academic_class_id: number;
+    codigo: number;
 
-    name: string;
+    inicio: Date;
 
-    code: string;
+    termino: Date;
 
-    shift: string;
+    categoria: string;
 
-    active: boolean;
+    periodoCurricular: Number;
 
-    is_exceptional: boolean;
+    estado: String;
 
-    integration: string;
+    campus: string;
 
-    created_at: Date;
-
-    updated_at: Date;
-
-    deleted_at: Date;
+    status: String;
 
     constructor(partial: Partial<DisciplineDto> = {}) {
 
-    this.id= partial.id ?? 0;
+        this.periodo= partial.periodo ?? "";
 
-    this.school_period_id= partial.school_period_id ?? 0;
-
-    this.academic_class_id= partial.academic_class_id ?? 0;
-
-    this.name= partial.name ?? "";
-
-    this.code= partial.code ?? "";
-
-    this.shift= partial.shift ?? "";
-
-    this.active= partial.active ?? false;
-
-    this.is_exceptional= partial.is_exceptional ?? false;
-
-    this.integration= partial.integration ?? "";
-
-    this.created_at= partial.created_at ?? new Date();
-
-    this.updated_at= partial.updated_at ?? new Date();
-
-    this.deleted_at= partial.deleted_at ?? new Date();
+        this.disciplina= partial.disciplina ?? "";
+    
+        this.codigo= partial.codigo ?? 0;
+    
+        this.inicio= partial.inicio ?? new Date();
+    
+        this.termino= partial.termino ?? new Date();
+    
+        this.categoria= partial.categoria ?? "";
+    
+        this.periodoCurricular= partial.periodoCurricular ?? 0;
+    
+        this.estado= partial.estado ?? "";
+    
+        this.campus= partial.campus ?? "";
+    
+        this.status= partial.status ?? "";
     }
 }

@@ -3,8 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AcademicClassModule } from './entitys/AcademicClass/AcademicClass.module';
 import { DisciplineModule } from './entitys/Discipline/Discipline.module';
-import { DisciplineUserModule } from './entitys/DisciplineUser/DisciplineUser.module';
-import { SchoolPeriodModule } from './entitys/SchoolPeriod/SchoolPeriod.module';
+import { ClassModule } from './entitys/Class/Class.module';
+import { BondModule } from './entitys/Bond/Bond.module';
 import { UserModule } from './entitys/User/User.module';
 import { ProcessModule } from './entitys/Process/Process.module';
 
@@ -21,8 +21,8 @@ import { ProcessModule } from './entitys/Process/Process.module';
     // Importação dos módulos das entidades
     AcademicClassModule,
     DisciplineModule,
-    DisciplineUserModule,
-    SchoolPeriodModule,
+    ClassModule,
+    BondModule,
     UserModule,
     ProcessModule,
   ],
