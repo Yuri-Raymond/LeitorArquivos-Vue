@@ -323,13 +323,24 @@ button:disabled {
 	display: none;
 }
 
+.telaPeriodos {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	margin-bottom: 50px;
+}
+
 .inputs-container {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	gap: 60px; /* Espaço maior entre inputs */
-	margin-bottom: 50px;
+	margin-bottom: 30px;
 	width: 100%;
+	outline: 1px solid #0000003F;
+	padding: 1vh 2vh;
+	border-radius: 8px;
 }
 
 .input-grupo {
@@ -351,6 +362,17 @@ button:disabled {
 	border: 1px solid #ccc;
 	border-radius: 8px;
 	text-align: center;
+}
+
+.caixaErro {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	padding: 0vw 1vh;
+	background-color: #ffd0d0;
+	border: 1px #ffa0a0 solid;
+	border-radius: 5px;
 }
 
 .botao-avancar {

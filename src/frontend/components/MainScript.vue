@@ -97,10 +97,16 @@
 
 
 				<!-- Etapa 1 - Período Letivo -->
-				<div v-if="tela == 'importarPeriodo'">
+				<div v-if="tela == 'importarPeriodo'" class="telaPeriodos">
+					<div class="caixaErro" v-if="anoLetivoInicio > anoLetivoTermino || (anoLetivoInicio == anoLetivoTermino && periodoInicio > periodoTermino)">
+						<p v-if="anoLetivoInicio > anoLetivoTermino">O Ano Letivo do Começo não pode ser maior que do Término.</p>
+						<p v-else>O Período do Começo não pode ser maior que do Término.</p>
+					</div>
+
+					<h2 style="margin-left: 30px;">Começo do Ano Letivo</h2>
 					<div class="inputs-container">
 						<div class="input-grupo">
-							<label for="anoLetivoInicio">Ano Letivo</label>
+							<label for="anoLetivoInicio">Ano</label>
 							<input type="number" id="anoLetivoInicio" v-model="anoLetivoInicio" min="2000" max="3000" /> <!-- Limites do Ano seletivo -->
 						</div>
 
@@ -109,8 +115,20 @@
 							<input type="number" id="periodoInicio" v-model="periodoInicio" min="1" max="99" /> <!-- Limites do Perido -->
 						</div>
 					</div>
-					
-					<button class="botao-avancar" @click="proximaEtapa()">Avançar</button>
+
+					<h2>Término do Ano Letivo</h2>
+					<div class="inputs-container">
+						<div class="input-grupo">
+							<label for="anoLetivoTermino">Ano</label>
+							<input type="number" id="anoLetivoTermino" v-model="anoLetivoTermino" min="2000" max="3000" /> <!-- Limites do Ano seletivo -->
+						</div>
+
+						<div class="input-grupo">
+							<label for="periodoTermino">Período</label>
+							<input type="number" id="periodoTermino" v-model="periodoTermino" min="1" max="99" /> <!-- Limites do Perido -->
+						</div>
+					</div>
+					<button class="botao-avancar" @click="proximaEtapa()" :disabled="anoLetivoInicio > anoLetivoTermino || (anoLetivoInicio == anoLetivoTermino && periodoInicio > periodoTermino)">Avançar</button>
 				</div>
 				
 				<!-- Etapa 2 a 5 -->
