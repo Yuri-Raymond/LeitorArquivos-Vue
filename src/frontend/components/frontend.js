@@ -776,7 +776,7 @@ export default {
 
 			try {
 				// Substitui ':schemaKey' na URL pelo valor real do schemaKey
-				const url = `http://localhost:8080/api/generic/${schemaKey}`;
+				const url = `http://localhost:8080/${schemaKey}/Post`;
 				const response = await axios.post(url, formData, {
 					headers: {
 						"Content-Type": "multipart/form-data",

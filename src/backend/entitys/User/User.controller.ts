@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Put, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UserService } from './User.service';
 import { User } from './User.schema'; // Substitua com o seu esquema real
 
@@ -7,6 +7,7 @@ export class UserController {
   constructor(private readonly UserService: UserService) {}
 
   @Post('Post')
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async create(@Body() data: Partial<User>): Promise<User> {
     return this.UserService.create(data);
   }

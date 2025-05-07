@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Put, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
 import { SchoolPeriodService } from './SchoolPeriod.service';
 import { SchoolPeriod } from './SchoolPeriod.schema'; // Substitua com o seu esquema real
 
@@ -7,6 +7,7 @@ export class SchoolPeriodController {
   constructor(private readonly SchoolPeriodService: SchoolPeriodService) {}
 
   @Post('Post')
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async create(@Body() data: Partial<SchoolPeriod>): Promise<SchoolPeriod> {
     return this.SchoolPeriodService.create(data);
   }

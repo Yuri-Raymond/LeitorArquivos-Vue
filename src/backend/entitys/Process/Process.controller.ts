@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Put, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ProcessService } from './Process.service';
 import { Process } from './Process.schema'; // Substitua com o seu esquema real
 
@@ -7,6 +7,7 @@ export class ProcessController {
   constructor(private readonly ProcessService: ProcessService) {}
 
   @Post('Post')
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async create(@Body() data: Partial<Process>): Promise<Process> {
     return this.ProcessService.create(data);
   }

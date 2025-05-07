@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import mongoose from 'mongoose';
 
@@ -10,6 +10,8 @@ async function bootstrap() {
     Logger.log('Inicializando a aplicação...');
     const app = await NestFactory.create(AppModule);
 
+    app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
+  
     // Habilitar logs detalhados do Mongoose
     mongoose.set('debug', process.env.MONGOOSE_DEBUG === 'true');
 

@@ -1,13 +1,15 @@
-import { Controller, Get, Post, Param, Body, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Put, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AcademicClassService } from './AcademicClass.service';
 import { AcademicClass } from './AcademicClass.schema'; // Substitua com o seu esquema real
+import { AcademicClassDto } from './AcademicClass.Dto';
 
 @Controller('AcademicClass')
 export class AcademicClassController {
   constructor(private readonly AcademicClassService: AcademicClassService) {}
 
   @Post('Post')
-  async create(@Body() data: Partial<AcademicClass>): Promise<AcademicClass> {
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  async create(@Body() data: AcademicClassDto): Promise<any> {
     return this.AcademicClassService.create(data);
   }
 

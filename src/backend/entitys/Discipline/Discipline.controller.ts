@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Put, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
 import { DisciplineService } from './Discipline.service';
 import { Discipline } from './Discipline.schema'; // Substitua com o seu esquema real
 
@@ -7,6 +7,7 @@ export class DisciplineController {
   constructor(private readonly DisciplineService: DisciplineService) {}
 
   @Post('Post')
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async create(@Body() data: Partial<Discipline>): Promise<Discipline> {
     return this.DisciplineService.create(data);
   }
