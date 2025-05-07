@@ -9,9 +9,6 @@ export default {
 			formatos: [".csv", ".xlsx", ".json"],
 			arquivoCarregado: null,
 			arquivoSelecionado: null,
-			mensagem: null,
-			mensagemCor: "gray",
-			arquivosArmazenados: new Map(),
 			tela: "inicio",
 			_historicoTelas: [], //Usado para o botão de voltar
 
@@ -47,6 +44,13 @@ export default {
 			listaAtual: null,
 			
 			paginaAtual: 0, //Para a paginação
+
+			// Etapa 1 - Ano Letivo
+			anoLetivoInicio: new Date().getFullYear(),
+			periodoInicio: 1,
+
+			anoLetivoTermino: new Date().getFullYear(),
+			periodoTermino: 2,
 
 			// Etapa 2 - Disciplinas
 			listaDisciplinas: [
@@ -444,16 +448,6 @@ export default {
 			}
 		}
 	},
-	mounted() {
-		// carrega como array e converte para map
-		const arquivosSalvos = localStorage.getItem("arquivosArmazenados");
-		if(arquivosSalvos) {
-			JSON.parse(arquivosSalvos).forEach(element => {
-				this.arquivosArmazenados.set(element.name, element.content);
-				//console.log(`Encontrado: "${element.name}", tamanho: ${element.content.length}`);
-			});
-		}
-	},
 	methods: {
 		// Telas
 		mudarTela(tela, historico = true) {
@@ -492,6 +486,11 @@ export default {
 
 		proximaEtapa() {
 			this.mudarTela(this.telaEtapas[this.etapaAtual+1]);
+		},
+		async finalizarProcesso() {
+			if(await this.enviarBDPressionado()) {
+				this.mudarTela("controleDados");
+			}
 		},
 
 		nomeDaTela() {
@@ -543,87 +542,92 @@ export default {
 				this.arquivoSelecionado = file;
 			}
 		},
-		enviarBDPressionado(event){
-			console.log("Botão pressionado");
-			this.mensagem = "Enviando para o banco de dados...";
-			this.mensagemCor = "blue"; 
-			this.enviarBDSelecionado = true; 
-
+		async enviarBDPressionado() {
+			console.log("Enviando para o banco de dados...");
 			if (this.arquivoSelecionado) {
-				console.log("Condição Verificada");
 				try {
-					this.enviarDadosParaBD(this.arquivoSelecionado);
-					this.mensagem = "Dados enviados com sucesso!";
-					this.mensagemCor = "green"; 
+					return await this.enviarDadosParaBD(this.arquivoSelecionado, '');
 				} catch (error) {
-					this.mensagem = "Erro ao enviar dados.";
-					this.mensagemCor = "red"; 
+					console.log("Erro ao enviar dados: " + error);
 				}
 			} else {
-				this.mensagem = "Nenhum dado para enviar.";
-				this.mensagemCor = "orange";
+				console.log("Nenhum dado para enviar.");
 			}
 		},
 
 		// Armazena arquivo selecionado e salva no cache
-		uploadArquivo(event) {
+		async uploadArquivo(event) {
 			const input = event.target;
 			const file = input.files[0];
 		
 			if (!file) {
-				this.mensagem = "Nenhum arquivo selecionado.";
-				this.mensagemCor = "gray";
-				return;
+				console.log("Nenhum arquivo selecionado.");
+				return true;
 			}
 		
 			const fileName = file.name;
 			const fileExtension = "." + fileName.split(".").pop().toLowerCase();
 		
 			if (!this.formatos.includes(fileExtension)) {
-				this.mensagem = `Formato inválido! Permitidos: ${this.formatos.join(", ")}`;
-				this.mensagemCor = "red";
+				console.log(`Formato inválido! Permitidos: ${this.formatos.join(", ")}`);
 				this.arquivoSelecionado = null;
 				input.value = "";
-				return;
+				return true;
 			}
 		
 			this.arquivoSelecionado = file;
-			this.mensagem = `Arquivo "${fileName}" selecionado com sucesso.`;
-			this.mensagemCor = "green";
+			console.log(`Arquivo "${fileName}" selecionado com sucesso.`);
 		
 			input.value = "";
 
 			const reader = new FileReader();
 			if(fileExtension.toLowerCase() == "xlsx") {
 				// Salva XLSX como Base64 para evitar corrupção de dados
-				reader.onload = () => {
-					const readerResult = new Uint8Array(reader.result).reduce((data, byte) => data + String.fromCharCode(byte), "");
-					this.arquivosArmazenados.set(fileName, btoa(readerResult));
-					this.mensagem = `Arquivo "${fileName}" ${acao} com sucesso!`;
-					this.mensagemCor = "green";
-					this.salvar();
-				}
 				reader.readAsArrayBuffer(file);
 			} else {
-				reader.onload = () => {
-					this.arquivosArmazenados.set(fileName, reader.result);
-					this.mensagem = `Arquivo "${fileName}" ${acao} com sucesso!`;
-					this.mensagemCor = "green";
-					this.salvar();
-				}
+				reader.onload = () => 
 				reader.readAsText(file);
 			}
+			return false;
 		},
 
-		// Apaga arquivo selecionado depois de confirmação
-		apagarArquivo(event) {
-			this.arquivosArmazenados.delete(this.arquivoCarregado);
-			this.arquivoCarregado = null;
-			this.salvar();
+		async readFileAsText(file) {
+			new Promise((resolve, reject) => {
+				const reader = new FileReader();
+				reader.onload = () => {
+					const readerResult = new Uint8Array(reader.result).reduce((data, byte) => data + String.fromCharCode(byte), "");
+					//this.arquivosArmazenados.set(fileName, btoa(readerResult));
+					console.log(`Arquivo "${fileName}" carregado com sucesso!`);
+					//this.salvar();
+					return true;
+				}
+				reader.onerror = () => {
+					console.log(`Erro ao enviar arquivo: ${reader.error}`);
+					return false;
+				}
+				reader.readAsText(file);
+			});
+		},
+	
+		async readFileAsArrayBuffer(file) {
+			return new Promise((resolve, reject) => {
+				const reader = new FileReader();
+				reader.onload = () => {
+					//this.arquivosArmazenados.set(fileName, reader.result);
+					console.log(`Arquivo "${fileName}" carregado com sucesso!`);
+					//this.salvar();
+					return true;
+				}
+				reader.onerror = () => {
+					console.log(`Erro ao enviar arquivo: ${reader.error}`);
+					return false;
+				}
+				reader.readAsArrayBuffer(file);
+			});
 		},
 
 		// Faz parse do(s) arquivo(s) selecionado(s) e o(s) representa em forma de <li> e <ul>
-		visualizarArquivo(event) {
+		/*visualizarArquivo(event) {
 			let data = "";
 			// Suporte a JSON
 			let jsonNum = 1;
@@ -721,14 +725,14 @@ export default {
 			else
 				_carregar(this.arquivosArmazenados.get(this.arquivoCarregado), this.arquivoCarregado);
 			return data
-		},
+		},*/
 
 		// Salva arquivos armazenados no cache
-		salvar() {
+		/*salvar() {
 			// converte map para array e salva
 			const arquivos = Array.from(this.arquivosArmazenados, ([name, content]) => ({ name, content }));
 			localStorage.setItem("arquivosArmazenados", JSON.stringify(arquivos));
-		},
+		},*/
 
 		truncarNome(nome) {
 			const limite = 30;
@@ -743,36 +747,26 @@ export default {
 		
 	
 		// Função para validar e enviar arquivo para a API
-		enviarDadosParaBD(file, schemaKey) {			
+		async enviarDadosParaBD(file, schemaKey) {			
 			if (!file) {
-				this.mensagem = "Operação cancelada.";
-				return;
+				console.log("Arquivo inválido.");
+				return false;
 			}
 
 			const fileName = file.name;
 			const fileExtension = fileName.split(".").pop().toLowerCase();
 			if (!this.formatos.includes("." + fileExtension)) {
-				this.mensagem = "Este formato de arquivo não é permitido! Use apenas: " + this.formatos.join(", ");
-				return;
-			}
-
-			this.arquivoSelecionado = file; // Usa diretamente a variável `file`
-			this.enviarArquivo(schemaKey);  // Descomente se for chamar a função logo após a validação
-		},
-
-		async enviarArquivo(schemaKey) {
-			if (!this.arquivoSelecionado) {
-				this.mensagem = "Nenhum arquivo selecionado.";
-				return;
+				console.log("Este formato de arquivo não é permitido! Use apenas: " + this.formatos.join(", "));
+				return false;
 			}
 
 			if (!schemaKey) {
-				this.mensagem = "Nenhuma schemaKey fornecida.";
-				return;
+				console.log("Nenhuma schemaKey fornecida.");
+				return false;
 			}
 
 			const formData = new FormData();
-			formData.append("file", this.arquivoSelecionado);
+			formData.append("file", file);
 
 			try {
 				// Substitui ':schemaKey' na URL pelo valor real do schemaKey
@@ -786,15 +780,16 @@ export default {
 
 				// Verificar a resposta
 				console.log(response); // Para debug
-				this.mensagem = `Upload realizado com sucesso! ${response.data}`; // Ajuste conforme a resposta esperada
+				console.log(`Upload realizado com sucesso! ${response.data}`); // Ajuste conforme a resposta esperada
+				return true;
 
 			} catch (error) {
 				console.error("Erro no upload:", error);
 
 				// Trate o erro
-				this.mensagem = error.response ? `Erro no upload: ${error.response.data.message || "Erro desconhecido"}` : "Erro na conexão com o servidor.";
+				console.log(error.response ? `Erro no upload: ${error.response.data.message || "Erro desconhecido"}` : "Erro na conexão com o servidor.");
+				return false;
 			}
 		}
-		
 	}
 }
