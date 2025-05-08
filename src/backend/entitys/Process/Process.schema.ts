@@ -20,10 +20,10 @@ export class Process extends Document{
   @Prop({ type: String})
   DisciplineId: String;
 
-  @Prop({ type: String})
-  UserId: String;
+  @Prop({ type: Number})
+  UserId: Number;
 
-  constructor(id: String, BondId: String, ClassId: String, DisciplineId: String, UserId: String){
+  constructor(id: String, BondId: String, ClassId: String, DisciplineId: String, UserId: Number){
     super();
 
     this.id= id;
