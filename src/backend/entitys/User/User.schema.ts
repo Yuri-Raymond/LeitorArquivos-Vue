@@ -10,19 +10,22 @@ export type UserDocument = HydratedDocument<User>;
 @Schema({ collection: 'User' })
 export class User extends Document{
   @Prop({ type: String})
+  id: String;
+
+  @Prop({ type: String})
   nome: String;
 
   @Prop({ type: String })
   matricula: String;
 
   @Prop({ type: String})
-  email: string;
+  email: String;
 
   @Prop({ type: String})
   curso: String;
 
   @Prop({ type: String })
-  tipo: string;
+  tipo: String;
 
   @Prop({ type: Date })
   nascimento: Date;
@@ -31,14 +34,16 @@ export class User extends Document{
   cadastro: Date;
 
   @Prop({ type: String })
-  contato: string;
+  contato: String;
 
   @Prop({ type: String })
-  status: string;
+  status: String;
   
-  constructor(nome: String, matricula: String, email: string, curso: String, tipo: string, nascimento: Date, cadastro: Date, contato: string, status: string,){
+  constructor(id: String, nome: String, matricula: String, email: String, curso: String, tipo: String, nascimento: Date, cadastro: Date, contato: String, status: String,){
     super();
     
+    this.id= id;
+
     this.nome= nome;
 
     this.matricula= matricula;

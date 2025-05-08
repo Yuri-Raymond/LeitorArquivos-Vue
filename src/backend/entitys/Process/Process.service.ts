@@ -2,12 +2,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Process } from './Process.schema'; // Substitua com o seu esquema real
+import { ProcessDto } from './Process.Dto';
 
 @Injectable()
 export class ProcessService {
   constructor(@InjectModel(Process.name) private readonly ProcessModel: Model<Process>) {}
 
-  async create(data: Partial<Process>): Promise<Process> {
+  async create(data: ProcessDto): Promise<Process> {
     const newProcess = new this.ProcessModel(data);
     return await newProcess.save();
   }

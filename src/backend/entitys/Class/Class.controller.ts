@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Param, Body, Put, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ClassService } from './Class.service';
 import { Class } from './Class.schema'; // Substitua com o seu esquema real
+import { ClassDto } from './Class.Dto';
 
 @Controller('Class')
 export class ClassController {
@@ -8,7 +9,7 @@ export class ClassController {
 
   @Post('Post')
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-  async create(@Body() data: Partial<Class>): Promise<Class> {
+  async create(@Body() data: ClassDto): Promise<any> {
     return this.ClassService.create(data);
   }
 

@@ -2,12 +2,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Discipline } from './Discipline.schema'; // Substitua com o seu esquema real
+import { DisciplineDto } from './Discipline.Dto';
 
 @Injectable()
 export class DisciplineService {
   constructor(@InjectModel(Discipline.name) private readonly DisciplineModel: Model<Discipline>) {}
 
-  async create(data: Partial<Discipline>): Promise<Discipline> {
+  async create(data: DisciplineDto): Promise<Discipline> {
     const newDiscipline = new this.DisciplineModel(data);
     return await newDiscipline.save();
   }

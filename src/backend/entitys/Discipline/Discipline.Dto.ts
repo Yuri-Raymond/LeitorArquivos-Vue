@@ -1,24 +1,34 @@
 import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsNumber, IsDefined} from 'class-validator';
 
 export abstract class DisciplineDto {
+    @IsString()
     periodo: String;
 
+    @IsString()
     disciplina: String;
 
-    codigo: number;
+    @IsNumber()
+    codigo: Number;
 
+    @IsDate()
     inicio: Date;
 
+    @IsDate()
     termino: Date;
 
-    categoria: string;
+    @IsString()
+    categoria: String;
 
+    @IsNumber()
     periodoCurricular: Number;
 
+    @IsString()
     estado: String;
 
-    campus: string;
+    @IsString()
+    campus: String;
 
+    @IsString()
     status: String;
 
     constructor(partial: Partial<DisciplineDto> = {}) {

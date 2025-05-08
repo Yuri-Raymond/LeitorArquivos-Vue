@@ -1,29 +1,35 @@
-import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsNumber, IsDefined} from 'class-validator';
+import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsDefined} from 'class-validator';
 
 export abstract class ProcessDto {
-    id: number;
+    @IsString()
+    id: String;
 
-    idAcademicClass: number;
+    @IsString()
+    idAcademicClass: String;
 
-    idDiscipline: number;
+    @IsString()
+    idDiscipline: String;
 
-    idDisciplineUser: number;
+    @IsString()
+    idDisciplineUser: String;
 
-    idSchoolPeriod: number;
+    @IsString()
+    idSchoolPeriod: String;
 
-    idUser: number;
+    @IsString()
+    idUser: String;
 
     constructor(partial: Partial<ProcessDto> = {}) {
-    this.id= partial.id ?? 0;
+    this.id= partial.id ?? "";
 
-    this.idAcademicClass= partial.idAcademicClass ?? 0;
+    this.idAcademicClass= partial.idAcademicClass ?? "";
 
-    this.idDiscipline= partial.idDiscipline ?? 0;
+    this.idDiscipline= partial.idDiscipline ?? "";
 
-    this.idDisciplineUser= partial.idDisciplineUser ?? 0;
+    this.idDisciplineUser= partial.idDisciplineUser ?? "";
 
-    this.idSchoolPeriod= partial.idSchoolPeriod ?? 0;
+    this.idSchoolPeriod= partial.idSchoolPeriod ?? "";
 
-    this.idUser= partial.idUser ?? 0;
+    this.idUser= partial.idUser ?? "";
     }
 }

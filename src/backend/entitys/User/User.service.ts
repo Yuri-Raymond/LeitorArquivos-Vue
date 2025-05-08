@@ -2,12 +2,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './User.schema'; // Substitua com o seu esquema real
+import { UserDto } from './User.Dto';
 
 @Injectable()
 export class UserService {
   constructor(@InjectModel(User.name) private readonly UserModel: Model<User>) {}
 
-  async create(data: Partial<User>): Promise<User> {
+  async create(data: UserDto): Promise<User> {
     const newUser = new this.UserModel(data);
     return await newUser.save();
   }

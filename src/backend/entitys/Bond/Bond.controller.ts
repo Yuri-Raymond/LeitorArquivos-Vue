@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Param, Body, Put, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
 import { BondService } from './Bond.service';
 import { Bond } from './Bond.schema'; // Substitua com o seu esquema real
+import { BondDto } from './Bond.Dto';
 
 @Controller('Bond')
 export class BondController {
@@ -8,7 +9,7 @@ export class BondController {
 
   @Post('Post')
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-  async create(@Body() data: Partial<Bond>): Promise<Bond> {
+  async create(@Body() data: BondDto): Promise<any> {
     return this.BondService.create(data);
   }
 
