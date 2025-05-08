@@ -155,13 +155,13 @@
 								<td>{{ disciplina.periodo }}</td>
 								<td>{{ disciplina.disciplina }}</td>
 								<td>{{ disciplina.codigo }}</td>
-								<td>{{ disciplina.inicio }}</td>
-								<td>{{ disciplina.termino }}</td>
+								<td>{{ formatarData(disciplina.inicio) }}</td>
+								<td>{{ formatarData(disciplina.termino) }}</td>
 								<td>{{ disciplina.categoria }}</td>
 								<td>{{ disciplina.periodoCurricular }}</td>
 								<td>{{ disciplina.estado }}</td>
 								<td>{{ disciplina.campus }}</td>
-								<td><span class="status" :class="disciplina.status.toLowerCase()">{{ disciplina.status }}</span></td>
+								<td><span class="status" :class="disciplina.status ? disciplina.status.toLowerCase() : 'null'">{{ disciplina.status }}</span></td>
 							</tr>
 						</tbody>
 					</table>
@@ -189,8 +189,8 @@
 								<td>{{ turma.disciplina }}</td>
 								<td>{{ turma.turno }}</td>
 								<td>{{ turma.capacidade }}</td>
-								<td>{{ turma.inicio }}</td>
-								<td>{{ turma.termino }}</td>
+								<td>{{ formatarData(turma.inicio) }}</td>
+								<td>{{ formatarData(turma.termino) }}</td>
 								<td>{{ turma.professor }}</td>
 								<td><span class="status" :class="turma.status.toLowerCase()">{{ turma.status }}</span></td>
 							</tr>
@@ -220,8 +220,8 @@
 								<td>{{ turma.email }}</td>
 								<td>{{ turma.tipo }}</td>
 								<td>{{ turma.curso }}</td>
-								<td>{{ turma.nascimento }}</td>
-								<td>{{ turma.cadastro }}</td>
+								<td>{{ formatarData(turma.nascimento) }}</td>
+								<td>{{ formatarData(turma.cadastro) }}</td>
 								<td>{{ turma.contato }}</td>
 								<td><span class="status" :class="turma.status.toLowerCase()">{{ turma.status }}</span></td>
 							</tr>
@@ -245,22 +245,22 @@
 						</thead>
 
 						<tbody>
-							<tr v-for="(turma, index) in limiteDePagina(listaVinculos)" :key="index">
-								<td>{{ turma.nome }}</td>
-								<td>{{ turma.matricula }}</td>
-								<td>{{ turma.turma }}</td>
-								<td>{{ turma.disciplina }}</td>
-								<td>{{ turma.papel }}</td>
-								<td>{{ turma.inicio }}</td>
-								<td>{{ turma.termino }}</td>
-								<td>{{ turma.obs }}</td>
-								<td><span class="status" :class="turma.status.toLowerCase()">{{ turma.status }}</span></td>
+							<tr v-for="(vinculo, index) in limiteDePagina(listaVinculos)" :key="index">
+								<td>{{ vinculo.nome }}</td>
+								<td>{{ vinculo.matricula }}</td>
+								<td>{{ vinculo.turma }}</td>
+								<td>{{ vinculo.disciplina }}</td>
+								<td>{{ vinculo.papel }}</td>
+								<td>{{ formatarData(vinculo.inicio) }}</td>
+								<td>{{ formatarData(vinculo.termino) }}</td>
+								<td>{{ vinculo.obs }}</td>
+								<td><span class="status" :class="vinculo.status.toLowerCase()">{{ vinculo.status }}</span></td>
 							</tr>
 						</tbody>
 					</table>
 
 					<!-- Paginação -->
-					<div class="paginacao">
+					<div class="paginacao" v-if="listaAtual && Math.ceil(listaAtual.length / 5) > 1">
 						<!-- Botões da esquerda -->
 						<button class="paginacao" @click="mudarPagina(0)">«</button>
 						<button class="paginacao" @click="mudarPagina(Math.max(0, paginaAtual - 1))">‹</button>
@@ -272,10 +272,11 @@
 						<button class="paginacao" @click="mudarPagina(Math.min(Math.ceil(listaAtual.length / 5) - 1, paginaAtual + 1))">›</button>
 						<button class="paginacao" @click="mudarPagina(Math.ceil(listaAtual.length / 5) - 1)">»</button>
 					</div>
+					<div style="margin-bottom: 30px;" v-else></div>
 					
 					<!-- Botão Avançar -->
 					<div class="botao-direita">
-						<button class="botao-avancar" @click="proximaEtapa()" v-if="etapaAtual < telaEtapas.length - 1">Avançar</button>
+						<button class="botao-avancar" @click="proximaEtapa()" v-if="etapaAtual < telaEtapas.length - 1" :disabled="!arquivoSelecionado">Avançar</button>
 						<button class="botao-avancar" @click="finalizarProcesso()" :disabled="!arquivoSelecionado" v-else>Finalizar Processo</button>
 					</div>
 				</div>

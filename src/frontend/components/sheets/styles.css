@@ -334,7 +334,6 @@ button:disabled {
 .inputs-container {
 	display: flex;
 	justify-content: center;
-	align-items: center;
 	gap: 60px; /* Espaço maior entre inputs */
 	margin-bottom: 30px;
 	width: 100%;

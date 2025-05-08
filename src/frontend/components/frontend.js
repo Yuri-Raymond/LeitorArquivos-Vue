@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 import * as XLSX from "xlsx"; // Usado para o suporte a arquivos do Excel
-import "./styles.css";  // Importação do CSS externo
+import "./sheets/styles.css";  // Importação do CSS externo
 
 export default {
 	data() {
@@ -53,399 +53,25 @@ export default {
 			periodoTermino: 2,
 
 			// Etapa 2 - Disciplinas
-			listaDisciplinas: [
-				{
-					periodo: "2025/1",
-					disciplina: "Banco de Dados",
-					codigo: 3,
-					inicio: "2025-02-10",
-					termino: "2025-06-30",
-					categoria: "Obrigatória",
-					periodoCurricular: 3,
-					estado: "Ativa",
-					campus: "Campus Central",
-					status: "Pendente"
-				},
-				{
-					periodo: "2025/1",
-					disciplina: "Estrutura de Dados",
-					codigo: 4,
-					inicio: "2025-02-10",
-					termino: "2025-06-30",
-					categoria: "Obrigatória",
-					periodoCurricular: 2,
-					estado: "Ativa",
-					campus: "Campus Leste",
-					status: "Pendente"
-				},
-				{
-					periodo: "2025/1",
-					disciplina: "Redes de Computadores",
-					codigo: 5,
-					inicio: "2025-02-10",
-					termino: "2025-06-30",
-					categoria: "Obrigatória",
-					periodoCurricular: 4,
-					estado: "Ativa",
-					campus: "Campus Central",
-					status: "Pendente"
-				},
-				{
-					periodo: "2025/1",
-					disciplina: "Inteligência Artificial",
-					codigo: 6,
-					inicio: "2025-02-17",
-					termino: "2025-06-25",
-					categoria: "Optativa",
-					periodoCurricular: 6,
-					estado: "Ativa",
-					campus: "Campus Oeste",
-					status: "Pendente"
-				},
-				{
-					periodo: "2025/1",
-					disciplina: "Desenvolvimento Web",
-					codigo: 7,
-					inicio: "2025-02-12",
-					termino: "2025-06-28",
-					categoria: "Obrigatória",
-					periodoCurricular: 3,
-					estado: "Ativa",
-					campus: "Campus Sul",
-					status: "Pendente"
-				},
-				{
-					periodo: "2025/1",
-					disciplina: "Empreendedorismo em TI",
-					codigo: 8,
-					inicio: "2025-02-15",
-					termino: "2025-06-30",
-					categoria: "Optativa",
-					periodoCurricular: 5,
-					estado: "Ativa",
-					campus: "Campus Norte",
-					status: "Pendente"
-				},
-				{
-					periodo: "2025/1",
-					disciplina: "Segurança da Informação",
-					codigo: 9,
-					inicio: "2025-02-11",
-					termino: "2025-06-29",
-					categoria: "Obrigatória",
-					periodoCurricular: 5,
-					estado: "Ativa",
-					campus: "Campus Central",
-					status: "Pendente"
-				}
-			],
+			arquivoDisciplinas: null,
+			listaDisciplinas: [],
 
 			// Etapa 3 - Turmas
-			listaTurmas: [
-				{
-					turma: "Turma A",
-					codigo: "T001",
-					disciplina: "Cálculo 1",
-					turno: "Manhã",
-					capacidade: 40,
-					inicio: "04/03/2025",
-					termino: "28/06/2025",
-					professor: "Prof. Ricardo Luiz",
-					status: "Pendente"
-				},
-				{
-					turma: "Turma A",
-					codigo: "T001",
-					disciplina: "Cálculo 1",
-					turno: "Manhã",
-					capacidade: 40,
-					inicio: "04/03/2025",
-					termino: "28/06/2025",
-					professor: "Prof. Ricardo Luiz",
-					status: "Pendente"
-				  },
-				  {
-					turma: "Turma E",
-					codigo: "T002",
-					disciplina: "Física 1",
-					turno: "Tarde",
-					capacidade: 35,
-					inicio: "04/03/2025",
-					termino: "28/06/2025",
-					professor: "Prof. Ana Paula",
-					status: "Confirmado"
-				  },
-				  {
-					turma: "Turma C",
-					codigo: "T003",
-					disciplina: "Química Geral",
-					turno: "Noite",
-					capacidade: 30,
-					inicio: "04/03/2025",
-					termino: "28/06/2025",
-					professor: "Prof. João Carlos",
-					status: "Pendente"
-				  },
-				  {
-					turma: "Turma D",
-					codigo: "T004",
-					disciplina: "Álgebra Linear",
-					turno: "Manhã",
-					capacidade: 40,
-					inicio: "04/03/2025",
-					termino: "28/06/2025",
-					professor: "Prof. Fernanda Lima",
-					status: "Cancelado"
-				  },
-				  {
-					turma: "Turma A",
-					codigo: "T005",
-					disciplina: "História da Arte",
-					turno: "Tarde",
-					capacidade: 25,
-					inicio: "04/03/2025",
-					termino: "28/06/2025",
-					professor: "Prof. Marcos Vieira",
-					status: "Confirmado"
-				  },
-				  {
-					turma: "Turma B",
-					codigo: "T006",
-					disciplina: "Geometria Analítica",
-					turno: "Noite",
-					capacidade: 35,
-					inicio: "04/03/2025",
-					termino: "28/06/2025",
-					professor: "Prof. Juliana Reis",
-					status: "Pendente"
-				  },
-				  {
-					turma: "Turma B",
-					codigo: "T007",
-					disciplina: "Literatura Brasileira",
-					turno: "Manhã",
-					capacidade: 45,
-					inicio: "04/03/2025",
-					termino: "28/06/2025",
-					professor: "Prof. Carlos Mendes",
-					status: "Confirmado"
-				  },
-				  {
-					turma: "Turma E",
-					codigo: "T008",
-					disciplina: "Programação I",
-					turno: "Tarde",
-					capacidade: 40,
-					inicio: "04/03/2025",
-					termino: "28/06/2025",
-					professor: "Prof. Bianca Souza",
-					status: "Pendente"
-				  },
-				  {
-					turma: "Turma D",
-					codigo: "T009",
-					disciplina: "Introdução à Economia",
-					turno: "Noite",
-					capacidade: 30,
-					inicio: "04/03/2025",
-					termino: "28/06/2025",
-					professor: "Prof. Daniel Costa",
-					status: "Confirmado"
-				  },
-				  {
-					turma: "Turma C",
-					codigo: "T010",
-					disciplina: "Sociologia",
-					turno: "Manhã",
-					capacidade: 50,
-					inicio: "04/03/2025",
-					termino: "28/06/2025",
-					professor: "Prof. Helena Braga",
-					status: "Pendente"
-				  },
-				  {
-					turma: "Turma A",
-					codigo: "T011",
-					disciplina: "Estatística I",
-					turno: "Tarde",
-					capacidade: 38,
-					inicio: "04/03/2025",
-					termino: "28/06/2025",
-					professor: "Prof. Roberto Teixeira",
-					status: "Confirmado"
-				  },
-				  {
-					turma: "Turma B",
-					codigo: "T012",
-					disciplina: "Biologia Celular",
-					turno: "Noite",
-					capacidade: 32,
-					inicio: "04/03/2025",
-					termino: "28/06/2025",
-					professor: "Prof. Letícia Barros",
-					status: "Cancelado"
-				  }
-			],
+			arquivoTurmas: null,
+			listaTurmas: [],
 
 			// Etapa 4 - Usuarios
-			listaUsuarios: [
-				{
-					nome: "Lucas Santos",
-					matricula: "20251234",
-					email: "lucas.santos@email.com",
-					curso: "Arquitetura de Computadores",
-					tipo: "Aluno",
-					nascimento: "04/03/2025",
-					cadastro: "28/06/2025",
-					contato: "(11) 91234-5678",
-					status: "Pendente"
-				},
-				{
-					nome: "Rafael Lima",
-					matricula: "20251234",
-					email: "rafalima@email.com",
-					curso: "Lógica de Programação",
-					tipo: "Aluno",
-					nascimento: "04/03/2025",
-					cadastro: "28/06/2025",
-					contato: "(21) 99876-5432",
-					status: "Finalizado"
-				},
-				{
-					nome: "Júlia Silva",
-					matricula: "20249876",
-					email: "ju.silva@email.com",
-					curso: "Arquitetura de Computadores",
-					tipo: "Aluno",
-					nascimento: "04/03/2025",
-					cadastro: "28/06/2025",
-					contato: "(31) 98765-4321",
-					status: "Finalizado"
-				},
-				{
-					nome: "Emanoele Silveira",
-					matricula: "20254985",
-					email: "ju.silva@email.com",
-					tipo: "Professor",
-					curso: "Sistemas Operacionais",
-					nascimento: "04/03/2025",
-					cadastro: "28/06/2025",
-					contato: "(41) 91234-0000",
-					status: "Pendente"
-				},
-				{
-					nome: "Kaique Souza",
-					matricula: "25236254",
-					email: "kaique.souza@email.com",
-					curso: "Redes de Computadores",
-					tipo: "Aluno",
-					nascimento: "04/03/2025",
-					cadastro: "28/06/2025",
-					contato: "(85) 99888-1122",
-					status: "Pendente"
-				},
-				{
-					nome: "Herbert Menezes",
-					matricula: "20242565",
-					email: "herbert.menezes@email.com",
-					curso: "Segurança da Informação",
-					tipo: "Professor",
-					nascimento: "04/03/2025",
-					cadastro: "28/06/2025",
-					contato: "(61) 93456-7890",
-					status: "Pendente"
-				}
-			],
+			arquivoUsuarios: null,
+			listaUsuarios: [],
 
 			// Etapa 5 - Vínculos
-			listaVinculos: [
-				{
-					nome: "Lucas Santos",
-					matricula: "20251234",
-					turma: "Turma C",
-					disciplina: "Arquitetura de Computadores",
-					papel: "Mentor",
-					inicio: "04/03/2025",
-					termino: "28/06/2025",
-					obs: 1,
-					status: "Pendente"
-				},
-				{
-					nome: "Rafael Lima",
-					matricula: "20251234",
-					turma: "Turma C",
-					disciplina: "Lógica de Programação",
-					papel: "Mentor",
-					inicio: "04/03/2025",
-					termino: "28/06/2025",
-					obs: 3,
-					status: "Finalizado"
-				},
-				{
-					nome: "Júlia Silva",
-					matricula: "20249876",
-					turma: "Turma C",
-					disciplina: "Arquitetura de Computadores",
-					papel: "Mentor",
-					inicio: "04/03/2025",
-					termino: "28/06/2025",
-					obs: 2,
-					status: "Finalizado"
-				},
-				{
-					nome: "Emanoele Silveira",
-					matricula: "20254985",
-					turma: "Turma B",
-					disciplina: "Sistemas Operacionais",
-					papel: "Estagiário",
-					inicio: "04/03/2025",
-					termino: "28/06/2025",
-					obs: 1,
-					status: "Pendente"
-				},
-				{
-					nome: "Kaique Souza",
-					matricula: "25236254",
-					turma: "Turma B",
-					disciplina: "Redes de Computadores",
-					papel: "Estagiário",
-					inicio: "04/03/2025",
-					termino: "28/06/2025",
-					obs: 2,
-					status: "Pendente"
-				},
-				{
-					nome: "Herbert Menezes",
-					matricula: "20242565",
-					turma: "Turma B",
-					disciplina: "Segurança da Informação",
-					papel: "Estagiário",
-					inicio: "04/03/2025",
-					termino: "28/06/2025",
-					obs: 0,
-					status: "Pendente"
-				}
-			]
+			arquivoVinculos: null,
+			listaVinculos: []
 		}
 	},
 	watch: {
-		tela(value)	{
-			switch(value) {
-				case "importarDisciplinas":
-					this.listaAtual = this.listaDisciplinas;
-					break;
-				case "importarTurmas":
-					this.listaAtual = this.listaTurmas;
-					break;
-				case "importarUsuarios":
-					this.listaAtual = this.listaUsuarios;
-					break;
-				case "importarVinculos":
-					this.listaAtual = this.listaVinculos;
-					break;
-				default:
-					this.listaAtual = null;
-			}
+		tela()	{
+			this.atualizarPaginacao();
 		}
 	},
 	methods: {
@@ -454,9 +80,6 @@ export default {
 			if(historico) {
 				this._historicoTelas.push(this.tela);
 			}
-			this.mensagem = null;
-			this.mensagemCor = "gray";
-			this.arquivoSelecionado = null;
 			this.tela = tela;
 			this.paginaAtual = 0;
 			this.etapaAtual = this.telaEtapas.indexOf(tela);
@@ -533,15 +156,6 @@ export default {
 		},
 
 		//Modificar
-		arquivoEnviado(event) {
-			const file = event.target.files[0];
-			if (!file) return;
-
-			const fileExtension = file.name.split(".").pop();
-			if(this.formatos.includes("." + fileExtension.toLowerCase())) {
-				this.arquivoSelecionado = file;
-			}
-		},
 		async enviarBDPressionado() {
 			console.log("Enviando para o banco de dados...");
 			if (this.arquivoSelecionado) {
@@ -562,177 +176,102 @@ export default {
 		
 			if (!file) {
 				console.log("Nenhum arquivo selecionado.");
-				return true;
+				return;
 			}
 		
 			const fileName = file.name;
-			const fileExtension = "." + fileName.split(".").pop().toLowerCase();
+			const fileExtension = fileName.split(".").pop().toLowerCase();
 		
-			if (!this.formatos.includes(fileExtension)) {
+			if (!this.formatos.includes("." + fileExtension)) {
 				console.log(`Formato inválido! Permitidos: ${this.formatos.join(", ")}`);
-				this.arquivoSelecionado = null;
-				input.value = "";
-				return true;
+				return;
 			}
-		
-			this.arquivoSelecionado = file;
-			console.log(`Arquivo "${fileName}" selecionado com sucesso.`);
-		
-			input.value = "";
 
-			const reader = new FileReader();
-			if(fileExtension.toLowerCase() == "xlsx") {
-				// Salva XLSX como Base64 para evitar corrupção de dados
-				reader.readAsArrayBuffer(file);
-			} else {
-				reader.onload = () => 
-				reader.readAsText(file);
+			//Converte .XLSX/.CSV para JSON
+			function formatacao(str) {
+				return str ? str.normalize("NFD").replace(/[\u0300-\u036f-_\s]/g, "").trim().toLowerCase() : null;
 			}
-			return false;
+			
+			function converter(renomear, planilha) {
+				renomear = new Map(Object.entries(renomear).map(([chave, valor]) => [formatacao(chave), valor]));
+
+				return planilha.map(obj => Object.fromEntries(Object.entries(obj).map(function([chave, valor]) {
+					console.log(chave, valor);
+					chave = formatacao(chave);
+					return [renomear.get(chave) || chave, valor];
+				})));
+			}
+
+			switch(fileExtension) {
+				case "xlsx":
+					const arrayBuffer = await file.arrayBuffer();
+					const workbook = XLSX.read(arrayBuffer, { type: "array", cellText: true, cellDates: true });
+					for (const planilhaNome of workbook.SheetNames) {
+						const planilha = XLSX.utils.sheet_to_json(workbook.Sheets[planilhaNome]);
+						switch(formatacao(planilhaNome).toLowerCase()) {
+							case "disciplinas":
+							case "disciplina":
+								this.arquivoDisciplinas = file;
+								this.listaDisciplinas = converter({"Periodo Letivo": "periodo", "Data de Inicio": "inicio", "Data de Termino": "termino", "Periodo Curricular": "periodoCurricular"}, planilha);
+								break;
+							case "turmas":
+							case "turma":
+								this.arquivoTurmas = file;
+								this.listaTurmas = converter({"Nome da Turma": "turma", "Disciplina Associada": "disciplina", "Inicio das Aulas": "inicio", "Termino das Aulas": "termino", "Professor Responsavel": "professor"}, planilha);
+								break;
+							case "usuarios":
+							case "usuario":
+								this.arquivoUsuarios = file;
+								this.listaUsuarios = converter({"Nome Completo": "nome", "Data de Nascimento": "nascimento", "Data de Cadastro": "cadastro", "Periodo Curricular": "periodoCurricular"}, planilha);
+								break;
+							case "vinculos":
+							case "vinculo":
+								this.arquivoVinculos = file;
+								this.listaVinculos = converter({"Nome de Usuario": "nome", "Data de Inicio": "inicio", "Data de Termino": "termino", "Observacoes": "obs"}, planilha);
+								break;
+							default:
+								console.error(`Planilha desconhecida no arquivo: "${planilhaNome}"`);
+						}
+					}
+					break;
+				case "csv":
+					break;
+			}
+			this.paginaAtual = 0;
+			this.atualizarPaginacao();
 		},
 
-		async readFileAsText(file) {
-			new Promise((resolve, reject) => {
-				const reader = new FileReader();
-				reader.onload = () => {
-					const readerResult = new Uint8Array(reader.result).reduce((data, byte) => data + String.fromCharCode(byte), "");
-					//this.arquivosArmazenados.set(fileName, btoa(readerResult));
-					console.log(`Arquivo "${fileName}" carregado com sucesso!`);
-					//this.salvar();
-					return true;
-				}
-				reader.onerror = () => {
-					console.log(`Erro ao enviar arquivo: ${reader.error}`);
-					return false;
-				}
-				reader.readAsText(file);
-			});
-		},
-	
-		async readFileAsArrayBuffer(file) {
-			return new Promise((resolve, reject) => {
-				const reader = new FileReader();
-				reader.onload = () => {
-					//this.arquivosArmazenados.set(fileName, reader.result);
-					console.log(`Arquivo "${fileName}" carregado com sucesso!`);
-					//this.salvar();
-					return true;
-				}
-				reader.onerror = () => {
-					console.log(`Erro ao enviar arquivo: ${reader.error}`);
-					return false;
-				}
-				reader.readAsArrayBuffer(file);
-			});
+		atualizarPaginacao() {
+			switch(this.tela) {
+				case "importarDisciplinas":
+					this.listaAtual = this.listaDisciplinas;
+					this.arquivoSelecionado = this.arquivoDisciplinas;
+					break;
+				case "importarTurmas":
+					this.listaAtual = this.listaTurmas;
+					this.arquivoSelecionado = this.arquivoTurmas;
+					break;
+				case "importarUsuarios":
+					this.listaAtual = this.listaUsuarios;
+					this.arquivoSelecionado = this.arquivoUsuarios;
+					break;
+				case "importarVinculos":
+					this.listaAtual = this.listaVinculos;
+					this.arquivoSelecionado = this.arquivoVinculos;
+					break;
+				default:
+					this.listaAtual = null;
+					this.arquivoSelecionado = null;
+			}
 		},
 
-		// Faz parse do(s) arquivo(s) selecionado(s) e o(s) representa em forma de <li> e <ul>
-		/*visualizarArquivo(event) {
-			let data = "";
-			// Suporte a JSON
-			let jsonNum = 1;
-			function recursivaJson(subdata) {
-				if (Array.isArray(subdata)) {
-					data += "<ul>";
-					subdata.forEach((element) => {
-						if(typeof element === "object") {
-							data += `<li>#${jsonNum}:`;
-							recursivaJson(element);
-							data += "</li>";
-							jsonNum++;
-						}
-						else {
-							recursivaJson(element);
-						}
-					});
-					data += "</ul>";
-				} else if (typeof subdata === "object") {
-					Object.entries(subdata).forEach(([key, value]) => {
-						data += "<ul><li>";
-						if(Array.isArray(value) || typeof value === "object")
-						{
-							data += `${key}:`;
-							recursivaJson(value);
-						}
-						else data += `${key}: ${value}`;
-						data += "</li></ul>";
-					});
-				} else {
-					data += `<li>${subdata}</li>`;
-				}
-			}
-
-			// Suporte a .XLSX e .CSV
-			function visualizarPlanilha(linhas) {
-				data += "<ul>";
-				const nomeColunas = linhas[0].split(";");
-				for (let i = 1 ; i < linhas.length ; i++) {
-					let dados = linhas[i].split(";");
-					if(dados.length <= 1 && dados[0] == "") continue;
-
-					data += `<li>#${i}:<ul>`;
-					for (let j = 0 ; j < dados.length ; j++) {
-						data += `<li>${nomeColunas[j]}: ${dados[j]}</li>`;
-					}
-					data += "</ul></li>";
-				}
-				data += "</ul>";
-			}
-
-			// Carregar único arquivo ou lista
-			let primeiro = true;
-			function _carregar(content, name) {
-				if(!primeiro) data += "<br>";
-				data += `<li><strong>${name}</strong>`;
-				switch(name.split('.').pop().toLowerCase()) {
-					case "json": {
-						recursivaJson(JSON.parse(content));
-						jsonNum = 1;
-						break;
-					}
-					case "xlsx": {
-						// Converte Planilha XLSX para uma planilha simples CSV
-						try {
-							// Converte planilha salva em Base64 de volta para ArrayBuffer
-							const binaryStr = atob(content);
-							const len = binaryStr.length;
-							const bytes = new Uint8Array(len);
-							for (let i = 0; i < len; i++) {
-								bytes[i] = binaryStr.charCodeAt(i);
-							}
-							const workbook = XLSX.read(bytes, { type: "array", cellText: true, cellDates: true });
-							const primeiraPlanilha = workbook.SheetNames[0];
-
-							const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[primeiraPlanilha], { header: 1 });
-							const csv = jsonData.map(row => row.join(";"));
-							visualizarPlanilha(csv);
-						} catch (erro) {
-							console.error("Erro ao converter XLSX para CSV:", erro);
-						}
-						break;
-					}
-					case "csv": {
-						visualizarPlanilha(content.replace('\r\n', '\n').split('\n'));
-						break;
-					}
-				}
-				data += "</li>";
-				primeiro = false;
-			}
-
-			if(this.arquivoCarregado == "*")
-				this.arquivosArmazenados.forEach(_carregar);
-			else
-				_carregar(this.arquivosArmazenados.get(this.arquivoCarregado), this.arquivoCarregado);
-			return data
-		},*/
-
-		// Salva arquivos armazenados no cache
-		/*salvar() {
-			// converte map para array e salva
-			const arquivos = Array.from(this.arquivosArmazenados, ([name, content]) => ({ name, content }));
-			localStorage.setItem("arquivosArmazenados", JSON.stringify(arquivos));
-		},*/
+		formatarData(data) {
+			const d = new Date(data);
+			const dia = String(d.getDate()).padStart(2, '0');
+			const mes = String(d.getMonth() + 1).padStart(2, '0'); // Janeiro = 0
+			const ano = d.getFullYear();
+			return `${dia}/${mes}/${ano}`;
+		},
 
 		truncarNome(nome) {
 			const limite = 30;
