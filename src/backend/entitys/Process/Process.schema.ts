@@ -12,27 +12,27 @@ export class Process extends Document{
   id: String;
 
   @Prop({ type: String})
-  BondID: String;
+  BondId: String;
 
   @Prop({ type: String})
   ClassId: String;
 
   @Prop({ type: String})
-  Discipline: String;
+  DisciplineId: String;
 
   @Prop({ type: String})
   UserId: String;
 
-  constructor(id: String, BondID: String, ClassId: String, Discipline: String, UserId: String){
+  constructor(id: String, BondId: String, ClassId: String, DisciplineId: String, UserId: String){
     super();
 
     this.id= id;
 
-    this.BondID= BondID;
+    this.BondId= BondId;
 
     this.ClassId= ClassId;
 
-    this.Discipline= Discipline;
+    this.DisciplineId= DisciplineId;
 
     this.UserId= UserId;
   }

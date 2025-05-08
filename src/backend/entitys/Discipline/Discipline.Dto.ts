@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsNumber, IsDefined} from 'class-validator';
+import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsNumber, IsDefined, IsDateString} from 'class-validator';
 
 export abstract class DisciplineDto {
     @IsString()
@@ -10,10 +10,10 @@ export abstract class DisciplineDto {
     @IsNumber()
     codigo: Number;
 
-    @IsDate()
+    @IsDateString()
     inicio: Date;
 
-    @IsDate()
+    @IsDateString()
     termino: Date;
 
     @IsString()

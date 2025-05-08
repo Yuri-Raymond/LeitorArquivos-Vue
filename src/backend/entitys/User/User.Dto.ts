@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsNumber, IsDefined} from 'class-validator';
+import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsNumber, IsDefined, IsDateString} from 'class-validator';
 
 export abstract class UserDto {
   @IsString()
@@ -19,13 +19,13 @@ export abstract class UserDto {
   @IsString()
   tipo: String;
 
-  @IsString()
+  @IsDateString()
   nascimento: Date;
 
-  @IsDate()
+  @IsDateString()
   cadastro: Date;
 
-  @IsDate()
+  @IsString()
   contato: String;
 
   @IsString()

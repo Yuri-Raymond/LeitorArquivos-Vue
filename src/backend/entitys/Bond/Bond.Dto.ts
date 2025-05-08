@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsNumber, IsDefined} from 'class-validator';
+import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsNumber, IsDefined, IsDateString} from 'class-validator';
 
 export abstract class BondDto {  
     @IsString()
@@ -19,10 +19,10 @@ export abstract class BondDto {
     @IsString()
     papel: String;
 
-    @IsDate()
+    @IsDateString()
     inicio: Date;
 
-    @IsDate()
+    @IsDateString()
     termino: Date;
 
     @IsNumber()

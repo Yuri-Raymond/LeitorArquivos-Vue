@@ -5,31 +5,27 @@ export abstract class ProcessDto {
     id: String;
 
     @IsString()
-    idAcademicClass: String;
+    BondId: String;
 
     @IsString()
-    idDiscipline: String;
+    ClassId: String;
 
     @IsString()
-    idDisciplineUser: String;
+    DisciplineId: String;
 
     @IsString()
-    idSchoolPeriod: String;
-
-    @IsString()
-    idUser: String;
+    UserId: String;
 
     constructor(partial: Partial<ProcessDto> = {}) {
     this.id= partial.id ?? "";
 
-    this.idAcademicClass= partial.idAcademicClass ?? "";
+    this.BondId= partial.BondId ?? "";
 
-    this.idDiscipline= partial.idDiscipline ?? "";
+    this.ClassId= partial.ClassId ?? "";
 
-    this.idDisciplineUser= partial.idDisciplineUser ?? "";
+    this.DisciplineId= partial.DisciplineId ?? "";
 
-    this.idSchoolPeriod= partial.idSchoolPeriod ?? "";
+    this.UserId= partial.UserId ?? "";
 
-    this.idUser= partial.idUser ?? "";
     }
 }
