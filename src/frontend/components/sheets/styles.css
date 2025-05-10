@@ -40,7 +40,7 @@ body {
 
 .caixaTelaInicial .bg {
 	position: absolute;
-	background-image: url("./images/bonsae.png");
+	background-image: url("../images/bonsae.png");
 	background-size: max(36vw, 300px);
 	background-position: center;
 	background-repeat: no-repeat;

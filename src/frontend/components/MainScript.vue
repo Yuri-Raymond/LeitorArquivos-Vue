@@ -45,23 +45,23 @@
 							<td v-html="processo.periodo"></td>
 							<td v-html="processo.inicio"></td>
 							<td v-html="processo.termino"></td>
-							<td style="padding: 0;">
+							<td style="padding: 0;" v-if="processo.status">
 								<p v-html="processo.status" class="processoStatus" :class="{statusAndamento: processo.status.toLowerCase() == 'em andamento', statusConcluido: processo.status.toLowerCase() == 'concluído'}"></p>
 							</td>
 						
 							<!-- Botões para "Em andamento"-->
-								<td v-if="processo.status.toLowerCase() == 'em andamento'" >
-									<div class="processoAcoes">
-										<button class="botaoAcao botaoCinza">Editar</button>
-										<button class="botaoAcao botaoVermelho">Cancelar</button>
-									</div>
-								</td>
-								<!-- Botões para "Concluído"-->
-								<td v-else-if="processo.status.toLowerCase() == 'concluído'">
-									<div class="processoAcoes">
-										<button class="botaoAcao">Visualizar</button>
-									</div>
-								</td>
+							<td v-if="processo.status && processo.status.toLowerCase() == 'em andamento'" >
+								<div class="processoAcoes">
+									<button class="botaoAcao botaoCinza">Editar</button>
+									<button class="botaoAcao botaoVermelho">Cancelar</button>
+								</div>
+							</td>
+							<!-- Botões para "Concluído"-->
+							<td v-else-if="processo.status && processo.status.toLowerCase() == 'concluído'">
+								<div class="processoAcoes">
+									<button class="botaoAcao">Visualizar</button>
+								</div>
+							</td>
 						</tr>
 					</tbody>
 				</table>

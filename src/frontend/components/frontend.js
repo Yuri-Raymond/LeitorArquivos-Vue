@@ -13,7 +13,8 @@ export default {
 			_historicoTelas: [], //Usado para o botão de voltar
 
 			// Informações de processos já carregados para o Controle de Importações
-			processos: [
+			processos: [],
+			/*[
 				{
 					id: "arquivo-3.csv",
 					periodo: "2025/1",
@@ -35,7 +36,7 @@ export default {
 					termino: "11/6/2024 - 22:30",
 					status: "Concluído"
 				}
-			],
+			],*/
 
 			// Para a importação de dados:
 			telaEtapas: ["importarPeriodo", "importarDisciplinas", "importarTurmas", "importarUsuarios", "importarVinculos"],
@@ -69,8 +70,11 @@ export default {
 			listaVinculos: []
 		}
 	},
+	mounted() {
+		this.atualizarProcessos();
+	},
 	watch: {
-		tela()	{
+		tela() {
 			this.atualizarPaginacao();
 		}
 	},
@@ -91,6 +95,7 @@ export default {
 					break;
 				case "controleDados":
 					tituloDaPagina = "Controle de Importações";
+					this.atualizarProcessos();
 					break;
 				case "importarPeriodo":
 				case "importarDisciplinas":
@@ -160,13 +165,25 @@ export default {
 			console.log("Enviando para o banco de dados...");
 			if (this.arquivoSelecionado) {
 				try {
-					return await this.enviarDadosParaBD(this.arquivoSelecionado, '');
+					const disciplinas = await this.enviarDadosParaBD(this.listaDisciplinas, 'Discipline');
+
+					/*const processo = await this.enviarDadosParaBD({
+						id: this.arquivoSelecionado.name,
+						inicio: `${this.anoLetivoInicio}/${this.periodoInicio}`,
+						termino: `${this.anoLetivoTermino}/${this.periodoTermino}`,
+						disciplinas: this.listaDisciplinas,
+						turmas: this.listaTurmas,
+						usuarios: this.listaUsuarios,
+						vinculos: this.listaVinculos,
+					}, 'Process');*/
+					return (disciplinas != null);
 				} catch (error) {
-					console.log("Erro ao enviar dados: " + error);
+					console.error("Erro ao enviar dados: " + error);
 				}
 			} else {
 				console.log("Nenhum dado para enviar.");
 			}
+			return false;
 		},
 
 		// Armazena arquivo selecionado e salva no cache
@@ -196,7 +213,7 @@ export default {
 				renomear = new Map(Object.entries(renomear).map(([chave, valor]) => [formatacao(chave), valor]));
 
 				return planilha.map(obj => Object.fromEntries(Object.entries(obj).map(function([chave, valor]) {
-					console.log(chave, valor);
+					//console.log(chave, valor);
 					chave = formatacao(chave);
 					return [renomear.get(chave) || chave, valor];
 				})));
@@ -213,6 +230,7 @@ export default {
 							case "disciplina":
 								this.arquivoDisciplinas = file;
 								this.listaDisciplinas = converter({"Periodo Letivo": "periodo", "Data de Inicio": "inicio", "Data de Termino": "termino", "Periodo Curricular": "periodoCurricular"}, planilha);
+
 								break;
 							case "turmas":
 							case "turma":
@@ -239,6 +257,19 @@ export default {
 			}
 			this.paginaAtual = 0;
 			this.atualizarPaginacao();
+		},
+
+		async atualizarProcessos() {
+			const url = `http://localhost:8080/Process/Get`;
+			axios.get(url)
+			.then(response => {
+				console.log("Processos recebidos:", response.data?.length ?? 0);
+				this.processos = response.data ?? [];
+			})
+			.catch(error => {
+				this.processos = [];
+				console.error("Erro ao atualizar processos:", error?.message ?? error);
+			});
 		},
 
 		atualizarPaginacao() {
@@ -273,6 +304,14 @@ export default {
 			return `${dia}/${mes}/${ano}`;
 		},
 
+		/*formatarDataISO(data) {
+			const d = new Date(data);
+			const dia = String(d.getDate()).padStart(2, '0');
+			const mes = String(d.getMonth() + 1).padStart(2, '0'); // Janeiro = 0
+			const ano = d.getFullYear();
+			return `${ano}-${mes}-${dia}`;
+		},*/
+
 		truncarNome(nome) {
 			const limite = 30;
 			if (nome.length <= limite) return nome;
@@ -286,49 +325,26 @@ export default {
 		
 	
 		// Função para validar e enviar arquivo para a API
-		async enviarDadosParaBD(file, schemaKey) {			
-			if (!file) {
-				console.log("Arquivo inválido.");
-				return false;
-			}
-
-			const fileName = file.name;
-			const fileExtension = fileName.split(".").pop().toLowerCase();
-			if (!this.formatos.includes("." + fileExtension)) {
-				console.log("Este formato de arquivo não é permitido! Use apenas: " + this.formatos.join(", "));
-				return false;
-			}
-
+		async enviarDadosParaBD(file, schemaKey) {
 			if (!schemaKey) {
 				console.log("Nenhuma schemaKey fornecida.");
-				return false;
+				return null;
 			}
 
-			const formData = new FormData();
-			formData.append("file", file);
-
 			try {
+				console.log(JSON.stringify(file));
 				// Substitui ':schemaKey' na URL pelo valor real do schemaKey
 				const url = `http://localhost:8080/${schemaKey}/Post`;
-				const response = await axios.post(url, formData, {
-					headers: {
-						"Content-Type": "multipart/form-data",
-					}
-					
-				});
+				const response = await axios.post(url, file, {headers: {'Content-Type': 'application/json'}});
 
 				// Verificar a resposta
 				console.log(response); // Para debug
-				console.log(`Upload realizado com sucesso! ${response.data}`); // Ajuste conforme a resposta esperada
-				return true;
-
+				console.log(`Upload realizado com sucesso!\n${JSON.stringify(response.data)}`); // Ajuste conforme a resposta esperada
+				return response;
 			} catch (error) {
-				console.error("Erro no upload:", error);
-
-				// Trate o erro
 				console.log(error.response ? `Erro no upload: ${error.response.data.message || "Erro desconhecido"}` : "Erro na conexão com o servidor.");
-				return false;
 			}
+			return null;
 		}
 	}
 }
