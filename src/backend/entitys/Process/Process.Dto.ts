@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsDefined, Matches, IsNumber} from 'class-validator';
+import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsDefined, Matches, IsNumber, IsDateString} from 'class-validator';
 
 export abstract class ProcessDto {
     @Matches(/^[A-Za-z0-9]+$/, { message: 'Id do processo deve conter apenas caracteres alfanuméricos.' })
@@ -19,7 +19,19 @@ export abstract class ProcessDto {
 
     @Matches(/^\d{6,12}$/, { message: 'Matrícula deve conter entre 6 e 12 dígitos numéricos.' })
     @IsNumber()
-    UserId: Number;
+    UserMtr: Number;
+
+    @IsDateString()
+    DataInicio: Date;
+
+    @IsDateString()
+    DataTermino: Date;
+
+    @IsString()
+    StatusEnvio: String;
+
+    @IsString()
+    Acoes: String;
 
     constructor(partial: Partial<ProcessDto> = {}) {
         this.id= partial.id ?? "";
@@ -30,7 +42,15 @@ export abstract class ProcessDto {
 
         this.DisciplineId= partial.DisciplineId ?? "";
 
-        this.UserId= partial.UserId ?? 0;
+        this.UserMtr= partial.UserMtr ?? 0;
+
+        this.DataInicio= partial.DataInicio ?? new Date();
+
+        this.DataTermino= partial.DataTermino ?? new Date();
+
+        this.StatusEnvio= partial.StatusEnvio ?? "";
+
+        this.Acoes= partial.Acoes ?? "";
 
     }
 }

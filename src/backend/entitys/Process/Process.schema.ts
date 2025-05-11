@@ -1,5 +1,6 @@
 // Importando os módulos necessários
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
+import { IsDate, IsDateString, IsString } from 'class-validator';
 import { Document } from 'mongoose';
 import { HydratedDocument } from 'mongoose';
 
@@ -21,9 +22,22 @@ export class Process extends Document{
   DisciplineId: String;
 
   @Prop({ type: Number})
-  UserId: Number;
+  UserMtr: Number;
 
-  constructor(id: String, BondId: String, ClassId: String, DisciplineId: String, UserId: Number){
+  @Prop({ type: Date})
+  DataInicio: Date;
+
+  @Prop({ type: Date})
+  DataTermino: Date;
+
+  @Prop({ type: String})
+  StatusEnvio: String;
+
+  @Prop({ type: String})
+  Acoes: String;
+
+  constructor(id: String, BondId: String, ClassId: String, DisciplineId: String, UserMtr: Number, DataInicio: Date, DataTermino: Date, StatusEnvio: String,
+    Acoes: String){
     super();
 
     this.id= id;
@@ -34,7 +48,15 @@ export class Process extends Document{
 
     this.DisciplineId= DisciplineId;
 
-    this.UserId= UserId;
+    this.UserMtr= UserMtr;
+
+    this.DataInicio= DataInicio;
+
+    this.DataTermino= DataTermino;
+
+    this.StatusEnvio= StatusEnvio;
+
+    this.Acoes= Acoes;
   }
 }
 export const ProcessSchema = SchemaFactory.createForClass(Process);
