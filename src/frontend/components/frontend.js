@@ -47,6 +47,8 @@ export default {
 			paginaAtual: 0, //Para a paginação
 
 			// Etapa 1 - Ano Letivo
+			processoAtualNome: "",
+
 			anoLetivoInicio: new Date().getFullYear(),
 			periodoInicio: 1,
 
@@ -165,18 +167,30 @@ export default {
 			console.log("Enviando para o banco de dados...");
 			if (this.arquivoSelecionado) {
 				try {
-					const disciplinas = await this.enviarDadosParaBD(this.listaDisciplinas, 'Discipline');
+					await this.enviarDadosParaBD(this.listaDisciplinas, 'Discipline/PutBulk', true);
+					await this.enviarDadosParaBD(this.listaTurmas, 'Class/PutBulk', true);
+					await this.enviarDadosParaBD(this.listaUsuarios, 'User/PutBulk', true);
+					await this.enviarDadosParaBD(this.listaVinculos, 'Bond/PutBulk', true);
+					console.log(`Upload de dados realizado com sucesso, criando processo!`);
+					
+					const disciplinas = this.listaDisciplinas.map(disciplina => disciplina.codigo).join(';');
+					const turmas = this.listaTurmas.map(turma => turma.codigo).join(';');
+					const usuarios = this.listaUsuarios.map(usuario => usuario.matricula).join(';');
+					const vinculos = this.listaVinculos.map(vinculo => vinculo.matricula).join(';');
 
-					/*const processo = await this.enviarDadosParaBD({
-						id: this.arquivoSelecionado.name,
-						inicio: `${this.anoLetivoInicio}/${this.periodoInicio}`,
-						termino: `${this.anoLetivoTermino}/${this.periodoTermino}`,
-						disciplinas: this.listaDisciplinas,
-						turmas: this.listaTurmas,
-						usuarios: this.listaUsuarios,
-						vinculos: this.listaVinculos,
-					}, 'Process');*/
-					return (disciplinas != null);
+					const processo = await this.enviarDadosParaBD({
+						id: this.processoAtualNome,
+						periodoInicio: `${this.anoLetivoInicio}/${this.periodoInicio}`,
+						periodoTermino: `${this.anoLetivoTermino}/${this.periodoTermino}`,
+						inicio: new Date(),
+						termino: new Date(0),
+						DisciplineId: disciplinas,
+						ClassId: turmas,
+						UserId: usuarios,
+						BondId: vinculos
+					}, 'Process/Post', false);
+					console.log("Processo enviado! Voltando a tela de Controle de Importações...");
+					return true;
 				} catch (error) {
 					console.error("Erro ao enviar dados: " + error);
 				}
@@ -264,7 +278,13 @@ export default {
 			axios.get(url)
 			.then(response => {
 				console.log("Processos recebidos:", response.data?.length ?? 0);
-				this.processos = response.data ?? [];
+				if (response.data && response.data.length > 0) {
+					this.processos = response.data;
+					for (let processo of this.processos) {
+						processo.status = (processo.inicio >= processo.termino) ? "Em andamento" : "Concluído";
+					}
+				}
+				else this.processos = [];
 			})
 			.catch(error => {
 				this.processos = [];
@@ -303,14 +323,17 @@ export default {
 			const ano = d.getFullYear();
 			return `${dia}/${mes}/${ano}`;
 		},
-
-		/*formatarDataISO(data) {
-			const d = new Date(data);
+		formatarDataHora(dataHora) {
+			const d = new Date(dataHora);
 			const dia = String(d.getDate()).padStart(2, '0');
 			const mes = String(d.getMonth() + 1).padStart(2, '0'); // Janeiro = 0
 			const ano = d.getFullYear();
-			return `${ano}-${mes}-${dia}`;
-		},*/
+
+			const horas = String(d.getHours()).padStart(2, '0');
+			const minutos = String(d.getMinutes()).padStart(2, '0');
+
+			return `${dia}/${mes}/${ano} - ${horas}:${minutos}`;
+		},
 
 		truncarNome(nome) {
 			const limite = 30;
@@ -325,21 +348,22 @@ export default {
 		
 	
 		// Função para validar e enviar arquivo para a API
-		async enviarDadosParaBD(file, schemaKey) {
+		async enviarDadosParaBD(files, schemaKey, doPut) {
 			if (!schemaKey) {
 				console.log("Nenhuma schemaKey fornecida.");
 				return null;
 			}
 
 			try {
-				console.log(JSON.stringify(file));
+				console.log(JSON.stringify(files));
 				// Substitui ':schemaKey' na URL pelo valor real do schemaKey
-				const url = `http://localhost:8080/${schemaKey}/Post`;
-				const response = await axios.post(url, file, {headers: {'Content-Type': 'application/json'}});
+				const url = `http://localhost:8080/${schemaKey}`;
+				const headers = {headers: {'Content-Type': 'application/json'}};
+				const response = await (doPut ? axios.put(url, files, headers) : axios.post(url, files, headers));
 
 				// Verificar a resposta
-				console.log(response); // Para debug
-				console.log(`Upload realizado com sucesso!\n${JSON.stringify(response.data)}`); // Ajuste conforme a resposta esperada
+				//console.log(response);
+				//console.log(`Upload realizado com sucesso!`);
 				return response;
 			} catch (error) {
 				console.log(error.response ? `Erro no upload: ${error.response.data.message || "Erro desconhecido"}` : "Erro na conexão com o servidor.");

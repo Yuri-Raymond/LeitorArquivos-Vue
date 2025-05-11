@@ -18,21 +18,27 @@ export class BondController {
     return this.BondService.findAll();
   }
 
-  @Get('Get/:id')
-  async findById(@Param('id') id: string): Promise<Bond> {
-    return this.BondService.findById(id);
+  @Get('Get/:matricula')
+  async findById(@Param('matricula') matricula: string): Promise<Bond> {
+    return this.BondService.findById(matricula);
   }
 
-  @Put('Put/:id')
+  @Put('Put/:matricula')
   async update(
-    @Param('id') id: string,
+    @Param('matricula') matricula: string,
     @Body() data: Partial<Bond>
   ): Promise<Bond> {
-    return this.BondService.update(id, data);
+    return this.BondService.update(matricula, data);
+  }
+  
+  @Put('PutBulk')
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  async updateBulk(@Body() data: Partial<Bond>[]): Promise<any> {
+    return this.BondService.updateBulk(data);
   }
 
-  @Delete('Delete/:id')
-  async delete(@Param('id') id: string): Promise<Bond> {
-    return this.BondService.delete(id);
+  @Delete('Delete/:matricula')
+  async delete(@Param('matricula') matricula: string): Promise<Bond> {
+    return this.BondService.delete(matricula);
   }
 }
