@@ -18,21 +18,27 @@ export class UserController {
     return this.UserService.findAll();
   }
 
-  @Get('Get/:id')
-  async findById(@Param('id') id: string): Promise<User> {
-    return this.UserService.findById(id);
+  @Get('Get/:matricula')
+  async findById(@Param('matricula') matricula: string): Promise<User> {
+    return this.UserService.findById(matricula);
   }
 
-  @Put('Put/:id')
+  @Put('Put/:matricula')
   async update(
-    @Param('id') id: string,
+    @Param('matricula') matricula: string,
     @Body() data: Partial<User>
   ): Promise<User> {
-    return this.UserService.update(id, data);
+    return this.UserService.update(matricula, data);
   }
 
-  @Delete('Delete/:id')
-  async delete(@Param('id') id: string): Promise<User> {
-    return this.UserService.delete(id);
+  @Put('PutBulk')
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  async updateBulk(@Body() users: Partial<User>[]): Promise<any> {
+    return this.UserService.updateBulk(users);
+  }
+
+  @Delete('Delete/:matricula')
+  async delete(@Param('matricula') matricula: string): Promise<User> {
+    return this.UserService.delete(matricula);
   }
 }

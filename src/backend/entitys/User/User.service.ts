@@ -35,6 +35,22 @@ export class UserService {
     return updatedUser;
   }
 
+  async updateBulk(users: Partial<User>[]): Promise<any> {
+    const operations = users.map(user => {
+      if (!user.matricula) return null;
+
+      return {
+        updateOne: {
+          filter: { matricula: user.matricula },
+          update: { $set: user },
+          upsert: true
+        }
+      };
+    }).filter(op => op !== null);
+
+    return this.UserModel.bulkWrite(operations);
+  }
+
   async delete(id: string): Promise<User> {
     const deletedUser = await this.UserModel.findByIdAndDelete(id).exec();
     if (!deletedUser) {

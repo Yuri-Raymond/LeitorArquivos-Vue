@@ -13,7 +13,8 @@ export default {
 			_historicoTelas: [], //Usado para o botão de voltar
 
 			// Informações de processos já carregados para o Controle de Importações
-			processos: [
+			processos: [],
+			/*[
 				{
 					id: "arquivo-3.csv",
 					periodo: "2025/1",
@@ -35,7 +36,7 @@ export default {
 					termino: "11/6/2024 - 22:30",
 					status: "Concluído"
 				}
-			],
+			],*/
 
 			// Para a importação de dados:
 			telaEtapas: ["importarPeriodo", "importarDisciplinas", "importarTurmas", "importarUsuarios", "importarVinculos"],
@@ -46,6 +47,8 @@ export default {
 			paginaAtual: 0, //Para a paginação
 
 			// Etapa 1 - Ano Letivo
+			processoAtualNome: "",
+
 			anoLetivoInicio: new Date().getFullYear(),
 			periodoInicio: 1,
 
@@ -69,8 +72,11 @@ export default {
 			listaVinculos: []
 		}
 	},
+	mounted() {
+		this.atualizarProcessos();
+	},
 	watch: {
-		tela()	{
+		tela() {
 			this.atualizarPaginacao();
 		}
 	},
@@ -91,6 +97,7 @@ export default {
 					break;
 				case "controleDados":
 					tituloDaPagina = "Controle de Importações";
+					this.atualizarProcessos();
 					break;
 				case "importarPeriodo":
 				case "importarDisciplinas":
@@ -160,13 +167,37 @@ export default {
 			console.log("Enviando para o banco de dados...");
 			if (this.arquivoSelecionado) {
 				try {
-					return await this.enviarDadosParaBD(this.arquivoSelecionado, '');
+					await this.enviarDadosParaBD(this.listaDisciplinas, 'Discipline/PutBulk', true);
+					await this.enviarDadosParaBD(this.listaTurmas, 'Class/PutBulk', true);
+					await this.enviarDadosParaBD(this.listaUsuarios, 'User/PutBulk', true);
+					await this.enviarDadosParaBD(this.listaVinculos, 'Bond/PutBulk', true);
+					console.log(`Upload de dados realizado com sucesso, criando processo!`);
+					
+					const disciplinas = this.listaDisciplinas.map(disciplina => disciplina.codigo).join(';');
+					const turmas = this.listaTurmas.map(turma => turma.codigo).join(';');
+					const usuarios = this.listaUsuarios.map(usuario => usuario.matricula).join(';');
+					const vinculos = this.listaVinculos.map(vinculo => vinculo.matricula).join(';');
+
+					const processo = await this.enviarDadosParaBD({
+						id: this.processoAtualNome,
+						periodoInicio: `${this.anoLetivoInicio}/${this.periodoInicio}`,
+						periodoTermino: `${this.anoLetivoTermino}/${this.periodoTermino}`,
+						inicio: new Date(),
+						termino: new Date(0),
+						DisciplineId: disciplinas,
+						ClassId: turmas,
+						UserId: usuarios,
+						BondId: vinculos
+					}, 'Process/Post', false);
+					console.log("Processo enviado! Voltando a tela de Controle de Importações...");
+					return true;
 				} catch (error) {
-					console.log("Erro ao enviar dados: " + error);
+					console.error("Erro ao enviar dados: " + error);
 				}
 			} else {
 				console.log("Nenhum dado para enviar.");
 			}
+			return false;
 		},
 
 		// Armazena arquivo selecionado e salva no cache
@@ -196,7 +227,7 @@ export default {
 				renomear = new Map(Object.entries(renomear).map(([chave, valor]) => [formatacao(chave), valor]));
 
 				return planilha.map(obj => Object.fromEntries(Object.entries(obj).map(function([chave, valor]) {
-					console.log(chave, valor);
+					//console.log(chave, valor);
 					chave = formatacao(chave);
 					return [renomear.get(chave) || chave, valor];
 				})));
@@ -213,6 +244,7 @@ export default {
 							case "disciplina":
 								this.arquivoDisciplinas = file;
 								this.listaDisciplinas = converter({"Periodo Letivo": "periodo", "Data de Inicio": "inicio", "Data de Termino": "termino", "Periodo Curricular": "periodoCurricular"}, planilha);
+
 								break;
 							case "turmas":
 							case "turma":
@@ -239,6 +271,25 @@ export default {
 			}
 			this.paginaAtual = 0;
 			this.atualizarPaginacao();
+		},
+
+		async atualizarProcessos() {
+			const url = `http://localhost:8080/Process/Get`;
+			axios.get(url)
+			.then(response => {
+				console.log("Processos recebidos:", response.data?.length ?? 0);
+				if (response.data && response.data.length > 0) {
+					this.processos = response.data;
+					for (let processo of this.processos) {
+						processo.status = (processo.inicio >= processo.termino) ? "Em andamento" : "Concluído";
+					}
+				}
+				else this.processos = [];
+			})
+			.catch(error => {
+				this.processos = [];
+				console.error("Erro ao atualizar processos:", error?.message ?? error);
+			});
 		},
 
 		atualizarPaginacao() {
@@ -272,6 +323,17 @@ export default {
 			const ano = d.getFullYear();
 			return `${dia}/${mes}/${ano}`;
 		},
+		formatarDataHora(dataHora) {
+			const d = new Date(dataHora);
+			const dia = String(d.getDate()).padStart(2, '0');
+			const mes = String(d.getMonth() + 1).padStart(2, '0'); // Janeiro = 0
+			const ano = d.getFullYear();
+
+			const horas = String(d.getHours()).padStart(2, '0');
+			const minutos = String(d.getMinutes()).padStart(2, '0');
+
+			return `${dia}/${mes}/${ano} - ${horas}:${minutos}`;
+		},
 
 		truncarNome(nome) {
 			const limite = 30;
@@ -286,49 +348,27 @@ export default {
 		
 	
 		// Função para validar e enviar arquivo para a API
-		async enviarDadosParaBD(file, schemaKey) {			
-			if (!file) {
-				console.log("Arquivo inválido.");
-				return false;
-			}
-
-			const fileName = file.name;
-			const fileExtension = fileName.split(".").pop().toLowerCase();
-			if (!this.formatos.includes("." + fileExtension)) {
-				console.log("Este formato de arquivo não é permitido! Use apenas: " + this.formatos.join(", "));
-				return false;
-			}
-
+		async enviarDadosParaBD(files, schemaKey, doPut) {
 			if (!schemaKey) {
 				console.log("Nenhuma schemaKey fornecida.");
-				return false;
+				return null;
 			}
-
-			const formData = new FormData();
-			formData.append("file", file);
 
 			try {
+				console.log(JSON.stringify(files));
 				// Substitui ':schemaKey' na URL pelo valor real do schemaKey
-				const url = `http://localhost:8080/${schemaKey}/Post`;
-				const response = await axios.post(url, formData, {
-					headers: {
-						"Content-Type": "multipart/form-data",
-					}
-					
-				});
+				const url = `http://localhost:8080/${schemaKey}`;
+				const headers = {headers: {'Content-Type': 'application/json'}};
+				const response = await (doPut ? axios.put(url, files, headers) : axios.post(url, files, headers));
 
 				// Verificar a resposta
-				console.log(response); // Para debug
-				console.log(`Upload realizado com sucesso! ${response.data}`); // Ajuste conforme a resposta esperada
-				return true;
-
+				//console.log(response);
+				//console.log(`Upload realizado com sucesso!`);
+				return response;
 			} catch (error) {
-				console.error("Erro no upload:", error);
-
-				// Trate o erro
 				console.log(error.response ? `Erro no upload: ${error.response.data.message || "Erro desconhecido"}` : "Erro na conexão com o servidor.");
-				return false;
 			}
+			return null;
 		}
 	}
 }

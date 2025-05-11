@@ -15,7 +15,7 @@ export class Discipline extends Document{
   @Prop({ type: String})
   disciplina: String;
 
-  @Prop({ type: String})
+  @Prop({ type: String, unique: true})
   codigo: String;
 
   @Prop({ type: Date})

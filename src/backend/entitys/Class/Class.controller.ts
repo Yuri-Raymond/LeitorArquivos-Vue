@@ -18,21 +18,27 @@ export class ClassController {
     return this.ClassService.findAll();
   }
 
-  @Get('Get/:id')
-  async findById(@Param('id') id: string): Promise<Class> {
-    return this.ClassService.findById(id);
+  @Get('Get/:codigo')
+  async findById(@Param('codigo') codigo: string): Promise<Class> {
+    return this.ClassService.findById(codigo);
   }
 
-  @Put('Put/:id')
+  @Put('Put/:codigo')
   async update(
-    @Param('id') id: string,
+    @Param('codigo') codigo: string,
     @Body() data: Partial<Class>
   ): Promise<Class> {
-    return this.ClassService.update(id, data);
+    return this.ClassService.update(codigo, data);
   }
 
-  @Delete('Delete/:id')
-  async delete(@Param('id') id: string): Promise<Class> {
-    return this.ClassService.delete(id);
+  @Put('PutBulk')
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  async updateBulk(@Body() data: Partial<Class>[]): Promise<any> {
+    return this.ClassService.updateBulk(data);
+  }
+
+  @Delete('Delete/:codigo')
+  async delete(@Param('codigo') codigo: string): Promise<Class> {
+    return this.ClassService.delete(codigo);
   }
 }

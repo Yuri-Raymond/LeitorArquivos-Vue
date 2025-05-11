@@ -1,10 +1,6 @@
 import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsNumber, IsDefined, IsDateString, Matches} from 'class-validator';
 
 export abstract class UserDto {
-  @Matches(/^[A-Za-z0-9]+$/, { message: 'Id deve conter apenas caracteres alfanuméricos.' })
-  @IsString()
-  id: String;
-  
   @IsString()
   nome: String;
 
@@ -35,9 +31,7 @@ export abstract class UserDto {
   @IsString()
   status: String;
 
-  constructor(partial: Partial<UserDto> = {}) {     
-    this.id= partial.id ?? "";
-    
+  constructor(partial: Partial<UserDto> = {}) {
     this.nome= partial.nome ?? "";
 
     this.matricula= partial.matricula ?? 0;

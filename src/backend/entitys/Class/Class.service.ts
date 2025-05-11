@@ -17,28 +17,44 @@ export class ClassService {
     return await this.ClassModel.find().exec();
   }
 
-  async findById(id: string): Promise<Class> {
-    const Class = await this.ClassModel.findById(id).exec();
+  async findById(codigo: string): Promise<Class> {
+    const Class = await this.ClassModel.findById(codigo).exec();
     if (!Class) {
-      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
+      throw new NotFoundException(`Usuário com ID ${codigo} não encontrado`);
     }
     return Class;
   }
 
-  async update(id: string, data: Partial<Class>): Promise<Class> {
+  async update(codigo: string, data: Partial<Class>): Promise<Class> {
     const updatedClass = await this.ClassModel
-      .findByIdAndUpdate(id, data, { new: true })
+      .findByIdAndUpdate(codigo, data, { new: true })
       .exec();
     if (!updatedClass) {
-      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
+      throw new NotFoundException(`Usuário com ID ${codigo} não encontrado`);
     }
     return updatedClass;
   }
+  
+  async updateBulk(users: Partial<Class>[]): Promise<any> {
+    const operations = users.map(cls => {
+      if (!cls.codigo) return null;
 
-  async delete(id: string): Promise<Class> {
-    const deletedClass = await this.ClassModel.findByIdAndDelete(id).exec();
+      return {
+        updateOne: {
+          filter: { codigo: cls.codigo },
+          update: { $set: cls },
+          upsert: true
+        }
+      };
+    }).filter(op => op !== null);
+
+    return this.ClassModel.bulkWrite(operations);
+  }
+
+  async delete(codigo: string): Promise<Class> {
+    const deletedClass = await this.ClassModel.findByIdAndDelete(codigo).exec();
     if (!deletedClass) {
-      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
+      throw new NotFoundException(`Usuário com ID ${codigo} não encontrado`);
     }
     return deletedClass;
   }
