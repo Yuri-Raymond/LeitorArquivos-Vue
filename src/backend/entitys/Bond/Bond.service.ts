@@ -17,44 +17,28 @@ export class BondService {
     return await this.BondModel.find().exec();
   }
 
-  async findById(matricula: string): Promise<Bond> {
-    const Bond = await this.BondModel.findById(matricula).exec();
+  async findById(id: string): Promise<Bond> {
+    const Bond = await this.BondModel.findById(id).exec();
     if (!Bond) {
-      throw new NotFoundException(`Usuário com ID ${matricula} não encontrado`);
+      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
     }
     return Bond;
   }
 
-  async update(matricula: string, data: Partial<Bond>): Promise<Bond> {
+  async update(id: string, data: Partial<Bond>): Promise<Bond> {
     const updatedBond = await this.BondModel
-      .findByIdAndUpdate(matricula, data, { new: true })
+      .findByIdAndUpdate(id, data, { new: true })
       .exec();
     if (!updatedBond) {
-      throw new NotFoundException(`Usuário com ID ${matricula} não encontrado`);
+      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
     }
     return updatedBond;
   }
-  
-  async updateBulk(data: Partial<Bond>[]): Promise<any> {
-    const operations = data.map(bond => {
-      if (!bond.matricula) return null;
 
-      return {
-        updateOne: {
-          filter: { matricula: bond.matricula },
-          update: { $set: bond },
-          upsert: true
-        }
-      };
-    }).filter(op => op !== null);
-
-    return this.BondModel.bulkWrite(operations);
-  }
-
-  async delete(matricula: string): Promise<Bond> {
-    const deletedBond = await this.BondModel.findByIdAndDelete(matricula).exec();
+  async delete(id: string): Promise<Bond> {
+    const deletedBond = await this.BondModel.findByIdAndDelete(id).exec();
     if (!deletedBond) {
-      throw new NotFoundException(`Usuário com ID ${matricula} não encontrado`);
+      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
     }
     return deletedBond;
   }

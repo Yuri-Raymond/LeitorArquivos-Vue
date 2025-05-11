@@ -1,5 +1,6 @@
 // Importando os módulos necessários
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
+import { IsDate, IsDateString, IsString } from 'class-validator';
 import { Document } from 'mongoose';
 import { HydratedDocument } from 'mongoose';
 
@@ -8,20 +9,8 @@ export type ProcessDocument = HydratedDocument<Process>;
 
 @Schema({ collection: 'Process' })
 export class Process extends Document{
-  @Prop({ type: String, unique: true})
+  @Prop({ type: String})
   id: String;
-
-  @Prop({ type: String})
-  periodoInicio: String;
-
-  @Prop({ type: String})
-  periodoTermino: String;
-
-  @Prop({ type: Date})
-  inicio: Date;
-
-  @Prop({ type: Date})
-  termino: Date;
 
   @Prop({ type: String})
   BondId: String;
@@ -32,21 +21,26 @@ export class Process extends Document{
   @Prop({ type: String})
   DisciplineId: String;
 
-  @Prop({ type: String})
-  UserId: String;
+  @Prop({ type: Number})
+  UserMtr: Number;
 
-  constructor(id: String, periodoInicio:String, periodoTermino:String, inicio:Date, termino:Date, BondId: String, ClassId: String, DisciplineId: String, UserId: String){
+  @Prop({ type: Date})
+  DataInicio: Date;
+
+  @Prop({ type: Date})
+  DataTermino: Date;
+
+  @Prop({ type: String})
+  StatusEnvio: String;
+
+  @Prop({ type: String})
+  Acoes: String;
+
+  constructor(id: String, BondId: String, ClassId: String, DisciplineId: String, UserMtr: Number, DataInicio: Date, DataTermino: Date, StatusEnvio: String,
+    Acoes: String){
     super();
 
     this.id= id;
-
-    this.periodoInicio= periodoInicio;
-
-    this.periodoTermino= periodoTermino;
-
-    this.inicio= inicio;
-
-    this.termino= termino;
 
     this.BondId= BondId;
 
@@ -54,7 +48,15 @@ export class Process extends Document{
 
     this.DisciplineId= DisciplineId;
 
-    this.UserId= UserId;
+    this.UserMtr= UserMtr;
+
+    this.DataInicio= DataInicio;
+
+    this.DataTermino= DataTermino;
+
+    this.StatusEnvio= StatusEnvio;
+
+    this.Acoes= Acoes;
   }
 }
 export const ProcessSchema = SchemaFactory.createForClass(Process);

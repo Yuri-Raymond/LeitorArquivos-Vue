@@ -10,9 +10,12 @@ export type BondDocument = HydratedDocument<Bond>;
 @Schema({ collection: 'Bond' })
 export class Bond extends Document{
   @Prop({ type: String})
+  id: String;
+
+  @Prop({ type: String})
   nome: String;
 
-  @Prop({ type: Number, unique: true})
+  @Prop({ type: Number })
   matricula: Number;
 
   @Prop({ type: String})
@@ -36,8 +39,10 @@ export class Bond extends Document{
   @Prop({type:String})
   status: String;
 
-  constructor(nome: String, matricula: Number, turma: String, disciplina: String, papel: String, inicio: Date, termino: Date, obs: Number, status: String){
+  constructor(id: String, nome: String, matricula: Number, turma: String, disciplina: String, papel: String, inicio: Date, termino: Date, obs: Number, status: String){
     super();
+
+    this.id= id;
 
     this.nome= nome;
 

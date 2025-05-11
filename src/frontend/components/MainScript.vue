@@ -42,26 +42,26 @@
 					<tbody>
 						<tr v-for="(processo, id) in processos" :key="id">
 							<td v-html="processo.id"></td>
-							<td v-html="processo.periodoInicio + ' - ' + processo.periodoTermino"></td>
-							<td v-html="formatarDataHora(processo.inicio)"></td>
-							<td v-html="processo.termino > processo.inicio ? formatarDataHora(processo.termino) : '---'"></td>
-							<td style="padding: 0;" v-if="processo.status">
+							<td v-html="processo.periodo"></td>
+							<td v-html="processo.inicio"></td>
+							<td v-html="processo.termino"></td>
+							<td style="padding: 0;">
 								<p v-html="processo.status" class="processoStatus" :class="{statusAndamento: processo.status.toLowerCase() == 'em andamento', statusConcluido: processo.status.toLowerCase() == 'concluído'}"></p>
 							</td>
 						
 							<!-- Botões para "Em andamento"-->
-							<td v-if="processo.status && processo.status.toLowerCase() == 'em andamento'" >
-								<div class="processoAcoes">
-									<button class="botaoAcao botaoCinza">Editar</button>
-									<button class="botaoAcao botaoVermelho">Cancelar</button>
-								</div>
-							</td>
-							<!-- Botões para "Concluído"-->
-							<td v-else-if="processo.status && processo.status.toLowerCase() == 'concluído'">
-								<div class="processoAcoes">
-									<button class="botaoAcao">Visualizar</button>
-								</div>
-							</td>
+								<td v-if="processo.status.toLowerCase() == 'em andamento'" >
+									<div class="processoAcoes">
+										<button class="botaoAcao botaoCinza">Editar</button>
+										<button class="botaoAcao botaoVermelho">Cancelar</button>
+									</div>
+								</td>
+								<!-- Botões para "Concluído"-->
+								<td v-else-if="processo.status.toLowerCase() == 'concluído'">
+									<div class="processoAcoes">
+										<button class="botaoAcao">Visualizar</button>
+									</div>
+								</td>
 						</tr>
 					</tbody>
 				</table>
@@ -103,46 +103,32 @@
 						<p v-else>O Período do Começo não pode ser maior que do Término.</p>
 					</div>
 
-					<div class="container-parent">
-						<h2>Nome do Processo</h2>
-						<div class="inputs-container" style="flex-direction: column; gap: 0">
-							<input placeholder="ex. &quot;Ficha830&quot;" type="text" oninput="this.value = this.value.replace(/[^A-Za-z0-9]/g, '')" v-model="processoAtualNome" style="font-size: 16px;">
+					<h2 style="margin-left: 30px;">Começo do Ano Letivo</h2>
+					<div class="inputs-container">
+						<div class="input-grupo">
+							<label for="anoLetivoInicio">Ano</label>
+							<input type="number" id="anoLetivoInicio" v-model="anoLetivoInicio" min="2000" max="3000" /> <!-- Limites do Ano seletivo -->
+						</div>
+
+						<div class="input-grupo">
+							<label for="periodoInicio">Período</label>
+							<input type="number" id="periodoInicio" v-model="periodoInicio" min="1" max="99" /> <!-- Limites do Perido -->
 						</div>
 					</div>
 
-					<hr width="100%">
-					<div style="display: flex; flex-direction: row; gap: 50px;">
-						<div class="container-parent">
-							<h2 style="margin-left: 30px;">Início do Ano Letivo</h2>
-							<div class="inputs-container">
-								<div class="input-grupo">
-									<label for="anoLetivoInicio">Ano</label>
-									<input type="number" id="anoLetivoInicio" v-model="anoLetivoInicio" min="2000" max="3000" /> <!-- Limites do Ano seletivo -->
-								</div>
-
-								<div class="input-grupo">
-									<label for="periodoInicio">Período</label>
-									<input type="number" id="periodoInicio" v-model="periodoInicio" min="1" max="99" /> <!-- Limites do Perido -->
-								</div>
-							</div>
+					<h2>Término do Ano Letivo</h2>
+					<div class="inputs-container">
+						<div class="input-grupo">
+							<label for="anoLetivoTermino">Ano</label>
+							<input type="number" id="anoLetivoTermino" v-model="anoLetivoTermino" min="2000" max="3000" /> <!-- Limites do Ano seletivo -->
 						</div>
 
-						<div class="container-parent">
-							<h2>Término do Ano Letivo</h2>
-							<div class="inputs-container">
-								<div class="input-grupo">
-									<label for="anoLetivoTermino">Ano</label>
-									<input type="number" id="anoLetivoTermino" v-model="anoLetivoTermino" min="2000" max="3000" /> <!-- Limites do Ano seletivo -->
-								</div>
-
-								<div class="input-grupo">
-									<label for="periodoTermino">Período</label>
-									<input type="number" id="periodoTermino" v-model="periodoTermino" min="1" max="99" /> <!-- Limites do Perido -->
-								</div>
-							</div>
+						<div class="input-grupo">
+							<label for="periodoTermino">Período</label>
+							<input type="number" id="periodoTermino" v-model="periodoTermino" min="1" max="99" /> <!-- Limites do Perido -->
 						</div>
 					</div>
-					<button class="botao-avancar" @click="proximaEtapa()" :disabled="!processoAtualNome.trim() || anoLetivoInicio > anoLetivoTermino || (anoLetivoInicio == anoLetivoTermino && periodoInicio > periodoTermino)">Avançar</button>
+					<button class="botao-avancar" @click="proximaEtapa()" :disabled="anoLetivoInicio > anoLetivoTermino || (anoLetivoInicio == anoLetivoTermino && periodoInicio > periodoTermino)">Avançar</button>
 				</div>
 				
 				<!-- Etapa 2 a 5 -->

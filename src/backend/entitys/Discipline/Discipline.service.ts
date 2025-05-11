@@ -17,44 +17,28 @@ export class DisciplineService {
     return await this.DisciplineModel.find().exec();
   }
 
-  async findById(codigo: string): Promise<Discipline> {
-    const Discipline = await this.DisciplineModel.findById(codigo).exec();
+  async findById(id: string): Promise<Discipline> {
+    const Discipline = await this.DisciplineModel.findById(id).exec();
     if (!Discipline) {
-      throw new NotFoundException(`Usuário com ID ${codigo} não encontrado`);
+      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
     }
     return Discipline;
   }
 
-  async update(codigo: string, data: Partial<Discipline>): Promise<Discipline> {
+  async update(id: string, data: Partial<Discipline>): Promise<Discipline> {
     const updatedDiscipline = await this.DisciplineModel
-      .findByIdAndUpdate(codigo, data, { new: true })
+      .findByIdAndUpdate(id, data, { new: true })
       .exec();
     if (!updatedDiscipline) {
-      throw new NotFoundException(`Usuário com ID ${codigo} não encontrado`);
+      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
     }
     return updatedDiscipline;
   }
-  
-  async updateBulk(users: Partial<Discipline>[]): Promise<any> {
-    const operations = users.map(discipline => {
-      if (!discipline.codigo) return null;
 
-      return {
-        updateOne: {
-          filter: { codigo: discipline.codigo },
-          update: { $set: discipline },
-          upsert: true
-        }
-      };
-    }).filter(op => op !== null);
-
-    return this.DisciplineModel.bulkWrite(operations);
-  }
-
-  async delete(codigo: string): Promise<Discipline> {
-    const deletedDiscipline = await this.DisciplineModel.findByIdAndDelete(codigo).exec();
+  async delete(id: string): Promise<Discipline> {
+    const deletedDiscipline = await this.DisciplineModel.findByIdAndDelete(id).exec();
     if (!deletedDiscipline) {
-      throw new NotFoundException(`Usuário com ID ${codigo} não encontrado`);
+      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
     }
     return deletedDiscipline;
   }
