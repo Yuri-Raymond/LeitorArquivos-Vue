@@ -26,7 +26,7 @@ export class ClassController {
   @Put('Put/:id')
   async update(
     @Param('id') id: string,
-    @Body() data: Partial<Class>
+    @Body() data: ClassDto
   ): Promise<Class> {
     return this.ClassService.update(id, data);
   }
@@ -35,4 +35,5 @@ export class ClassController {
   async delete(@Param('id') id: string): Promise<Class> {
     return this.ClassService.delete(id);
   }
+
 }

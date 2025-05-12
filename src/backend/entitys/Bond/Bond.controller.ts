@@ -26,7 +26,7 @@ export class BondController {
   @Put('Put/:id')
   async update(
     @Param('id') id: string,
-    @Body() data: Partial<Bond>
+    @Body() data: BondDto
   ): Promise<Bond> {
     return this.BondService.update(id, data);
   }
@@ -35,4 +35,5 @@ export class BondController {
   async delete(@Param('id') id: string): Promise<Bond> {
     return this.BondService.delete(id);
   }
+
 }

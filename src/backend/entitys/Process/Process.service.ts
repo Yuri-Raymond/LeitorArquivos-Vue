@@ -14,32 +14,34 @@ export class ProcessService {
   }
 
   async findAll(): Promise<Process[]> {
-    return await this.ProcessModel.find().exec();
+  return this.ProcessModel.find().exec();
   }
 
   async findById(id: string): Promise<Process> {
     const Process = await this.ProcessModel.findById(id).exec();
     if (!Process) {
-      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
+      throw new NotFoundException(`Registro com ID ${id} não encontrado`);
     }
     return Process;
   }
 
-  async update(id: string, data: Partial<Process>): Promise<Process> {
-    const updatedProcess = await this.ProcessModel
-      .findByIdAndUpdate(id, data, { new: true })
-      .exec();
-    if (!updatedProcess) {
-      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
-    }
-    return updatedProcess;
+  async update(id: string, data: ProcessDto): Promise<Process> {
+  const existingProcess = await this.ProcessModel.findById(id).exec();
+  if (!existingProcess) {
+    throw new NotFoundException(`Registro com ID ${id} não encontrado`);
   }
+
+  Object.assign(existingProcess, data); // Atualiza os campos do documento com os novos valores
+  return await existingProcess.save(); // Persiste as alterações, validando os campos automaticamente
+}
+
 
   async delete(id: string): Promise<Process> {
     const deletedProcess = await this.ProcessModel.findByIdAndDelete(id).exec();
     if (!deletedProcess) {
-      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
+      throw new NotFoundException(`Registro com ID ${id} não encontrado`);
     }
     return deletedProcess;
   }
+
 }

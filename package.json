@@ -16,7 +16,8 @@
     "start:frontend": "vite preview --root dist/frontend",
     "start": "npm run dev",
     "copy-uploads": "node copy-uploads.js",
-    "update-whitelist": "ts-node src/backend/config/updateWhitelist.ts"
+    "update-whitelist": "ts-node src/backend/config/updateWhitelist.ts",
+    "install-globals": "npm install -g ts-node typescript nodemon eslint"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.19",

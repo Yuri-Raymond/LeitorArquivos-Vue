@@ -14,32 +14,34 @@ export class ClassService {
   }
 
   async findAll(): Promise<Class[]> {
-    return await this.ClassModel.find().exec();
+  return this.ClassModel.find().exec();
   }
 
   async findById(id: string): Promise<Class> {
     const Class = await this.ClassModel.findById(id).exec();
     if (!Class) {
-      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
+      throw new NotFoundException(`Registro com ID ${id} não encontrado`);
     }
     return Class;
   }
 
-  async update(id: string, data: Partial<Class>): Promise<Class> {
-    const updatedClass = await this.ClassModel
-      .findByIdAndUpdate(id, data, { new: true })
-      .exec();
-    if (!updatedClass) {
-      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
-    }
-    return updatedClass;
+  async update(id: string, data: ClassDto): Promise<Class> {
+  const existingClass = await this.ClassModel.findById(id).exec();
+  if (!existingClass) {
+    throw new NotFoundException(`Registro com ID ${id} não encontrado`);
   }
+
+  Object.assign(existingClass, data); // Atualiza os campos do documento com os novos valores
+  return await existingClass.save(); // Persiste as alterações, validando os campos automaticamente
+}
+
 
   async delete(id: string): Promise<Class> {
     const deletedClass = await this.ClassModel.findByIdAndDelete(id).exec();
     if (!deletedClass) {
-      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
+      throw new NotFoundException(`Registro com ID ${id} não encontrado`);
     }
     return deletedClass;
   }
+
 }

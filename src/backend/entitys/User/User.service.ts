@@ -14,32 +14,34 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-    return await this.UserModel.find().exec();
+  return this.UserModel.find().exec();
   }
 
   async findById(id: string): Promise<User> {
     const User = await this.UserModel.findById(id).exec();
     if (!User) {
-      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
+      throw new NotFoundException(`Registro com ID ${id} não encontrado`);
     }
     return User;
   }
 
-  async update(id: string, data: Partial<User>): Promise<User> {
-    const updatedUser = await this.UserModel
-      .findByIdAndUpdate(id, data, { new: true })
-      .exec();
-    if (!updatedUser) {
-      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
-    }
-    return updatedUser;
+  async update(id: string, data: UserDto): Promise<User> {
+  const existingUser = await this.UserModel.findById(id).exec();
+  if (!existingUser) {
+    throw new NotFoundException(`Registro com ID ${id} não encontrado`);
   }
+
+  Object.assign(existingUser, data); // Atualiza os campos do documento com os novos valores
+  return await existingUser.save(); // Persiste as alterações, validando os campos automaticamente
+}
+
 
   async delete(id: string): Promise<User> {
     const deletedUser = await this.UserModel.findByIdAndDelete(id).exec();
     if (!deletedUser) {
-      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
+      throw new NotFoundException(`Registro com ID ${id} não encontrado`);
     }
     return deletedUser;
   }
+
 }

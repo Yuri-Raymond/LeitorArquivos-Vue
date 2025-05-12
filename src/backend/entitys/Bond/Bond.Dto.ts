@@ -9,8 +9,8 @@ export abstract class BondDto {
     nome: String;
 
     @Matches(/^\d{6,12}$/, { message: 'Matrícula deve conter entre 6 e 12 dígitos numéricos.' })
-    @IsNumber()
-    matricula: Number;
+    @IsString()
+    matricula: String;
 
     @IsString()
     turma: String;
@@ -39,7 +39,7 @@ export abstract class BondDto {
 
         this.nome= partial.nome ?? "";
 
-        this.matricula= partial.matricula ?? 0;
+        this.matricula= partial.matricula ?? "";
     
         this.turma= partial.turma ?? "";
     

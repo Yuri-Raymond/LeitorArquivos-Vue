@@ -14,32 +14,34 @@ export class BondService {
   }
 
   async findAll(): Promise<Bond[]> {
-    return await this.BondModel.find().exec();
+  return this.BondModel.find().exec();
   }
 
   async findById(id: string): Promise<Bond> {
-    const Bond = await this.BondModel.findById(id).exec();
-    if (!Bond) {
-      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
+    const bond = await this.BondModel.findById(id).exec();
+    if (!bond) {
+      throw new NotFoundException(`Registro com ID ${id} não encontrado`);
     }
-    return Bond;
+    return bond;
   }
 
-  async update(id: string, data: Partial<Bond>): Promise<Bond> {
-    const updatedBond = await this.BondModel
-      .findByIdAndUpdate(id, data, { new: true })
-      .exec();
-    if (!updatedBond) {
-      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
-    }
-    return updatedBond;
+  async update(id: string, data: BondDto): Promise<Bond> {
+  const existingBond = await this.BondModel.findById(id).exec();
+  if (!existingBond) {
+    throw new NotFoundException(`Registro com ID ${id} não encontrado`);
   }
+
+  Object.assign(existingBond, data); // Atualiza os campos do documento com os novos valores
+  return await existingBond.save(); // Persiste as alterações, validando os campos automaticamente
+}
+
 
   async delete(id: string): Promise<Bond> {
     const deletedBond = await this.BondModel.findByIdAndDelete(id).exec();
     if (!deletedBond) {
-      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
+      throw new NotFoundException(`Registro com ID ${id} não encontrado`);
     }
     return deletedBond;
   }
+
 }

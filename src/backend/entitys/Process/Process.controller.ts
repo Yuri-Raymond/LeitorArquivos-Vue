@@ -26,7 +26,7 @@ export class ProcessController {
   @Put('Put/:id')
   async update(
     @Param('id') id: string,
-    @Body() data: Partial<Process>
+    @Body() data: ProcessDto
   ): Promise<Process> {
     return this.ProcessService.update(id, data);
   }
@@ -35,4 +35,5 @@ export class ProcessController {
   async delete(@Param('id') id: string): Promise<Process> {
     return this.ProcessService.delete(id);
   }
+
 }

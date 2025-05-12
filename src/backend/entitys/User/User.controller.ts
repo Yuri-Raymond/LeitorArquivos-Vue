@@ -26,7 +26,7 @@ export class UserController {
   @Put('Put/:id')
   async update(
     @Param('id') id: string,
-    @Body() data: Partial<User>
+    @Body() data: UserDto
   ): Promise<User> {
     return this.UserService.update(id, data);
   }
@@ -35,4 +35,5 @@ export class UserController {
   async delete(@Param('id') id: string): Promise<User> {
     return this.UserService.delete(id);
   }
+
 }

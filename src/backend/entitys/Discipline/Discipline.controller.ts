@@ -26,7 +26,7 @@ export class DisciplineController {
   @Put('Put/:id')
   async update(
     @Param('id') id: string,
-    @Body() data: Partial<Discipline>
+    @Body() data: DisciplineDto
   ): Promise<Discipline> {
     return this.DisciplineService.update(id, data);
   }
@@ -35,4 +35,5 @@ export class DisciplineController {
   async delete(@Param('id') id: string): Promise<Discipline> {
     return this.DisciplineService.delete(id);
   }
+
 }
