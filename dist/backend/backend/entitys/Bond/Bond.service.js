@@ -28,25 +28,32 @@ let BondService = class BondService {
     async findAll() {
         return this.BondModel.find().exec();
     }
-    async findById(id) {
-        const bond = await this.BondModel.findById(id).exec();
-        if (!bond) {
-            throw new common_1.NotFoundException(`Registro com ID ${id} não encontrado`);
+    async findById(matricula) {
+        const Bond = await this.BondModel.findById(matricula).exec();
+        if (!Bond) {
+            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
         }
-        return bond;
+        return Bond;
     }
-    async update(id, data) {
-        const existingBond = await this.BondModel.findById(id).exec();
+    async findByMatricula(matricula) {
+        const Bond = await this.BondModel.findOne({ matricula }).exec();
+        if (!Bond) {
+            throw new common_1.NotFoundException(`Registro com matrícula ${matricula} não encontrado`);
+        }
+        return Bond;
+    }
+    async update(matricula, data) {
+        const existingBond = await this.BondModel.findById(matricula).exec();
         if (!existingBond) {
-            throw new common_1.NotFoundException(`Registro com ID ${id} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
         }
         Object.assign(existingBond, data); // Atualiza os campos do documento com os novos valores
         return await existingBond.save(); // Persiste as alterações, validando os campos automaticamente
     }
-    async delete(id) {
-        const deletedBond = await this.BondModel.findByIdAndDelete(id).exec();
+    async delete(matricula) {
+        const deletedBond = await this.BondModel.findByIdAndDelete(matricula).exec();
         if (!deletedBond) {
-            throw new common_1.NotFoundException(`Registro com ID ${id} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
         }
         return deletedBond;
     }

@@ -1,12 +1,12 @@
 import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsNumber, IsDefined, IsDateString, Matches} from 'class-validator';
 
 export abstract class ClassDto {
-    @IsString()
-    turma: String;
-
     @Matches(/^[A-Za-z0-9]+$/, { message: 'Código deve conter apenas caracteres alfanuméricos.' })
     @IsString()
     codigo: String;
+    
+    @IsString()
+    turma: String;
 
     @Matches(/^[A-Za-zÀ-ÿ0-9\s]+$/, { message: 'Disciplina deve conter apenas letras, números e espaços.' })
     @IsString()
@@ -31,9 +31,9 @@ export abstract class ClassDto {
     status: String;
 
     constructor(partial: Partial<ClassDto> = {}) {
-        this.turma= partial.turma ?? "";
-
         this.codigo= partial.codigo ?? "";
+        
+        this.turma= partial.turma ?? "";
     
         this.disciplina= partial.disciplina ?? "";
     

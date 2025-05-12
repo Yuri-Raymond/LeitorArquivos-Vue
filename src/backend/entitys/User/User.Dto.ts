@@ -1,17 +1,14 @@
 import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsNumber, IsDefined, IsDateString, Matches} from 'class-validator';
 
 export abstract class UserDto {
-  @Matches(/^[A-Za-z0-9]+$/, { message: 'Id deve conter apenas caracteres alfanuméricos.' })
+ 
+  @Matches(/^\d{6,12}$/, { message: 'Matrícula deve conter entre 6 e 12 dígitos numéricos.' })
   @IsString()
-  id: String;
-  
+  matricula: String;
+
   @IsString()
   nome: String;
-
-  @Matches(/^\d{6,12}$/, { message: 'Matrícula deve conter entre 6 e 12 dígitos numéricos.' })
-  @IsNumber()
-  matricula: Number;
-
+  
   @Matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, { message: 'E-mail deve estar em um formato válido.' })
   @IsString()
   email: String;
@@ -35,12 +32,10 @@ export abstract class UserDto {
   @IsString()
   status: String;
 
-  constructor(partial: Partial<UserDto> = {}) {     
-    this.id= partial.id ?? "";
+  constructor(partial: Partial<UserDto> = {}) {         
+    this.matricula= partial.matricula ?? "";
     
     this.nome= partial.nome ?? "";
-
-    this.matricula= partial.matricula ?? 0;
 
     this.email= partial.email ?? "";
 

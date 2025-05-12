@@ -14,34 +14,54 @@ export class BondService {
   }
 
   async findAll(): Promise<Bond[]> {
-  return this.BondModel.find().exec();
+    return this.BondModel.find().exec();
   }
 
-  async findById(id: string): Promise<Bond> {
-    const bond = await this.BondModel.findById(id).exec();
-    if (!bond) {
-      throw new NotFoundException(`Registro com ID ${id} não encontrado`);
+  async findById(matricula: string): Promise<Bond> {
+    const Bond = await this.BondModel.findById(matricula).exec();
+    if (!Bond) {
+      throw new NotFoundException(`Registro com ID ${matricula} não encontrado`);
     }
-    return bond;
+    return Bond;
   }
 
-  async update(id: string, data: BondDto): Promise<Bond> {
-  const existingBond = await this.BondModel.findById(id).exec();
-  if (!existingBond) {
-    throw new NotFoundException(`Registro com ID ${id} não encontrado`);
+  async findByMatricula(matricula: string): Promise<Bond> {
+  const Bond = await this.BondModel.findOne({ matricula }).exec();
+  if (!Bond) {
+    throw new NotFoundException(`Registro com matrícula ${matricula} não encontrado`);
   }
-
-  Object.assign(existingBond, data); // Atualiza os campos do documento com os novos valores
-  return await existingBond.save(); // Persiste as alterações, validando os campos automaticamente
+  return Bond;
 }
 
 
-  async delete(id: string): Promise<Bond> {
-    const deletedBond = await this.BondModel.findByIdAndDelete(id).exec();
-    if (!deletedBond) {
-      throw new NotFoundException(`Registro com ID ${id} não encontrado`);
+  async update(matricula: string, data: BondDto): Promise<Bond> {
+    // Busca o usuário pelo atributo 'matricula'
+    const existingBond = await this.BondModel.findOne({ matricula }).exec();
+    
+    if (!existingBond) {
+      throw new NotFoundException(`Registro com matrícula ${matricula} não encontrado`);
     }
+
+    // Atualiza os campos do documento com os novos valores
+    Object.assign(existingBond, data);
+
+    // Salva as alterações e retorna o documento atualizado
+    return await existingBond.save();
+  }
+
+
+
+  async delete(matricula: string): Promise<Bond> {
+    // Busca e remove o usuário pelo atributo 'matricula'
+    const deletedBond = await this.BondModel.findOneAndDelete({ matricula }).exec();
+    
+    if (!deletedBond) {
+      throw new NotFoundException(`Registro com matrícula ${matricula} não encontrado`);
+    }
+
+    // Retorna o documento excluído
     return deletedBond;
   }
+
 
 }

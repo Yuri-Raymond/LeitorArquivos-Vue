@@ -14,34 +14,54 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-  return this.UserModel.find().exec();
+    return this.UserModel.find().exec();
   }
 
-  async findById(id: string): Promise<User> {
-    const User = await this.UserModel.findById(id).exec();
+  async findById(matricula: string): Promise<User> {
+    const User = await this.UserModel.findById(matricula).exec();
     if (!User) {
-      throw new NotFoundException(`Registro com ID ${id} não encontrado`);
+      throw new NotFoundException(`Registro com ID ${matricula} não encontrado`);
     }
     return User;
   }
 
-  async update(id: string, data: UserDto): Promise<User> {
-  const existingUser = await this.UserModel.findById(id).exec();
-  if (!existingUser) {
-    throw new NotFoundException(`Registro com ID ${id} não encontrado`);
+  async findByMatricula(matricula: string): Promise<User> {
+  const User = await this.UserModel.findOne({ matricula }).exec();
+  if (!User) {
+    throw new NotFoundException(`Registro com matrícula ${matricula} não encontrado`);
   }
-
-  Object.assign(existingUser, data); // Atualiza os campos do documento com os novos valores
-  return await existingUser.save(); // Persiste as alterações, validando os campos automaticamente
+  return User;
 }
 
 
-  async delete(id: string): Promise<User> {
-    const deletedUser = await this.UserModel.findByIdAndDelete(id).exec();
-    if (!deletedUser) {
-      throw new NotFoundException(`Registro com ID ${id} não encontrado`);
+  async update(matricula: string, data: UserDto): Promise<User> {
+    // Busca o usuário pelo atributo 'matricula'
+    const existingUser = await this.UserModel.findOne({ matricula }).exec();
+    
+    if (!existingUser) {
+      throw new NotFoundException(`Registro com matrícula ${matricula} não encontrado`);
     }
+
+    // Atualiza os campos do documento com os novos valores
+    Object.assign(existingUser, data);
+
+    // Salva as alterações e retorna o documento atualizado
+    return await existingUser.save();
+  }
+
+
+
+  async delete(matricula: string): Promise<User> {
+    // Busca e remove o usuário pelo atributo 'matricula'
+    const deletedUser = await this.UserModel.findOneAndDelete({ matricula }).exec();
+    
+    if (!deletedUser) {
+      throw new NotFoundException(`Registro com matrícula ${matricula} não encontrado`);
+    }
+
+    // Retorna o documento excluído
     return deletedUser;
   }
+
 
 }

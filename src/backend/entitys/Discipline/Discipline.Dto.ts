@@ -1,16 +1,16 @@
 import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsNumber, IsDefined, IsDateString, Matches} from 'class-validator';
 
 export abstract class DisciplineDto {
+    @Matches(/^[A-Za-z0-9]+$/, { message: 'Código deve conter apenas caracteres alfanuméricos.' })
+    @IsString()
+    codigo: String;
+
     @IsString()
     periodo: String;
 
     @Matches(/^[A-Za-zÀ-ÿ0-9\s]+$/, { message: 'Disciplina deve conter apenas letras, números e espaços.' })
     @IsString()
     disciplina: String;
-
-    @Matches(/^[A-Za-z0-9]+$/, { message: 'Código deve conter apenas caracteres alfanuméricos.' })
-    @IsString()
-    codigo: String;
 
     @IsDateString()
     inicio: Date;
@@ -34,12 +34,12 @@ export abstract class DisciplineDto {
     status: String;
 
     constructor(partial: Partial<DisciplineDto> = {}) {
+        this.codigo= partial.codigo ?? "";
 
         this.periodo= partial.periodo ?? "";
 
         this.disciplina= partial.disciplina ?? "";
-    
-        this.codigo= partial.codigo ?? "";
+
     
         this.inicio= partial.inicio ?? new Date();
     

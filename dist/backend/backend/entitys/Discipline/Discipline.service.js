@@ -26,28 +26,34 @@ let DisciplineService = class DisciplineService {
         return await newDiscipline.save();
     }
     async findAll() {
-        return await this.DisciplineModel.find().exec();
+        return this.DisciplineModel.find().exec();
     }
-    async findById(id) {
-        const Discipline = await this.DisciplineModel.findById(id).exec();
+    async findById(matricula) {
+        const Discipline = await this.DisciplineModel.findById(matricula).exec();
         if (!Discipline) {
-            throw new common_1.NotFoundException(`Usuário com ID ${id} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
         }
         return Discipline;
     }
-    async update(id, data) {
-        const updatedDiscipline = await this.DisciplineModel
-            .findByIdAndUpdate(id, data, { new: true })
-            .exec();
-        if (!updatedDiscipline) {
-            throw new common_1.NotFoundException(`Usuário com ID ${id} não encontrado`);
+    async findByMatricula(matricula) {
+        const Discipline = await this.DisciplineModel.findOne({ matricula }).exec();
+        if (!Discipline) {
+            throw new common_1.NotFoundException(`Registro com matrícula ${matricula} não encontrado`);
         }
-        return updatedDiscipline;
+        return Discipline;
     }
-    async delete(id) {
-        const deletedDiscipline = await this.DisciplineModel.findByIdAndDelete(id).exec();
+    async update(matricula, data) {
+        const existingDiscipline = await this.DisciplineModel.findById(matricula).exec();
+        if (!existingDiscipline) {
+            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
+        }
+        Object.assign(existingDiscipline, data); // Atualiza os campos do documento com os novos valores
+        return await existingDiscipline.save(); // Persiste as alterações, validando os campos automaticamente
+    }
+    async delete(matricula) {
+        const deletedDiscipline = await this.DisciplineModel.findByIdAndDelete(matricula).exec();
         if (!deletedDiscipline) {
-            throw new common_1.NotFoundException(`Usuário com ID ${id} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
         }
         return deletedDiscipline;
     }

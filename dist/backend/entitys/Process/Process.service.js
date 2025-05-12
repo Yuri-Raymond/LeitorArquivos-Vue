@@ -26,28 +26,34 @@ let ProcessService = class ProcessService {
         return await newProcess.save();
     }
     async findAll() {
-        return await this.ProcessModel.find().exec();
+        return this.ProcessModel.find().exec();
     }
-    async findById(id) {
-        const Process = await this.ProcessModel.findById(id).exec();
+    async findById(matricula) {
+        const Process = await this.ProcessModel.findById(matricula).exec();
         if (!Process) {
-            throw new common_1.NotFoundException(`Usuário com ID ${id} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
         }
         return Process;
     }
-    async update(id, data) {
-        const updatedProcess = await this.ProcessModel
-            .findByIdAndUpdate(id, data, { new: true })
-            .exec();
-        if (!updatedProcess) {
-            throw new common_1.NotFoundException(`Usuário com ID ${id} não encontrado`);
+    async findByMatricula(matricula) {
+        const Process = await this.ProcessModel.findOne({ matricula }).exec();
+        if (!Process) {
+            throw new common_1.NotFoundException(`Registro com matrícula ${matricula} não encontrado`);
         }
-        return updatedProcess;
+        return Process;
     }
-    async delete(id) {
-        const deletedProcess = await this.ProcessModel.findByIdAndDelete(id).exec();
+    async update(matricula, data) {
+        const existingProcess = await this.ProcessModel.findById(matricula).exec();
+        if (!existingProcess) {
+            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
+        }
+        Object.assign(existingProcess, data); // Atualiza os campos do documento com os novos valores
+        return await existingProcess.save(); // Persiste as alterações, validando os campos automaticamente
+    }
+    async delete(matricula) {
+        const deletedProcess = await this.ProcessModel.findByIdAndDelete(matricula).exec();
         if (!deletedProcess) {
-            throw new common_1.NotFoundException(`Usuário com ID ${id} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
         }
         return deletedProcess;
     }

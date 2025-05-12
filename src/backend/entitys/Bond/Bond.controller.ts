@@ -18,22 +18,22 @@ export class BondController {
     return this.BondService.findAll();
   }
 
-  @Get('Get/:id')
-  async findById(@Param('id') id: string): Promise<Bond> {
-    return this.BondService.findById(id);
+  @Get('Get/:matricula')
+  async findUnique(@Param('matricula') matricula: string): Promise<Bond> {
+    return this.BondService.findByMatricula(matricula);
   }
 
-  @Put('Put/:id')
+  @Put('Put/:matricula')
   async update(
-    @Param('id') id: string,
+    @Param('matricula') matricula: string,
     @Body() data: BondDto
   ): Promise<Bond> {
-    return this.BondService.update(id, data);
+    return this.BondService.update(matricula, data);
   }
 
-  @Delete('Delete/:id')
-  async delete(@Param('id') id: string): Promise<Bond> {
-    return this.BondService.delete(id);
+  @Delete('Delete/:matricula')
+  async delete(@Param('matricula') matricula: string): Promise<Bond> {
+    return this.BondService.delete(matricula);
   }
 
 }

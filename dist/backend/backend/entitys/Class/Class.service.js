@@ -26,28 +26,34 @@ let ClassService = class ClassService {
         return await newClass.save();
     }
     async findAll() {
-        return await this.ClassModel.find().exec();
+        return this.ClassModel.find().exec();
     }
-    async findById(id) {
-        const Class = await this.ClassModel.findById(id).exec();
+    async findById(matricula) {
+        const Class = await this.ClassModel.findById(matricula).exec();
         if (!Class) {
-            throw new common_1.NotFoundException(`Usuário com ID ${id} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
         }
         return Class;
     }
-    async update(id, data) {
-        const updatedClass = await this.ClassModel
-            .findByIdAndUpdate(id, data, { new: true })
-            .exec();
-        if (!updatedClass) {
-            throw new common_1.NotFoundException(`Usuário com ID ${id} não encontrado`);
+    async findByMatricula(matricula) {
+        const Class = await this.ClassModel.findOne({ matricula }).exec();
+        if (!Class) {
+            throw new common_1.NotFoundException(`Registro com matrícula ${matricula} não encontrado`);
         }
-        return updatedClass;
+        return Class;
     }
-    async delete(id) {
-        const deletedClass = await this.ClassModel.findByIdAndDelete(id).exec();
+    async update(matricula, data) {
+        const existingClass = await this.ClassModel.findById(matricula).exec();
+        if (!existingClass) {
+            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
+        }
+        Object.assign(existingClass, data); // Atualiza os campos do documento com os novos valores
+        return await existingClass.save(); // Persiste as alterações, validando os campos automaticamente
+    }
+    async delete(matricula) {
+        const deletedClass = await this.ClassModel.findByIdAndDelete(matricula).exec();
         if (!deletedClass) {
-            throw new common_1.NotFoundException(`Usuário com ID ${id} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
         }
         return deletedClass;
     }

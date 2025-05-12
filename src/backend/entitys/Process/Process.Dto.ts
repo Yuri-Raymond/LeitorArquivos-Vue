@@ -7,15 +7,15 @@ export abstract class ProcessDto {
 
     @Matches(/^[A-Za-z0-9]+$/, { message: 'Código do vínculo deve conter apenas caracteres alfanuméricos.' })
     @IsString()
-    BondId: String;
+    BondMtr: String;
 
     @Matches(/^[A-Za-z0-9]+$/, { message: 'Código da turma deve conter apenas caracteres alfanuméricos.' })
     @IsString()
-    ClassId: String;
+    ClassCode: String;
 
     @Matches(/^[A-Za-z0-9]+$/, { message: 'Código da disciplina deve conter apenas caracteres alfanuméricos.' })
     @IsString()
-    DisciplineId: String;
+    DisciplineCode: String;
 
     @Matches(/^\d{6,12}$/, { message: 'Matrícula deve conter entre 6 e 12 dígitos numéricos.' })
     @IsNumber()
@@ -36,11 +36,11 @@ export abstract class ProcessDto {
     constructor(partial: Partial<ProcessDto> = {}) {
         this.id= partial.id ?? "";
 
-        this.BondId= partial.BondId ?? "";
+        this.BondMtr= partial.BondMtr ?? "";
 
-        this.ClassId= partial.ClassId ?? "";
+        this.ClassCode= partial.ClassCode ?? "";
 
-        this.DisciplineId= partial.DisciplineId ?? "";
+        this.DisciplineCode= partial.DisciplineCode ?? "";
 
         this.UserMtr= partial.UserMtr ?? 0;
 

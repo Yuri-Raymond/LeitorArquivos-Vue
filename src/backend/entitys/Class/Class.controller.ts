@@ -18,22 +18,22 @@ export class ClassController {
     return this.ClassService.findAll();
   }
 
-  @Get('Get/:id')
-  async findById(@Param('id') id: string): Promise<Class> {
-    return this.ClassService.findById(id);
+  @Get('Get/:codigo')
+  async findUnique(@Param('codigo') codigo: string): Promise<Class> {
+    return this.ClassService.findByCodigo(codigo);
   }
 
-  @Put('Put/:id')
+  @Put('Put/:codigo')
   async update(
-    @Param('id') id: string,
+    @Param('codigo') codigo: string,
     @Body() data: ClassDto
   ): Promise<Class> {
-    return this.ClassService.update(id, data);
+    return this.ClassService.update(codigo, data);
   }
 
-  @Delete('Delete/:id')
-  async delete(@Param('id') id: string): Promise<Class> {
-    return this.ClassService.delete(id);
+  @Delete('Delete/:codigo')
+  async delete(@Param('codigo') codigo: string): Promise<Class> {
+    return this.ClassService.delete(codigo);
   }
 
 }

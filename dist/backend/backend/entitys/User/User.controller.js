@@ -26,14 +26,14 @@ let UserController = class UserController {
     async findAll() {
         return this.UserService.findAll();
     }
-    async findById(id) {
-        return this.UserService.findById(id);
+    async findUnique(matricula) {
+        return this.UserService.findByMatricula(matricula);
     }
-    async update(id, data) {
-        return this.UserService.update(id, data);
+    async update(matricula, data) {
+        return this.UserService.update(matricula, data);
     }
-    async delete(id) {
-        return this.UserService.delete(id);
+    async delete(matricula) {
+        return this.UserService.delete(matricula);
     }
 };
 exports.UserController = UserController;
@@ -52,23 +52,23 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)('Get/:id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)('Get/:matricula'),
+    __param(0, (0, common_1.Param)('matricula')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "findById", null);
+], UserController.prototype, "findUnique", null);
 __decorate([
-    (0, common_1.Put)('Put/:id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Put)('Put/:matricula'),
+    __param(0, (0, common_1.Param)('matricula')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [String, User_Dto_1.UserDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "update", null);
 __decorate([
-    (0, common_1.Delete)('Delete/:id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Delete)('Delete/:matricula'),
+    __param(0, (0, common_1.Param)('matricula')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)

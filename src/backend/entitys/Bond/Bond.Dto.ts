@@ -1,16 +1,12 @@
 import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsNumber, IsDefined, IsDateString, Matches} from 'class-validator';
 
 export abstract class BondDto {  
-    @Matches(/^[A-Za-z0-9]+$/, { message: 'Id deve conter apenas caracteres alfanuméricos.' })
-    @IsString()
-    id: String;
-    
-    @IsString()
-    nome: String;
-
     @Matches(/^\d{6,12}$/, { message: 'Matrícula deve conter entre 6 e 12 dígitos numéricos.' })
     @IsString()
     matricula: String;
+    
+    @IsString()
+    nome: String;
 
     @IsString()
     turma: String;
@@ -35,11 +31,9 @@ export abstract class BondDto {
     status: String;
 
     constructor(partial: Partial<BondDto> = {}) { 
-        this.id= partial.id ?? "";
-
-        this.nome= partial.nome ?? "";
-
         this.matricula= partial.matricula ?? "";
+        
+        this.nome= partial.nome ?? "";
     
         this.turma= partial.turma ?? "";
     

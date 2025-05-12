@@ -63,7 +63,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [String, Discipline_Dto_1.DisciplineDto]),
     __metadata("design:returntype", Promise)
 ], DisciplineController.prototype, "update", null);
 __decorate([

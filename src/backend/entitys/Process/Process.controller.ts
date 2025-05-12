@@ -19,7 +19,7 @@ export class ProcessController {
   }
 
   @Get('Get/:id')
-  async findById(@Param('id') id: string): Promise<Process> {
+  async findUnique(@Param('id') id: string): Promise<Process> {
     return this.ProcessService.findById(id);
   }
 

@@ -18,22 +18,22 @@ export class DisciplineController {
     return this.DisciplineService.findAll();
   }
 
-  @Get('Get/:id')
-  async findById(@Param('id') id: string): Promise<Discipline> {
-    return this.DisciplineService.findById(id);
+  @Get('Get/:codigo')
+  async findUnique(@Param('codigo') codigo: string): Promise<Discipline> {
+    return this.DisciplineService.findByCodigo(codigo);
   }
 
-  @Put('Put/:id')
+  @Put('Put/:codigo')
   async update(
-    @Param('id') id: string,
+    @Param('codigo') codigo: string,
     @Body() data: DisciplineDto
   ): Promise<Discipline> {
-    return this.DisciplineService.update(id, data);
+    return this.DisciplineService.update(codigo, data);
   }
 
-  @Delete('Delete/:id')
-  async delete(@Param('id') id: string): Promise<Discipline> {
-    return this.DisciplineService.delete(id);
+  @Delete('Delete/:codigo')
+  async delete(@Param('codigo') codigo: string): Promise<Discipline> {
+    return this.DisciplineService.delete(codigo);
   }
 
 }

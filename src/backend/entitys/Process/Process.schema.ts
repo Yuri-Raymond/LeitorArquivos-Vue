@@ -13,13 +13,13 @@ export class Process extends Document{
   id: String;
 
   @Prop({ type: String})
-  BondId: String;
+  BondMtr: String;
 
   @Prop({ type: String})
-  ClassId: String;
+  ClassCode: String;
 
   @Prop({ type: String})
-  DisciplineId: String;
+  DisciplineCode: String;
 
   @Prop({ type: Number})
   UserMtr: Number;
@@ -31,22 +31,31 @@ export class Process extends Document{
   DataTermino: Date;
 
   @Prop({ type: String})
+  periodoInicio: String;
+
+  @Prop({ type: String})
+  periodoTermino: String;
+
+  @Prop({ type: String})
   StatusEnvio: String;
 
   @Prop({ type: String})
   Acoes: String;
 
-  constructor(id: String, BondId: String, ClassId: String, DisciplineId: String, UserMtr: Number, DataInicio: Date, DataTermino: Date, StatusEnvio: String,
+  @Prop({ type: String})
+  UserId: String;
+
+  constructor(id: String, BondMtr: String, ClassCode: String, DisciplineCode: String, UserMtr: Number, DataInicio: Date, DataTermino: Date, StatusEnvio: String,
     Acoes: String){
     super();
 
     this.id= id;
 
-    this.BondId= BondId;
+    this.BondMtr= BondMtr;
 
-    this.ClassId= ClassId;
+    this.ClassCode= ClassCode;
 
-    this.DisciplineId= DisciplineId;
+    this.DisciplineCode= DisciplineCode;
 
     this.UserMtr= UserMtr;
 

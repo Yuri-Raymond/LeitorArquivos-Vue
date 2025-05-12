@@ -26,29 +26,40 @@ let UserService = class UserService {
         return await newUser.save();
     }
     async findAll() {
-        return await this.UserModel.find().exec();
+        return this.UserModel.find().exec();
     }
-    async findById(id) {
-        const User = await this.UserModel.findById(id).exec();
+    async findById(matricula) {
+        const User = await this.UserModel.findById(matricula).exec();
         if (!User) {
-            throw new common_1.NotFoundException(`Usuário com ID ${id} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
         }
         return User;
     }
-    async update(id, data) {
-        const updatedUser = await this.UserModel
-            .findByIdAndUpdate(id, data, { new: true })
-            .exec();
-        if (!updatedUser) {
-            throw new common_1.NotFoundException(`Usuário com ID ${id} não encontrado`);
+    async findByMatricula(matricula) {
+        const User = await this.UserModel.findOne({ matricula }).exec();
+        if (!User) {
+            throw new common_1.NotFoundException(`Registro com matrícula ${matricula} não encontrado`);
         }
-        return updatedUser;
+        return User;
     }
-    async delete(id) {
-        const deletedUser = await this.UserModel.findByIdAndDelete(id).exec();
-        if (!deletedUser) {
-            throw new common_1.NotFoundException(`Usuário com ID ${id} não encontrado`);
+    async update(matricula, data) {
+        // Busca o usuário pelo atributo 'matricula'
+        const existingUser = await this.UserModel.findOne({ matricula }).exec();
+        if (!existingUser) {
+            throw new common_1.NotFoundException(`Registro com matrícula ${matricula} não encontrado`);
         }
+        // Atualiza os campos do documento com os novos valores
+        Object.assign(existingUser, data);
+        // Salva as alterações e retorna o documento atualizado
+        return await existingUser.save();
+    }
+    async delete(matricula) {
+        // Busca e remove o usuário pelo atributo 'matricula'
+        const deletedUser = await this.UserModel.findOneAndDelete({ matricula }).exec();
+        if (!deletedUser) {
+            throw new common_1.NotFoundException(`Registro com matrícula ${matricula} não encontrado`);
+        }
+        // Retorna o documento excluído
         return deletedUser;
     }
 };

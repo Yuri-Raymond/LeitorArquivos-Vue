@@ -14,34 +14,54 @@ export class ClassService {
   }
 
   async findAll(): Promise<Class[]> {
-  return this.ClassModel.find().exec();
+    return this.ClassModel.find().exec();
   }
 
-  async findById(id: string): Promise<Class> {
-    const Class = await this.ClassModel.findById(id).exec();
+  async findById(codigo: string): Promise<Class> {
+    const Class = await this.ClassModel.findById(codigo).exec();
     if (!Class) {
-      throw new NotFoundException(`Registro com ID ${id} não encontrado`);
+      throw new NotFoundException(`Registro com ID ${codigo} não encontrado`);
     }
     return Class;
   }
 
-  async update(id: string, data: ClassDto): Promise<Class> {
-  const existingClass = await this.ClassModel.findById(id).exec();
-  if (!existingClass) {
-    throw new NotFoundException(`Registro com ID ${id} não encontrado`);
+  async findByCodigo(codigo: string): Promise<Class> {
+  const Class = await this.ClassModel.findOne({ codigo }).exec();
+  if (!Class) {
+    throw new NotFoundException(`Registro com matrícula ${codigo} não encontrado`);
   }
-
-  Object.assign(existingClass, data); // Atualiza os campos do documento com os novos valores
-  return await existingClass.save(); // Persiste as alterações, validando os campos automaticamente
+  return Class;
 }
 
 
-  async delete(id: string): Promise<Class> {
-    const deletedClass = await this.ClassModel.findByIdAndDelete(id).exec();
-    if (!deletedClass) {
-      throw new NotFoundException(`Registro com ID ${id} não encontrado`);
+  async update(codigo: string, data: ClassDto): Promise<Class> {
+    // Busca o usuário pelo atributo 'codigo'
+    const existingClass = await this.ClassModel.findOne({ codigo }).exec();
+    
+    if (!existingClass) {
+      throw new NotFoundException(`Registro com matrícula ${codigo} não encontrado`);
     }
+
+    // Atualiza os campos do documento com os novos valores
+    Object.assign(existingClass, data);
+
+    // Salva as alterações e retorna o documento atualizado
+    return await existingClass.save();
+  }
+
+
+
+  async delete(codigo: string): Promise<Class> {
+    // Busca e remove o usuário pelo atributo 'codigo'
+    const deletedClass = await this.ClassModel.findOneAndDelete({ codigo }).exec();
+    
+    if (!deletedClass) {
+      throw new NotFoundException(`Registro com matrícula ${codigo} não encontrado`);
+    }
+
+    // Retorna o documento excluído
     return deletedClass;
   }
+
 
 }

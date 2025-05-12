@@ -63,7 +63,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [String, Process_Dto_1.ProcessDto]),
     __metadata("design:returntype", Promise)
 ], ProcessController.prototype, "update", null);
 __decorate([

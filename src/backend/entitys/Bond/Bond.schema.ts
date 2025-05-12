@@ -9,14 +9,11 @@ export type BondDocument = HydratedDocument<Bond>;
 
 @Schema({ collection: 'Bond' })
 export class Bond extends Document{
-  @Prop({ type: String})
-  id: String;
+  @Prop({ type: String })
+  matricula: String;
 
   @Prop({ type: String})
   nome: String;
-
-  @Prop({ type: String })
-  matricula: String;
 
   @Prop({ type: String})
   turma: String;
@@ -39,14 +36,12 @@ export class Bond extends Document{
   @Prop({type:String})
   status: String;
 
-  constructor(id: String, nome: String, matricula: String, turma: String, disciplina: String, papel: String, inicio: Date, termino: Date, obs: Number, status: String){
+  constructor(matricula: String, nome: String, turma: String, disciplina: String, papel: String, inicio: Date, termino: Date, obs: Number, status: String){
     super();
 
-    this.id= id;
+    this.matricula= matricula;
 
     this.nome= nome;
-
-    this.matricula= matricula;
 
     this.turma= turma;
 

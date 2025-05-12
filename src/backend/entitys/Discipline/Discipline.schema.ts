@@ -10,13 +10,14 @@ export type DisciplineDocument = HydratedDocument<Discipline>;
 @Schema({collection: 'Discipline' })
 export class Discipline extends Document{
   @Prop({ type: String})
+  codigo: String;
+
+  @Prop({ type: String})
   periodo: String;
 
   @Prop({ type: String})
   disciplina: String;
 
-  @Prop({ type: String})
-  codigo: String;
 
   @Prop({ type: Date})
   inicio: Date;
@@ -39,14 +40,14 @@ export class Discipline extends Document{
   @Prop({type:String})
   status: String;
 
-  constructor(periodo: String, disciplina: String, codigo: String, inicio: Date, termino: Date, categoria: string, periodoCurricular: Number, estado: String, campus: string, status: String){
+  constructor(codigo: String, periodo: String, disciplina: String, inicio: Date, termino: Date, categoria: string, periodoCurricular: Number, estado: String, campus: string, status: String){
     super();
+
+    this.codigo= codigo;  
 
     this.periodo= periodo;
 
     this.disciplina= disciplina;
-
-    this.codigo= codigo;
 
     this.inicio= inicio;
 
