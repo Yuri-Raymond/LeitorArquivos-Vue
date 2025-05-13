@@ -17,18 +17,18 @@ export class ProcessService {
     return this.ProcessModel.find().exec();
   }
 
-  async findById(matricula: string): Promise<Process> {
-    const Process = await this.ProcessModel.findById(matricula).exec();
+  async findById(id: string): Promise<Process> {
+    const Process = await this.ProcessModel.findById(id).exec();
     if (!Process) {
-      throw new NotFoundException(`Registro com ID ${matricula} não encontrado`);
+      throw new NotFoundException(`Registro com ID ${id} não encontrado`);
     }
     return Process;
   }
 
-  async update(matricula: string, data: ProcessDto): Promise<Process> {
-  const existingProcess = await this.ProcessModel.findById(matricula).exec();
+  async update(id: string, data: ProcessDto): Promise<Process> {
+  const existingProcess = await this.ProcessModel.findById(id).exec();
   if (!existingProcess) {
-    throw new NotFoundException('Registro com ID ${matricula} não encontrado');
+    throw new NotFoundException('Registro com ID ${id} não encontrado');
   }
 
   Object.assign(existingProcess, data); // Atualiza os campos do documento com os novos valores
@@ -36,10 +36,10 @@ export class ProcessService {
 }
 
 
-  async delete(matricula: string): Promise<Process> {
-    const deletedProcess = await this.ProcessModel.findByIdAndDelete(matricula).exec();
+  async delete(id: string): Promise<Process> {
+    const deletedProcess = await this.ProcessModel.findByIdAndDelete(id).exec();
     if (!deletedProcess) {
-      throw new NotFoundException('Registro com ID ${matricula} não encontrado');
+      throw new NotFoundException('Registro com ID ${id} não encontrado');
     }
     return deletedProcess;
   }

@@ -28,7 +28,7 @@ export class DisciplineService {
   async findByCodigo(codigo: string): Promise<Discipline> {
   const Discipline = await this.DisciplineModel.findOne({ codigo }).exec();
   if (!Discipline) {
-    throw new NotFoundException(`Registro com matrícula ${codigo} não encontrado`);
+    throw new NotFoundException(`Registro com código ${codigo} não encontrado`);
   }
   return Discipline;
 }
@@ -39,7 +39,7 @@ export class DisciplineService {
     const existingDiscipline = await this.DisciplineModel.findOne({ codigo }).exec();
     
     if (!existingDiscipline) {
-      throw new NotFoundException(`Registro com matrícula ${codigo} não encontrado`);
+      throw new NotFoundException(`Registro com código ${codigo} não encontrado`);
     }
 
     // Atualiza os campos do documento com os novos valores
@@ -56,7 +56,7 @@ export class DisciplineService {
     const deletedDiscipline = await this.DisciplineModel.findOneAndDelete({ codigo }).exec();
     
     if (!deletedDiscipline) {
-      throw new NotFoundException(`Registro com matrícula ${codigo} não encontrado`);
+      throw new NotFoundException(`Registro com código ${codigo} não encontrado`);
     }
 
     // Retorna o documento excluído

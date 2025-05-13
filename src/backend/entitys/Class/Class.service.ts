@@ -20,7 +20,7 @@ export class ClassService {
   async findById(codigo: string): Promise<Class> {
     const Class = await this.ClassModel.findById(codigo).exec();
     if (!Class) {
-      throw new NotFoundException(`Registro com ID ${codigo} não encontrado`);
+      throw new NotFoundException(`Registro com id ${codigo} não encontrado`);
     }
     return Class;
   }
@@ -28,7 +28,7 @@ export class ClassService {
   async findByCodigo(codigo: string): Promise<Class> {
   const Class = await this.ClassModel.findOne({ codigo }).exec();
   if (!Class) {
-    throw new NotFoundException(`Registro com matrícula ${codigo} não encontrado`);
+    throw new NotFoundException(`Registro com código ${codigo} não encontrado`);
   }
   return Class;
 }
@@ -39,7 +39,7 @@ export class ClassService {
     const existingClass = await this.ClassModel.findOne({ codigo }).exec();
     
     if (!existingClass) {
-      throw new NotFoundException(`Registro com matrícula ${codigo} não encontrado`);
+      throw new NotFoundException(`Registro com código ${codigo} não encontrado`);
     }
 
     // Atualiza os campos do documento com os novos valores
@@ -56,7 +56,7 @@ export class ClassService {
     const deletedClass = await this.ClassModel.findOneAndDelete({ codigo }).exec();
     
     if (!deletedClass) {
-      throw new NotFoundException(`Registro com matrícula ${codigo} não encontrado`);
+      throw new NotFoundException(`Registro com código ${codigo} não encontrado`);
     }
 
     // Retorna o documento excluído
