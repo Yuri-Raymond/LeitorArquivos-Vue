@@ -10,10 +10,10 @@ export type ClassDocument = HydratedDocument<Class>;
 @Schema({ collection: 'Class' })
 export class Class extends Document{
   @Prop({ type: String})
-  codigo: String;
-
-  @Prop({ type: String})
   turma: String;
+
+  @Prop({ type: String, unique: true})
+  codigo: String;
 
   @Prop({ type: String })
   disciplina: String;
@@ -36,12 +36,13 @@ export class Class extends Document{
   @Prop({type:String})
   status: String;
 
-  constructor( codigo: String,turma: String, disciplina: String, turno: String, capacidade: Number, inicio: Date, termino: Date, professor: String, status: String){
+  constructor( turma: String, codigo: String, disciplina: String, turno: String, capacidade: Number, inicio: Date, termino: Date, professor: String, status: String){
     super();
+
+    this.turma= turma;
 
     this.codigo= codigo;
 
-    this.turma= turma;
 
     this.disciplina= disciplina;
 

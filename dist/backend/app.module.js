@@ -10,7 +10,6 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
-const AcademicClass_module_1 = require("./entitys/AcademicClass/AcademicClass.module");
 const Discipline_module_1 = require("./entitys/Discipline/Discipline.module");
 const Class_module_1 = require("./entitys/Class/Class.module");
 const Bond_module_1 = require("./entitys/Bond/Bond.module");
@@ -29,7 +28,6 @@ exports.AppModule = AppModule = __decorate([
                 dbName: process.env.DB_NAME || 'squad07-Bonsae',
             }),
             // Importação dos módulos das entidades
-            AcademicClass_module_1.AcademicClassModule,
             Discipline_module_1.DisciplineModule,
             Class_module_1.ClassModule,
             Bond_module_1.BondModule,

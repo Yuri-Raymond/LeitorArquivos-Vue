@@ -1,6 +1,5 @@
 // Importando os módulos necessários
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { IsDate, IsDateString, IsString } from 'class-validator';
 import { Document } from 'mongoose';
 import { HydratedDocument } from 'mongoose';
 
@@ -9,26 +8,8 @@ export type ProcessDocument = HydratedDocument<Process>;
 
 @Schema({ collection: 'Process' })
 export class Process extends Document{
-  @Prop({ type: String})
+  @Prop({ type: String, unique: true})
   id: String;
-
-  @Prop({ type: String})
-  BondMtr: String;
-
-  @Prop({ type: String})
-  ClassCode: String;
-
-  @Prop({ type: String})
-  DisciplineCode: String;
-
-  @Prop({ type: Number})
-  UserMtr: Number;
-
-  @Prop({ type: Date})
-  DataInicio: Date;
-
-  @Prop({ type: Date})
-  DataTermino: Date;
 
   @Prop({ type: String})
   periodoInicio: String;
@@ -36,36 +17,44 @@ export class Process extends Document{
   @Prop({ type: String})
   periodoTermino: String;
 
-  @Prop({ type: String})
-  StatusEnvio: String;
+  @Prop({ type: Date})
+  inicio: Date;
+
+  @Prop({ type: Date})
+  termino: Date;
 
   @Prop({ type: String})
-  Acoes: String;
+  BondId: String;
+
+  @Prop({ type: String})
+  ClassId: String;
+
+  @Prop({ type: String})
+  DisciplineId: String;
 
   @Prop({ type: String})
   UserId: String;
 
-  constructor(id: String, BondMtr: String, ClassCode: String, DisciplineCode: String, UserMtr: Number, DataInicio: Date, DataTermino: Date, StatusEnvio: String,
-    Acoes: String){
+  constructor(id: String, periodoInicio:String, periodoTermino:String, inicio:Date, termino:Date, BondId: String, ClassId: String, DisciplineId: String, UserId: String){
     super();
 
     this.id= id;
 
-    this.BondMtr= BondMtr;
+    this.periodoInicio= periodoInicio;
 
-    this.ClassCode= ClassCode;
+    this.periodoTermino= periodoTermino;
 
-    this.DisciplineCode= DisciplineCode;
+    this.inicio= inicio;
 
-    this.UserMtr= UserMtr;
+    this.termino= termino;
 
-    this.DataInicio= DataInicio;
+    this.BondId= BondId;
 
-    this.DataTermino= DataTermino;
+    this.ClassId= ClassId;
 
-    this.StatusEnvio= StatusEnvio;
+    this.DisciplineId= DisciplineId;
 
-    this.Acoes= Acoes;
+    this.UserId= UserId;
   }
 }
 export const ProcessSchema = SchemaFactory.createForClass(Process);

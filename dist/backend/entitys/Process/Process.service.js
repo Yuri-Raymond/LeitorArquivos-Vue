@@ -28,32 +28,25 @@ let ProcessService = class ProcessService {
     async findAll() {
         return this.ProcessModel.find().exec();
     }
-    async findById(matricula) {
-        const Process = await this.ProcessModel.findById(matricula).exec();
+    async findById(id) {
+        const Process = await this.ProcessModel.findById(id).exec();
         if (!Process) {
-            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com ID ${id} não encontrado`);
         }
         return Process;
     }
-    async findByMatricula(matricula) {
-        const Process = await this.ProcessModel.findOne({ matricula }).exec();
-        if (!Process) {
-            throw new common_1.NotFoundException(`Registro com matrícula ${matricula} não encontrado`);
-        }
-        return Process;
-    }
-    async update(matricula, data) {
-        const existingProcess = await this.ProcessModel.findById(matricula).exec();
+    async update(id, data) {
+        const existingProcess = await this.ProcessModel.findById(id).exec();
         if (!existingProcess) {
-            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
+            throw new common_1.NotFoundException('Registro com ID ${id} não encontrado');
         }
         Object.assign(existingProcess, data); // Atualiza os campos do documento com os novos valores
         return await existingProcess.save(); // Persiste as alterações, validando os campos automaticamente
     }
-    async delete(matricula) {
-        const deletedProcess = await this.ProcessModel.findByIdAndDelete(matricula).exec();
+    async delete(id) {
+        const deletedProcess = await this.ProcessModel.findByIdAndDelete(id).exec();
         if (!deletedProcess) {
-            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
+            throw new common_1.NotFoundException('Registro com ID ${id} não encontrado');
         }
         return deletedProcess;
     }

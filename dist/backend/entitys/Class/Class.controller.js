@@ -26,14 +26,14 @@ let ClassController = class ClassController {
     async findAll() {
         return this.ClassService.findAll();
     }
-    async findById(id) {
-        return this.ClassService.findById(id);
+    async findUnique(codigo) {
+        return this.ClassService.findByCodigo(codigo);
     }
-    async update(id, data) {
-        return this.ClassService.update(id, data);
+    async update(codigo, data) {
+        return this.ClassService.update(codigo, data);
     }
-    async delete(id) {
-        return this.ClassService.delete(id);
+    async delete(codigo) {
+        return this.ClassService.delete(codigo);
     }
 };
 exports.ClassController = ClassController;
@@ -52,23 +52,23 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ClassController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)('Get/:id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)('Get/:codigo'),
+    __param(0, (0, common_1.Param)('codigo')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], ClassController.prototype, "findById", null);
+], ClassController.prototype, "findUnique", null);
 __decorate([
-    (0, common_1.Put)('Put/:id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Put)('Put/:codigo'),
+    __param(0, (0, common_1.Param)('codigo')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Class_Dto_1.ClassDto]),
     __metadata("design:returntype", Promise)
 ], ClassController.prototype, "update", null);
 __decorate([
-    (0, common_1.Delete)('Delete/:id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Delete)('Delete/:codigo'),
+    __param(0, (0, common_1.Param)('codigo')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)

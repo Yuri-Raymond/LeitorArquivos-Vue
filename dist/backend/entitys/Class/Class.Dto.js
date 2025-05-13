@@ -13,8 +13,8 @@ exports.ClassDto = void 0;
 const class_validator_1 = require("class-validator");
 class ClassDto {
     constructor(partial = {}) {
-        this.turma = partial.turma ?? "";
         this.codigo = partial.codigo ?? "";
+        this.turma = partial.turma ?? "";
         this.disciplina = partial.disciplina ?? "";
         this.turno = partial.turno ?? "";
         this.capacidade = partial.capacidade ?? 0;
@@ -26,14 +26,14 @@ class ClassDto {
 }
 exports.ClassDto = ClassDto;
 __decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], ClassDto.prototype, "turma", void 0);
-__decorate([
     (0, class_validator_1.Matches)(/^[A-Za-z0-9]+$/, { message: 'Código deve conter apenas caracteres alfanuméricos.' }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], ClassDto.prototype, "codigo", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ClassDto.prototype, "turma", void 0);
 __decorate([
     (0, class_validator_1.Matches)(/^[A-Za-zÀ-ÿ0-9\s]+$/, { message: 'Disciplina deve conter apenas letras, números e espaços.' }),
     (0, class_validator_1.IsString)(),

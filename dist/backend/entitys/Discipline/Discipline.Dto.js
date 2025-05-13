@@ -13,9 +13,9 @@ exports.DisciplineDto = void 0;
 const class_validator_1 = require("class-validator");
 class DisciplineDto {
     constructor(partial = {}) {
+        this.codigo = partial.codigo ?? "";
         this.periodo = partial.periodo ?? "";
         this.disciplina = partial.disciplina ?? "";
-        this.codigo = partial.codigo ?? "";
         this.inicio = partial.inicio ?? new Date();
         this.termino = partial.termino ?? new Date();
         this.categoria = partial.categoria ?? "";
@@ -27,6 +27,11 @@ class DisciplineDto {
 }
 exports.DisciplineDto = DisciplineDto;
 __decorate([
+    (0, class_validator_1.Matches)(/^[A-Za-z0-9]+$/, { message: 'Código deve conter apenas caracteres alfanuméricos.' }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], DisciplineDto.prototype, "codigo", void 0);
+__decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], DisciplineDto.prototype, "periodo", void 0);
@@ -35,11 +40,6 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], DisciplineDto.prototype, "disciplina", void 0);
-__decorate([
-    (0, class_validator_1.Matches)(/^[A-Za-z0-9]+$/, { message: 'Código deve conter apenas caracteres alfanuméricos.' }),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], DisciplineDto.prototype, "codigo", void 0);
 __decorate([
     (0, class_validator_1.IsDateString)(),
     __metadata("design:type", Date)

@@ -13,9 +13,8 @@ exports.BondDto = void 0;
 const class_validator_1 = require("class-validator");
 class BondDto {
     constructor(partial = {}) {
-        this.id = partial.id ?? "";
         this.nome = partial.nome ?? "";
-        this.matricula = partial.matricula ?? "";
+        this.matricula = partial.matricula ?? 0;
         this.turma = partial.turma ?? "";
         this.disciplina = partial.disciplina ?? "";
         this.papel = partial.papel ?? "";
@@ -27,18 +26,13 @@ class BondDto {
 }
 exports.BondDto = BondDto;
 __decorate([
-    (0, class_validator_1.Matches)(/^[A-Za-z0-9]+$/, { message: 'Id deve conter apenas caracteres alfanuméricos.' }),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], BondDto.prototype, "id", void 0);
-__decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], BondDto.prototype, "nome", void 0);
 __decorate([
     (0, class_validator_1.Matches)(/^\d{6,12}$/, { message: 'Matrícula deve conter entre 6 e 12 dígitos numéricos.' }),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
 ], BondDto.prototype, "matricula", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),

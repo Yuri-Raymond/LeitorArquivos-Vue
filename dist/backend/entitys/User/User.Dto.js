@@ -13,8 +13,8 @@ exports.UserDto = void 0;
 const class_validator_1 = require("class-validator");
 class UserDto {
     constructor(partial = {}) {
-        this.matricula = partial.matricula ?? "";
         this.nome = partial.nome ?? "";
+        this.matricula = partial.matricula ?? 0;
         this.email = partial.email ?? "";
         this.curso = partial.curso ?? "";
         this.tipo = partial.tipo ?? "";
@@ -26,14 +26,14 @@ class UserDto {
 }
 exports.UserDto = UserDto;
 __decorate([
-    (0, class_validator_1.Matches)(/^\d{6,12}$/, { message: 'Matrícula deve conter entre 6 e 12 dígitos numéricos.' }),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UserDto.prototype, "matricula", void 0);
-__decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UserDto.prototype, "nome", void 0);
+__decorate([
+    (0, class_validator_1.Matches)(/^\d{6,12}$/, { message: 'Matrícula deve conter entre 6 e 12 dígitos numéricos.' }),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], UserDto.prototype, "matricula", void 0);
 __decorate([
     (0, class_validator_1.Matches)(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, { message: 'E-mail deve estar em um formato válido.' }),
     (0, class_validator_1.IsString)(),

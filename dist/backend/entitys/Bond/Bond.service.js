@@ -43,18 +43,23 @@ let BondService = class BondService {
         return Bond;
     }
     async update(matricula, data) {
-        const existingBond = await this.BondModel.findById(matricula).exec();
+        // Busca o usuário pelo atributo 'matricula'
+        const existingBond = await this.BondModel.findOne({ matricula }).exec();
         if (!existingBond) {
-            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com matrícula ${matricula} não encontrado`);
         }
-        Object.assign(existingBond, data); // Atualiza os campos do documento com os novos valores
-        return await existingBond.save(); // Persiste as alterações, validando os campos automaticamente
+        // Atualiza os campos do documento com os novos valores
+        Object.assign(existingBond, data);
+        // Salva as alterações e retorna o documento atualizado
+        return await existingBond.save();
     }
     async delete(matricula) {
-        const deletedBond = await this.BondModel.findByIdAndDelete(matricula).exec();
+        // Busca e remove o usuário pelo atributo 'matricula'
+        const deletedBond = await this.BondModel.findOneAndDelete({ matricula }).exec();
         if (!deletedBond) {
-            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com matrícula ${matricula} não encontrado`);
         }
+        // Retorna o documento excluído
         return deletedBond;
     }
 };

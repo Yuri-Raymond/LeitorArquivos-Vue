@@ -14,14 +14,14 @@ const class_validator_1 = require("class-validator");
 class ProcessDto {
     constructor(partial = {}) {
         this.id = partial.id ?? "";
+        this.periodoInicio = partial.periodoInicio ?? "";
+        this.periodoTermino = partial.periodoTermino ?? "";
+        this.inicio = partial.inicio ?? new Date();
+        this.termino = partial.termino ?? new Date(0);
         this.BondId = partial.BondId ?? "";
         this.ClassId = partial.ClassId ?? "";
         this.DisciplineId = partial.DisciplineId ?? "";
-        this.UserMtr = partial.UserMtr ?? 0;
-        this.DataInicio = partial.DataInicio ?? new Date();
-        this.DataTermino = partial.DataTermino ?? new Date();
-        this.StatusEnvio = partial.StatusEnvio ?? "";
-        this.Acoes = partial.Acoes ?? "";
+        this.UserId = partial.UserId ?? "";
     }
 }
 exports.ProcessDto = ProcessDto;
@@ -31,38 +31,34 @@ __decorate([
     __metadata("design:type", String)
 ], ProcessDto.prototype, "id", void 0);
 __decorate([
-    (0, class_validator_1.Matches)(/^[A-Za-z0-9]+$/, { message: 'Código do vínculo deve conter apenas caracteres alfanuméricos.' }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProcessDto.prototype, "periodoInicio", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProcessDto.prototype, "periodoTermino", void 0);
+__decorate([
+    (0, class_validator_1.IsDateString)(),
+    __metadata("design:type", Date)
+], ProcessDto.prototype, "inicio", void 0);
+__decorate([
+    (0, class_validator_1.IsDateString)(),
+    __metadata("design:type", Date)
+], ProcessDto.prototype, "termino", void 0);
+__decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], ProcessDto.prototype, "BondId", void 0);
 __decorate([
-    (0, class_validator_1.Matches)(/^[A-Za-z0-9]+$/, { message: 'Código da turma deve conter apenas caracteres alfanuméricos.' }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], ProcessDto.prototype, "ClassId", void 0);
 __decorate([
-    (0, class_validator_1.Matches)(/^[A-Za-z0-9]+$/, { message: 'Código da disciplina deve conter apenas caracteres alfanuméricos.' }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], ProcessDto.prototype, "DisciplineId", void 0);
 __decorate([
-    (0, class_validator_1.Matches)(/^\d{6,12}$/, { message: 'Matrícula deve conter entre 6 e 12 dígitos numéricos.' }),
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], ProcessDto.prototype, "UserMtr", void 0);
-__decorate([
-    (0, class_validator_1.IsDateString)(),
-    __metadata("design:type", Date)
-], ProcessDto.prototype, "DataInicio", void 0);
-__decorate([
-    (0, class_validator_1.IsDateString)(),
-    __metadata("design:type", Date)
-], ProcessDto.prototype, "DataTermino", void 0);
-__decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], ProcessDto.prototype, "StatusEnvio", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], ProcessDto.prototype, "Acoes", void 0);
+], ProcessDto.prototype, "UserId", void 0);

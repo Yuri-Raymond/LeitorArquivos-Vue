@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AcademicClassModule } from './entitys/AcademicClass/AcademicClass.module';
 import { DisciplineModule } from './entitys/Discipline/Discipline.module';
 import { ClassModule } from './entitys/Class/Class.module';
 import { BondModule } from './entitys/Bond/Bond.module';
@@ -19,7 +18,6 @@ import { ProcessModule } from './entitys/Process/Process.module';
     }),
 
     // Importação dos módulos das entidades
-    AcademicClassModule,
     DisciplineModule,
     ClassModule,
     BondModule,

@@ -33,7 +33,7 @@ __decorate([
     __metadata("design:type", String)
 ], Class.prototype, "turma", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: String }),
+    (0, mongoose_1.Prop)({ type: String, unique: true }),
     __metadata("design:type", String)
 ], Class.prototype, "codigo", void 0);
 __decorate([

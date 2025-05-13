@@ -26,14 +26,14 @@ let DisciplineController = class DisciplineController {
     async findAll() {
         return this.DisciplineService.findAll();
     }
-    async findById(id) {
-        return this.DisciplineService.findById(id);
+    async findUnique(codigo) {
+        return this.DisciplineService.findByCodigo(codigo);
     }
-    async update(id, data) {
-        return this.DisciplineService.update(id, data);
+    async update(codigo, data) {
+        return this.DisciplineService.update(codigo, data);
     }
-    async delete(id) {
-        return this.DisciplineService.delete(id);
+    async delete(codigo) {
+        return this.DisciplineService.delete(codigo);
     }
 };
 exports.DisciplineController = DisciplineController;
@@ -52,23 +52,23 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], DisciplineController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)('Get/:id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)('Get/:codigo'),
+    __param(0, (0, common_1.Param)('codigo')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], DisciplineController.prototype, "findById", null);
+], DisciplineController.prototype, "findUnique", null);
 __decorate([
-    (0, common_1.Put)('Put/:id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Put)('Put/:codigo'),
+    __param(0, (0, common_1.Param)('codigo')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Discipline_Dto_1.DisciplineDto]),
     __metadata("design:returntype", Promise)
 ], DisciplineController.prototype, "update", null);
 __decorate([
-    (0, common_1.Delete)('Delete/:id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Delete)('Delete/:codigo'),
+    __param(0, (0, common_1.Param)('codigo')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)

@@ -26,14 +26,14 @@ let BondController = class BondController {
     async findAll() {
         return this.BondService.findAll();
     }
-    async findById(id) {
-        return this.BondService.findById(id);
+    async findUnique(matricula) {
+        return this.BondService.findByMatricula(matricula);
     }
-    async update(id, data) {
-        return this.BondService.update(id, data);
+    async update(matricula, data) {
+        return this.BondService.update(matricula, data);
     }
-    async delete(id) {
-        return this.BondService.delete(id);
+    async delete(matricula) {
+        return this.BondService.delete(matricula);
     }
 };
 exports.BondController = BondController;
@@ -52,23 +52,23 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], BondController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)('Get/:id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)('Get/:matricula'),
+    __param(0, (0, common_1.Param)('matricula')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], BondController.prototype, "findById", null);
+], BondController.prototype, "findUnique", null);
 __decorate([
-    (0, common_1.Put)('Put/:id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Put)('Put/:matricula'),
+    __param(0, (0, common_1.Param)('matricula')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Bond_Dto_1.BondDto]),
     __metadata("design:returntype", Promise)
 ], BondController.prototype, "update", null);
 __decorate([
-    (0, common_1.Delete)('Delete/:id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Delete)('Delete/:matricula'),
+    __param(0, (0, common_1.Param)('matricula')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)

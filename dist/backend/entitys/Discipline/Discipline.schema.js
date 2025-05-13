@@ -38,7 +38,7 @@ __decorate([
     __metadata("design:type", String)
 ], Discipline.prototype, "disciplina", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: String }),
+    (0, mongoose_1.Prop)({ type: String, unique: true }),
     __metadata("design:type", String)
 ], Discipline.prototype, "codigo", void 0);
 __decorate([

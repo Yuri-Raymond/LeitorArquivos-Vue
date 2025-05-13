@@ -26,7 +26,7 @@ let ProcessController = class ProcessController {
     async findAll() {
         return this.ProcessService.findAll();
     }
-    async findById(id) {
+    async findUnique(id) {
         return this.ProcessService.findById(id);
     }
     async update(id, data) {
@@ -57,7 +57,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], ProcessController.prototype, "findById", null);
+], ProcessController.prototype, "findUnique", null);
 __decorate([
     (0, common_1.Put)('Put/:id'),
     __param(0, (0, common_1.Param)('id')),

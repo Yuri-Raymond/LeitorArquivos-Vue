@@ -1,12 +1,12 @@
 import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsNumber, IsDefined, IsDateString, Matches} from 'class-validator';
 
 export abstract class BondDto {  
-    @Matches(/^\d{6,12}$/, { message: 'Matrícula deve conter entre 6 e 12 dígitos numéricos.' })
-    @IsString()
-    matricula: String;
-    
     @IsString()
     nome: String;
+
+    @Matches(/^\d{6,12}$/, { message: 'Matrícula deve conter entre 6 e 12 dígitos numéricos.' })
+    @IsNumber()
+    matricula: Number;
 
     @IsString()
     turma: String;
@@ -31,9 +31,9 @@ export abstract class BondDto {
     status: String;
 
     constructor(partial: Partial<BondDto> = {}) { 
-        this.matricula= partial.matricula ?? "";
-        
         this.nome= partial.nome ?? "";
+
+        this.matricula= partial.matricula ?? 0;
     
         this.turma= partial.turma ?? "";
     

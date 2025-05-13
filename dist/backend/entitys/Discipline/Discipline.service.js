@@ -28,33 +28,38 @@ let DisciplineService = class DisciplineService {
     async findAll() {
         return this.DisciplineModel.find().exec();
     }
-    async findById(matricula) {
-        const Discipline = await this.DisciplineModel.findById(matricula).exec();
+    async findById(codigo) {
+        const Discipline = await this.DisciplineModel.findById(codigo).exec();
         if (!Discipline) {
-            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com ID ${codigo} não encontrado`);
         }
         return Discipline;
     }
-    async findByMatricula(matricula) {
-        const Discipline = await this.DisciplineModel.findOne({ matricula }).exec();
+    async findByCodigo(codigo) {
+        const Discipline = await this.DisciplineModel.findOne({ codigo }).exec();
         if (!Discipline) {
-            throw new common_1.NotFoundException(`Registro com matrícula ${matricula} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com código ${codigo} não encontrado`);
         }
         return Discipline;
     }
-    async update(matricula, data) {
-        const existingDiscipline = await this.DisciplineModel.findById(matricula).exec();
+    async update(codigo, data) {
+        // Busca o usuário pelo atributo 'codigo'
+        const existingDiscipline = await this.DisciplineModel.findOne({ codigo }).exec();
         if (!existingDiscipline) {
-            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com código ${codigo} não encontrado`);
         }
-        Object.assign(existingDiscipline, data); // Atualiza os campos do documento com os novos valores
-        return await existingDiscipline.save(); // Persiste as alterações, validando os campos automaticamente
+        // Atualiza os campos do documento com os novos valores
+        Object.assign(existingDiscipline, data);
+        // Salva as alterações e retorna o documento atualizado
+        return await existingDiscipline.save();
     }
-    async delete(matricula) {
-        const deletedDiscipline = await this.DisciplineModel.findByIdAndDelete(matricula).exec();
+    async delete(codigo) {
+        // Busca e remove o usuário pelo atributo 'codigo'
+        const deletedDiscipline = await this.DisciplineModel.findOneAndDelete({ codigo }).exec();
         if (!deletedDiscipline) {
-            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com código ${codigo} não encontrado`);
         }
+        // Retorna o documento excluído
         return deletedDiscipline;
     }
 };

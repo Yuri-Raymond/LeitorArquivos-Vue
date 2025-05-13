@@ -14,9 +14,8 @@ exports.BondSchema = exports.Bond = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 let Bond = class Bond extends mongoose_2.Document {
-    constructor(id, nome, matricula, turma, disciplina, papel, inicio, termino, obs, status) {
+    constructor(nome, matricula, turma, disciplina, papel, inicio, termino, obs, status) {
         super();
-        this.id = id;
         this.nome = nome;
         this.matricula = matricula;
         this.turma = turma;
@@ -32,14 +31,10 @@ exports.Bond = Bond;
 __decorate([
     (0, mongoose_1.Prop)({ type: String }),
     __metadata("design:type", String)
-], Bond.prototype, "id", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: String }),
-    __metadata("design:type", String)
 ], Bond.prototype, "nome", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: String }),
-    __metadata("design:type", String)
+    (0, mongoose_1.Prop)({ type: Number, unique: true }),
+    __metadata("design:type", Number)
 ], Bond.prototype, "matricula", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: String }),
@@ -71,6 +66,6 @@ __decorate([
 ], Bond.prototype, "status", void 0);
 exports.Bond = Bond = __decorate([
     (0, mongoose_1.Schema)({ collection: 'Bond' }),
-    __metadata("design:paramtypes", [String, String, String, String, String, String, Date, Date, Number, String])
+    __metadata("design:paramtypes", [String, Number, String, String, String, Date, Date, Number, String])
 ], Bond);
 exports.BondSchema = mongoose_1.SchemaFactory.createForClass(Bond);

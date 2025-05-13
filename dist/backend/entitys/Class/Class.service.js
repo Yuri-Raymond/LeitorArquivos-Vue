@@ -28,33 +28,38 @@ let ClassService = class ClassService {
     async findAll() {
         return this.ClassModel.find().exec();
     }
-    async findById(matricula) {
-        const Class = await this.ClassModel.findById(matricula).exec();
+    async findById(codigo) {
+        const Class = await this.ClassModel.findById(codigo).exec();
         if (!Class) {
-            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com id ${codigo} não encontrado`);
         }
         return Class;
     }
-    async findByMatricula(matricula) {
-        const Class = await this.ClassModel.findOne({ matricula }).exec();
+    async findByCodigo(codigo) {
+        const Class = await this.ClassModel.findOne({ codigo }).exec();
         if (!Class) {
-            throw new common_1.NotFoundException(`Registro com matrícula ${matricula} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com código ${codigo} não encontrado`);
         }
         return Class;
     }
-    async update(matricula, data) {
-        const existingClass = await this.ClassModel.findById(matricula).exec();
+    async update(codigo, data) {
+        // Busca o usuário pelo atributo 'codigo'
+        const existingClass = await this.ClassModel.findOne({ codigo }).exec();
         if (!existingClass) {
-            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com código ${codigo} não encontrado`);
         }
-        Object.assign(existingClass, data); // Atualiza os campos do documento com os novos valores
-        return await existingClass.save(); // Persiste as alterações, validando os campos automaticamente
+        // Atualiza os campos do documento com os novos valores
+        Object.assign(existingClass, data);
+        // Salva as alterações e retorna o documento atualizado
+        return await existingClass.save();
     }
-    async delete(matricula) {
-        const deletedClass = await this.ClassModel.findByIdAndDelete(matricula).exec();
+    async delete(codigo) {
+        // Busca e remove o usuário pelo atributo 'codigo'
+        const deletedClass = await this.ClassModel.findOneAndDelete({ codigo }).exec();
         if (!deletedClass) {
-            throw new common_1.NotFoundException(`Registro com ID ${matricula} não encontrado`);
+            throw new common_1.NotFoundException(`Registro com código ${codigo} não encontrado`);
         }
+        // Retorna o documento excluído
         return deletedClass;
     }
 };

@@ -1,56 +1,52 @@
-import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsDefined, Matches, IsNumber, IsDateString} from 'class-validator';
+import { IsOptional, IsString, IsUUID, IsNotEmpty, IsDate, IsDefined, IsDateString, Matches, IsNumber} from 'class-validator';
 
 export abstract class ProcessDto {
     @Matches(/^[A-Za-z0-9]+$/, { message: 'Id do processo deve conter apenas caracteres alfanuméricos.' })
     @IsString()
     id: String;
 
-    @Matches(/^[A-Za-z0-9]+$/, { message: 'Código do vínculo deve conter apenas caracteres alfanuméricos.' })
     @IsString()
-    BondMtr: String;
+    periodoInicio: String;
 
-    @Matches(/^[A-Za-z0-9]+$/, { message: 'Código da turma deve conter apenas caracteres alfanuméricos.' })
     @IsString()
-    ClassCode: String;
-
-    @Matches(/^[A-Za-z0-9]+$/, { message: 'Código da disciplina deve conter apenas caracteres alfanuméricos.' })
-    @IsString()
-    DisciplineCode: String;
-
-    @Matches(/^\d{6,12}$/, { message: 'Matrícula deve conter entre 6 e 12 dígitos numéricos.' })
-    @IsNumber()
-    UserMtr: Number;
+    periodoTermino: String;
+    
+    @IsDateString()
+    inicio: Date;
 
     @IsDateString()
-    DataInicio: Date;
-
-    @IsDateString()
-    DataTermino: Date;
+    termino: Date;
 
     @IsString()
-    StatusEnvio: String;
+    BondId: String;
 
     @IsString()
-    Acoes: String;
+    ClassId: String;
+
+    @IsString()
+    DisciplineId: String;
+
+    @IsString()
+    UserId: String;
 
     constructor(partial: Partial<ProcessDto> = {}) {
         this.id= partial.id ?? "";
 
-        this.BondMtr= partial.BondMtr ?? "";
+        this.periodoInicio= partial.periodoInicio ?? "";
 
-        this.ClassCode= partial.ClassCode ?? "";
+        this.periodoTermino= partial.periodoTermino ?? "";
+    
+        this.inicio= partial.inicio ?? new Date();
+    
+        this.termino= partial.termino ?? new Date(0);
 
-        this.DisciplineCode= partial.DisciplineCode ?? "";
+        this.BondId= partial.BondId ?? "";
 
-        this.UserMtr= partial.UserMtr ?? 0;
+        this.ClassId= partial.ClassId ?? "";
 
-        this.DataInicio= partial.DataInicio ?? new Date();
+        this.DisciplineId= partial.DisciplineId ?? "";
 
-        this.DataTermino= partial.DataTermino ?? new Date();
-
-        this.StatusEnvio= partial.StatusEnvio ?? "";
-
-        this.Acoes= partial.Acoes ?? "";
+        this.UserId= partial.UserId ?? "";
 
     }
 }

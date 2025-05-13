@@ -14,24 +14,40 @@ exports.ProcessSchema = exports.Process = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 let Process = class Process extends mongoose_2.Document {
-    constructor(id, BondId, ClassId, DisciplineId, UserMtr, DataInicio, DataTermino, StatusEnvio, Acoes) {
+    constructor(id, periodoInicio, periodoTermino, inicio, termino, BondId, ClassId, DisciplineId, UserId) {
         super();
         this.id = id;
+        this.periodoInicio = periodoInicio;
+        this.periodoTermino = periodoTermino;
+        this.inicio = inicio;
+        this.termino = termino;
         this.BondId = BondId;
         this.ClassId = ClassId;
         this.DisciplineId = DisciplineId;
-        this.UserMtr = UserMtr;
-        this.DataInicio = DataInicio;
-        this.DataTermino = DataTermino;
-        this.StatusEnvio = StatusEnvio;
-        this.Acoes = Acoes;
+        this.UserId = UserId;
     }
 };
 exports.Process = Process;
 __decorate([
-    (0, mongoose_1.Prop)({ type: String }),
+    (0, mongoose_1.Prop)({ type: String, unique: true }),
     __metadata("design:type", String)
 ], Process.prototype, "id", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: String }),
+    __metadata("design:type", String)
+], Process.prototype, "periodoInicio", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: String }),
+    __metadata("design:type", String)
+], Process.prototype, "periodoTermino", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Date }),
+    __metadata("design:type", Date)
+], Process.prototype, "inicio", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Date }),
+    __metadata("design:type", Date)
+], Process.prototype, "termino", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: String }),
     __metadata("design:type", String)
@@ -45,28 +61,11 @@ __decorate([
     __metadata("design:type", String)
 ], Process.prototype, "DisciplineId", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: Number }),
-    __metadata("design:type", Number)
-], Process.prototype, "UserMtr", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: Date }),
-    __metadata("design:type", Date)
-], Process.prototype, "DataInicio", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: Date }),
-    __metadata("design:type", Date)
-], Process.prototype, "DataTermino", void 0);
-__decorate([
     (0, mongoose_1.Prop)({ type: String }),
     __metadata("design:type", String)
-], Process.prototype, "StatusEnvio", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: String }),
-    __metadata("design:type", String)
-], Process.prototype, "Acoes", void 0);
+], Process.prototype, "UserId", void 0);
 exports.Process = Process = __decorate([
     (0, mongoose_1.Schema)({ collection: 'Process' }),
-    __metadata("design:paramtypes", [String, String, String, String, Number, Date, Date, String,
-        String])
+    __metadata("design:paramtypes", [String, String, String, Date, Date, String, String, String, String])
 ], Process);
 exports.ProcessSchema = mongoose_1.SchemaFactory.createForClass(Process);
