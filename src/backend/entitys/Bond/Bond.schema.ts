@@ -12,8 +12,8 @@ export class Bond extends Document{
   @Prop({ type: String})
   nome: String;
 
-  @Prop({ type: Number, unique: true})
-  matricula: Number;
+  @Prop({ type: String, unique: true})
+  matricula: String;
 
   @Prop({ type: String})
   turma: String;
@@ -36,7 +36,7 @@ export class Bond extends Document{
   @Prop({type:String})
   status: String;
 
-  constructor(nome: String, matricula: Number, turma: String, disciplina: String, papel: String, inicio: Date, termino: Date, obs: Number, status: String){
+  constructor(nome: String, matricula: String, turma: String, disciplina: String, papel: String, inicio: Date, termino: Date, obs: Number, status: String){
     super();
 
     this.nome= nome;

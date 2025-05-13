@@ -9,63 +9,63 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BondSchema = exports.Bond = void 0;
+exports.ProcessSchema = exports.Process = void 0;
 // Importando os módulos necessários
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-let Bond = class Bond extends mongoose_2.Document {
-    constructor(nome, matricula, turma, disciplina, papel, inicio, termino, obs, status) {
+let Process = class Process extends mongoose_2.Document {
+    constructor(id, periodoInicio, periodoTermino, inicio, termino, BondId, ClassId, DisciplineId, UserId) {
         super();
-        this.nome = nome;
-        this.matricula = matricula;
-        this.turma = turma;
-        this.disciplina = disciplina;
-        this.papel = papel;
+        this.id = id;
+        this.periodoInicio = periodoInicio;
+        this.periodoTermino = periodoTermino;
         this.inicio = inicio;
         this.termino = termino;
-        this.obs = obs;
-        this.status = status;
+        this.BondId = BondId;
+        this.ClassId = ClassId;
+        this.DisciplineId = DisciplineId;
+        this.UserId = UserId;
     }
 };
-exports.Bond = Bond;
-__decorate([
-    (0, mongoose_1.Prop)({ type: String }),
-    __metadata("design:type", String)
-], Bond.prototype, "nome", void 0);
+exports.Process = Process;
 __decorate([
     (0, mongoose_1.Prop)({ type: String, unique: true }),
     __metadata("design:type", String)
-], Bond.prototype, "matricula", void 0);
+], Process.prototype, "id", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: String }),
     __metadata("design:type", String)
-], Bond.prototype, "turma", void 0);
+], Process.prototype, "periodoInicio", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: String }),
     __metadata("design:type", String)
-], Bond.prototype, "disciplina", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: String }),
-    __metadata("design:type", String)
-], Bond.prototype, "papel", void 0);
+], Process.prototype, "periodoTermino", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: Date }),
     __metadata("design:type", Date)
-], Bond.prototype, "inicio", void 0);
+], Process.prototype, "inicio", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: Date }),
     __metadata("design:type", Date)
-], Bond.prototype, "termino", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: Number }),
-    __metadata("design:type", Number)
-], Bond.prototype, "obs", void 0);
+], Process.prototype, "termino", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: String }),
     __metadata("design:type", String)
-], Bond.prototype, "status", void 0);
-exports.Bond = Bond = __decorate([
-    (0, mongoose_1.Schema)({ collection: 'Bond' }),
-    __metadata("design:paramtypes", [String, String, String, String, String, Date, Date, Number, String])
-], Bond);
-exports.BondSchema = mongoose_1.SchemaFactory.createForClass(Bond);
+], Process.prototype, "BondId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: String }),
+    __metadata("design:type", String)
+], Process.prototype, "ClassId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: String }),
+    __metadata("design:type", String)
+], Process.prototype, "DisciplineId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: String }),
+    __metadata("design:type", String)
+], Process.prototype, "UserId", void 0);
+exports.Process = Process = __decorate([
+    (0, mongoose_1.Schema)({ collection: 'Process' }),
+    __metadata("design:paramtypes", [String, String, String, Date, Date, String, String, String, String])
+], Process);
+exports.ProcessSchema = mongoose_1.SchemaFactory.createForClass(Process);

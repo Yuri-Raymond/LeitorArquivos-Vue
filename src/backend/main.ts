@@ -24,18 +24,14 @@ async function bootstrap() {
     Logger.log('CORS configurado.');
 
     // Configuração do Swagger
-    /*
-    Logger.log('Configurando o Swagger...');
     const config = new DocumentBuilder()
-      .setTitle('Instruments API OpenAPI specification')
-      .setDescription('API used to manage instruments and related resources.')
-      .setVersion('0.0.0')
-      .addBearerAuth() // Adiciona suporte a autenticação por token (se necessário)
+      .setTitle('API Documentation')
+      .setDescription('Descrição da API')
+      .setVersion('1.0')
       .build();
+
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api', app, document);
-    Logger.log('Swagger configurado com sucesso.');
-    */
+    SwaggerModule.setup('api-docs', app, document);
 
     // Inicializa o servidor na porta especificada
     const port = process.env.PORT || 8080;
